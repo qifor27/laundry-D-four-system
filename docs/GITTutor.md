@@ -9,6 +9,7 @@
 6. [Workflow Git Sehari-hari](#workflow-git-sehari-hari)
 7. [Perintah Git yang Sering Digunakan](#perintah-git-yang-sering-digunakan)
 8. [Tips & Best Practices](#tips--best-practices)
+9. [Kolaborasi Frontend & Backend](#-kolaborasi-frontend--backend)
 
 ---
 
@@ -378,6 +379,426 @@ git lfs track "*.db"
 git add .gitattributes
 git commit -m "Add Git LFS"
 ```
+
+---
+
+## 👥 Kolaborasi Frontend & Backend
+
+### 🎯 Workflow Kolaborasi Tim
+
+Ketika bekerja dalam tim dengan pembagian Frontend dan Backend, berikut adalah workflow yang direkomendasikan:
+
+### 📋 Setup Awal Tim
+
+#### 1. Repository Owner (Team Lead)
+```bash
+# Sudah dilakukan - repository sudah ada di GitHub
+# https://github.com/qifor27/laundry-D-four-system.git
+```
+
+#### 2. Frontend Developer - Clone Repository
+```bash
+# Clone repository
+git clone https://github.com/qifor27/laundry-D-four-system.git
+cd laundry-D-four-system
+
+# Setup environment
+npm install
+npm run build
+
+# Buat branch untuk kerja frontend
+git checkout -b frontend-dev
+```
+
+#### 3. Backend Developer - Clone Repository
+```bash
+# Clone repository
+git clone https://github.com/qifor27/laundry-D-four-system.git
+cd laundry-D-four-system
+
+# Setup database
+php database/create_database.php
+php database/init_mysql.php
+
+# Buat branch untuk kerja backend
+git checkout -b backend-dev
+```
+
+---
+
+### 🔀 Strategi Branching untuk Tim
+
+```
+main (production-ready)
+├── frontend-dev (branch utama frontend)
+│   ├── feature-ui-dashboard
+│   ├── feature-customer-form
+│   └── feature-responsive-design
+│
+└── backend-dev (branch utama backend)
+    ├── feature-api-customers
+    ├── feature-api-transactions
+    └── feature-database-optimization
+```
+
+---
+
+### 💼 Workflow Frontend Developer
+
+#### Scenario: Membuat UI Dashboard Baru
+
+**Step 1: Buat Branch Fitur**
+```bash
+# Pastikan di branch frontend-dev
+git checkout frontend-dev
+git pull origin frontend-dev
+
+# Buat branch untuk fitur spesifik
+git checkout -b feature-ui-dashboard
+```
+
+**Step 2: Kerjakan Fitur**
+```bash
+# Edit file frontend
+# - assets/css/input.css
+# - pages/dashboard.php (bagian HTML/CSS)
+# - assets/js/main.js
+
+# Compile Tailwind
+npm run dev
+```
+
+**Step 3: Commit Perubahan**
+```bash
+git add assets/css/input.css pages/dashboard.php
+git commit -m "feat(frontend): Add new dashboard UI with statistics cards"
+```
+
+**Step 4: Push ke GitHub**
+```bash
+git push origin feature-ui-dashboard
+```
+
+**Step 5: Buat Pull Request**
+1. Buka GitHub repository
+2. Klik "Compare & pull request"
+3. Base: `frontend-dev` ← Compare: `feature-ui-dashboard`
+4. Tulis deskripsi perubahan
+5. Request review dari team lead
+6. Setelah approved, merge ke `frontend-dev`
+
+**Step 6: Sync dengan Main**
+```bash
+# Setelah merge, update local
+git checkout frontend-dev
+git pull origin frontend-dev
+
+# Hapus branch fitur yang sudah selesai
+git branch -d feature-ui-dashboard
+```
+
+---
+
+### ⚙️ Workflow Backend Developer
+
+#### Scenario: Membuat API Endpoint Baru
+
+**Step 1: Buat Branch Fitur**
+```bash
+# Pastikan di branch backend-dev
+git checkout backend-dev
+git pull origin backend-dev
+
+# Buat branch untuk fitur spesifik
+git checkout -b feature-api-reports
+```
+
+**Step 2: Kerjakan Fitur**
+```bash
+# Edit file backend
+# - api/reports-api.php (buat file baru)
+# - config/database_mysql.php (jika perlu)
+# - database/migrations (jika ada perubahan schema)
+```
+
+**Step 3: Test API**
+```bash
+# Test dengan Postman atau curl
+curl http://localhost/laundry-D-four/api/reports-api.php?action=daily
+```
+
+**Step 4: Commit Perubahan**
+```bash
+git add api/reports-api.php
+git commit -m "feat(backend): Add daily reports API endpoint"
+```
+
+**Step 5: Push & Pull Request**
+```bash
+git push origin feature-api-reports
+
+# Buat PR di GitHub
+# Base: backend-dev ← Compare: feature-api-reports
+```
+
+---
+
+### 🤝 Integrasi Frontend & Backend
+
+#### Scenario: Frontend Butuh Data dari Backend API
+
+**Backend Developer:**
+```bash
+# 1. Buat API endpoint
+git checkout -b feature-api-customers
+# Edit api/customers-api.php
+git add api/customers-api.php
+git commit -m "feat(api): Add GET /customers endpoint"
+git push origin feature-api-customers
+
+# 2. Dokumentasikan API
+# Tambahkan ke docs/API.md atau README
+```
+
+**Frontend Developer:**
+```bash
+# 1. Tunggu API di-merge atau pull branch backend
+git fetch origin
+git checkout feature-api-customers
+# Test API
+
+# 2. Implementasi di frontend
+git checkout frontend-dev
+git checkout -b feature-customer-list
+# Edit pages/customers.php dan assets/js/main.js
+git add .
+git commit -m "feat(frontend): Integrate customer list with API"
+git push origin feature-customer-list
+```
+
+---
+
+### 🔄 Daily Workflow Tim
+
+#### Pagi Hari - Sync dengan Tim
+```bash
+# Frontend Developer
+git checkout frontend-dev
+git pull origin frontend-dev
+git pull origin main  # Ambil update dari production
+
+# Backend Developer
+git checkout backend-dev
+git pull origin backend-dev
+git pull origin main  # Ambil update dari production
+```
+
+#### Saat Bekerja
+```bash
+# Buat branch fitur dari branch dev masing-masing
+git checkout -b feature-nama-fitur
+
+# Commit berkala (setiap 1-2 jam atau setelah fitur kecil selesai)
+git add .
+git commit -m "feat: deskripsi perubahan"
+
+# Push ke remote (minimal 2x sehari)
+git push origin feature-nama-fitur
+```
+
+#### Akhir Hari - Push Progress
+```bash
+# Push semua progress hari ini
+git push origin feature-nama-fitur
+
+# Buat PR jika fitur sudah selesai
+# Atau tandai sebagai WIP (Work in Progress) di PR title
+```
+
+---
+
+### 📝 Konvensi Commit Message untuk Tim
+
+Gunakan format standar untuk memudahkan tracking:
+
+```bash
+# Format: <type>(<scope>): <subject>
+
+# Frontend commits
+git commit -m "feat(ui): Add responsive navbar"
+git commit -m "style(dashboard): Update card colors"
+git commit -m "fix(form): Fix validation on customer form"
+
+# Backend commits
+git commit -m "feat(api): Add transaction filtering endpoint"
+git commit -m "fix(db): Fix foreign key constraint"
+git commit -m "perf(query): Optimize customer search query"
+
+# Database commits
+git commit -m "db(migration): Add indexes to transactions table"
+git commit -m "db(seed): Add default service types"
+
+# Documentation
+git commit -m "docs(api): Document customer endpoints"
+git commit -m "docs(readme): Update installation steps"
+```
+
+**Types:**
+- `feat` - Fitur baru
+- `fix` - Bug fix
+- `style` - Perubahan styling (CSS)
+- `refactor` - Refactoring code
+- `perf` - Performance improvement
+- `test` - Menambah test
+- `docs` - Dokumentasi
+- `db` - Database changes
+
+---
+
+### 🚨 Mengatasi Konflik saat Merge
+
+#### Scenario: Frontend & Backend Mengubah File yang Sama
+
+**Contoh:** Kedua tim mengubah `pages/dashboard.php`
+
+```bash
+# Frontend developer mencoba merge
+git checkout frontend-dev
+git merge backend-dev
+
+# CONFLICT! Git akan menampilkan:
+# Auto-merging pages/dashboard.php
+# CONFLICT (content): Merge conflict in pages/dashboard.php
+```
+
+**Cara Resolve:**
+
+1. **Buka file yang conflict**
+```php
+<<<<<<< HEAD (frontend-dev)
+<!-- Kode dari frontend -->
+<div class="card-new-design">
+=======
+<!-- Kode dari backend -->
+<div class="card-old-design">
+>>>>>>> backend-dev
+```
+
+2. **Pilih atau gabungkan kode**
+```php
+<!-- Hasil setelah resolve -->
+<div class="card-new-design">
+    <!-- Gabungkan yang terbaik dari kedua versi -->
+</div>
+```
+
+3. **Commit hasil resolve**
+```bash
+git add pages/dashboard.php
+git commit -m "merge: Resolve conflict in dashboard.php"
+git push origin frontend-dev
+```
+
+---
+
+### 💡 Best Practices Kolaborasi
+
+#### 1. Komunikasi Sebelum Coding
+```bash
+# Sebelum mulai fitur baru, diskusikan dengan tim:
+# - File mana yang akan diubah?
+# - Apakah ada yang sedang mengerjakan file yang sama?
+# - API apa yang dibutuhkan?
+```
+
+#### 2. Pull Request Review
+- **Frontend PR** → Review oleh: Frontend Lead + Backend Dev (untuk API integration)
+- **Backend PR** → Review oleh: Backend Lead + Frontend Dev (untuk data structure)
+
+#### 3. Jangan Langsung Push ke Main
+```bash
+# ❌ JANGAN
+git checkout main
+git commit -m "quick fix"
+git push origin main
+
+# ✅ LAKUKAN
+git checkout -b hotfix-urgent-bug
+git commit -m "fix: urgent bug in payment"
+git push origin hotfix-urgent-bug
+# Buat PR → Review → Merge
+```
+
+#### 4. Sync Rutin
+```bash
+# Setiap pagi dan sebelum mulai fitur baru
+git checkout frontend-dev  # atau backend-dev
+git pull origin frontend-dev
+git pull origin main
+```
+
+#### 5. Dokumentasi API
+Backend developer harus mendokumentasikan setiap API endpoint:
+
+```markdown
+## API: Get Customers
+**Endpoint:** `/api/customers-api.php?action=list`
+**Method:** GET
+**Response:**
+{
+  "success": true,
+  "data": [...]
+}
+```
+
+---
+
+### 📊 Workflow Merge ke Production (Main)
+
+```bash
+# 1. Frontend Lead merge frontend-dev ke main
+git checkout main
+git pull origin main
+git merge frontend-dev
+git push origin main
+
+# 2. Backend Lead merge backend-dev ke main
+git checkout main
+git pull origin main
+git merge backend-dev
+# Resolve conflicts jika ada
+git push origin main
+
+# 3. Tag release
+git tag -a v1.0.0 -m "Release version 1.0.0"
+git push origin v1.0.0
+```
+
+---
+
+### 🎯 Checklist Kolaborasi
+
+**Sebelum Mulai Kerja:**
+- [ ] Pull latest dari branch dev (`git pull origin frontend-dev`)
+- [ ] Pull latest dari main (`git pull origin main`)
+- [ ] Buat branch fitur baru (`git checkout -b feature-xxx`)
+
+**Saat Bekerja:**
+- [ ] Commit berkala (setiap 1-2 jam)
+- [ ] Gunakan commit message yang jelas
+- [ ] Test perubahan sebelum commit
+
+**Sebelum Push:**
+- [ ] Pull latest lagi untuk avoid conflict
+- [ ] Test sekali lagi
+- [ ] Push ke branch fitur (`git push origin feature-xxx`)
+
+**Setelah Fitur Selesai:**
+- [ ] Buat Pull Request di GitHub
+- [ ] Request review dari team lead
+- [ ] Tunggu approval
+- [ ] Merge ke branch dev
+- [ ] Hapus branch fitur lokal
 
 ---
 
