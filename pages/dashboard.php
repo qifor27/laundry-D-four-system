@@ -4,7 +4,7 @@
  * Menampilkan statistik dan transaksi terbaru
  */
 
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/database_mysql.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 $pageTitle = "Dashboard - D'four Laundry";
