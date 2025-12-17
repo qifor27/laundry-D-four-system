@@ -14,7 +14,7 @@ $db = Database::getInstance()->getConnection();
 $todayQuery = $db->query("
     SELECT COALESCE(SUM(price), 0) as total 
     FROM transactions 
-    WHERE DATE(created_at) = DATE('now')
+    WHERE DATE(created_at) = CURDATE()
 ");
 $todaySales = $todayQuery->fetch()['total'];
 
@@ -34,7 +34,7 @@ $totalCustomers = $customersQuery->fetch()['count'];
 $monthQuery = $db->query("
     SELECT COALESCE(SUM(price), 0) as total 
     FROM transactions 
-    WHERE strftime('%Y-%m', created_at) = strftime('%Y-%m', 'now')
+    WHERE DATE_FORMAT(created_at, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m')
 ");
 $monthRevenue = $monthQuery->fetch()['total'];
 
