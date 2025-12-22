@@ -39,32 +39,22 @@ if (!isset($pageTitle)) {
                     </div>
                 </div>
                 
+                
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center space-x-6">
-                    <a href="<?= baseUrl('pages/dashboard.php') ?>" 
-                       class="nav-link text-gray-700 hover:text-primary-600 font-medium transition-colors duration-200 <?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'text-primary-600' : '' ?>">
-                        Dashboard
-                    </a>
-                    <a href="<?= baseUrl('pages/customers.php') ?>" 
-                       class="nav-link text-gray-700 hover:text-primary-600 font-medium transition-colors duration-200 <?= (basename($_SERVER['PHP_SELF']) == 'customers.php') ? 'text-primary-600' : '' ?>">
-                        Pelanggan
-                    </a>
-                    <a href="<?= baseUrl('pages/transactions.php') ?>" 
-                       class="nav-link text-gray-700 hover:text-primary-600 font-medium transition-colors duration-200 <?= (basename($_SERVER['PHP_SELF']) == 'transactions.php') ? 'text-primary-600' : '' ?>">
-                        Transaksi
-                    </a>
                     <a href="<?= baseUrl('pages/check-order.php') ?>" 
                        class="nav-link text-gray-700 hover:text-primary-600 font-medium transition-colors duration-200 <?= (basename($_SERVER['PHP_SELF']) == 'check-order.php') ? 'text-primary-600' : '' ?>">
-                        Cek Order
+                        🔍 Cek Order
                     </a>
                     
-                    <!-- User Menu (Optional) -->
-                    <div class="flex items-center space-x-2 pl-4 border-l border-gray-200">
-                        <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                            <span class="text-primary-600 font-semibold text-sm">A</span>
-                        </div>
-                        <span class="text-sm font-medium text-gray-700">Admin</span>
-                    </div>
+                    <!-- Admin Button -->
+                    <a href="<?= baseUrl('pages/dashboard.php') ?>" 
+                       class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg hover:from-primary-600 hover:to-primary-700 transition-all duration-200 transform hover:scale-105">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                        </svg>
+                        Admin
+                    </a>
                 </div>
                 
                 <!-- Mobile Menu Button -->
@@ -79,22 +69,27 @@ if (!isset($pageTitle)) {
         <!-- Mobile Navigation Menu -->
         <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200">
             <div class="px-4 py-3 space-y-2">
-                <a href="<?= baseUrl('pages/dashboard.php') ?>" 
-                   class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 <?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'bg-primary-50 text-primary-600' : '' ?>">
-                    Dashboard
-                </a>
-                <a href="<?= baseUrl('pages/customers.php') ?>" 
-                   class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 <?= (basename($_SERVER['PHP_SELF']) == 'customers.php') ? 'bg-primary-50 text-primary-600' : '' ?>">
-                    Pelanggan
-                </a>
-                <a href="<?= baseUrl('pages/transactions.php') ?>" 
-                   class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 <?= (basename($_SERVER['PHP_SELF']) == 'transactions.php') ? 'bg-primary-50 text-primary-600' : '' ?>">
-                    Transaksi
-                </a>
                 <a href="<?= baseUrl('pages/check-order.php') ?>" 
                    class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 <?= (basename($_SERVER['PHP_SELF']) == 'check-order.php') ? 'bg-primary-50 text-primary-600' : '' ?>">
-                    Cek Order
+                    🔍 Cek Order
                 </a>
+                
+                <!-- Admin Section in Mobile -->
+                <div class="pt-2 border-t border-gray-200">
+                    <p class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase">Admin Area</p>
+                    <a href="<?= baseUrl('pages/dashboard.php') ?>" 
+                       class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 <?= (basename($_SERVER['PHP_SELF']) == 'dashboard.php') ? 'bg-primary-50 text-primary-600' : '' ?>">
+                        📊 Dashboard
+                    </a>
+                    <a href="<?= baseUrl('pages/customers.php') ?>" 
+                       class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 <?= (basename($_SERVER['PHP_SELF']) == 'customers.php') ? 'bg-primary-50 text-primary-600' : '' ?>">
+                        👥 Pelanggan
+                    </a>
+                    <a href="<?= baseUrl('pages/transactions.php') ?>" 
+                       class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 <?= (basename($_SERVER['PHP_SELF']) == 'transactions.php') ? 'bg-primary-50 text-primary-600' : '' ?>">
+                        💳 Transaksi
+                    </a>
+                </div>
             </div>
         </div>
     </nav>

@@ -237,10 +237,16 @@ npm run build
 
 Setelah aplikasi berjalan, Anda bisa akses:
 
-1. **Dashboard:** `http://localhost:8000/` atau `http://localhost:8000/pages/dashboard.php`
-2. **Pelanggan:** `http://localhost:8000/pages/customers.php`
-3. **Transaksi:** `http://localhost:8000/pages/transactions.php`
-4. **Cek Order:** `http://localhost:8000/pages/check-order.php`
+### 🌐 **Public Page** (Akses Langsung)
+- **Landing Page:** `http://localhost:8000/` → Otomatis redirect ke Cek Order
+- **Cek Order:** `http://localhost:8000/pages/check-order.php` - Customer bisa cek status pesanan dengan nomor HP
+
+### 🔐 **Admin Pages** (Klik button "Admin" di navbar)
+1. **Dashboard:** `http://localhost:8000/pages/dashboard.php` - Statistik & overview
+2. **Pelanggan:** `http://localhost:8000/pages/customers.php` - Manajemen data pelanggan
+3. **Transaksi:** `http://localhost:8000/pages/transactions.php` - Manajemen transaksi laundry
+
+> **Note:** Saat ini belum ada authentication. Semua halaman bisa diakses langsung via URL. Authentication dengan Google OAuth akan ditambahkan di update berikutnya.
 
 ---
 
