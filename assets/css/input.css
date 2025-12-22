@@ -7,7 +7,7 @@
   body {
     @apply antialiased;
   }
-  
+
   html {
     scroll-behavior: smooth;
   }
@@ -15,76 +15,77 @@
 
 /* Custom Components */
 @layer components {
+
   /* Buttons */
   .btn-primary {
     @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5;
   }
-  
+
   .btn-secondary {
     @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2.5 px-6 rounded-lg transition-all duration-200;
   }
-  
+
   .btn-success {
     @apply bg-secondary-600 hover:bg-secondary-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200;
   }
-  
+
   .btn-danger {
     @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200;
   }
-  
+
   /* Cards */
   .card {
     @apply bg-white rounded-2xl shadow-lg p-6 transition-all duration-200 hover:shadow-xl;
   }
-  
+
   .card-gradient {
     @apply bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl p-6 text-white shadow-xl;
   }
-  
+
   /* Form Elements */
   .form-input {
     @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200;
   }
-  
+
   .form-label {
     @apply block text-sm font-medium text-gray-700 mb-2;
   }
-  
+
   /* Status Badges */
   .badge {
     @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
   }
-  
+
   /* Modal */
   .modal-overlay {
     @apply fixed inset-0 bg-black bg-opacity-50 z-40 backdrop-blur-sm;
   }
-  
+
   .modal-content {
     @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl z-50 w-full max-w-md p-6;
   }
-  
+
   /* Table */
   .table-wrapper {
     @apply overflow-x-auto rounded-lg border border-gray-200;
   }
-  
+
   .table {
     @apply w-full text-sm text-left;
   }
-  
+
   .table thead {
     @apply bg-gray-50 text-gray-700 uppercase text-xs font-semibold;
   }
-  
+
   .table th {
     @apply px-6 py-4;
   }
-  
+
   .table td {
     @apply px-6 py-4 border-b border-gray-200;
   }
-  
+
   .table tbody tr {
     @apply hover:bg-gray-50 transition-colors duration-150;
   }
@@ -95,7 +96,7 @@
   .gradient-text {
     @apply bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent;
   }
-  
+
   .glass-effect {
     @apply bg-white bg-opacity-10 backdrop-blur-lg border border-white border-opacity-20;
   }
@@ -106,16 +107,39 @@
   .no-print {
     display: none !important;
   }
-  
+
   .print-full-width {
     width: 100% !important;
   }
-  
+
   body {
     @apply text-black bg-white;
   }
-  
-  .card, .modal-content {
+
+  .card,
+  .modal-content {
     @apply shadow-none;
+  }
+}
+
+/* =========================================
+   GENERAL MOBILE RESPONSIVE UTILITIES
+   ========================================= */
+@media (max-width: 640px) {
+
+  /* Make tables scrollable on mobile */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Adjust card padding on small screens */
+  .card {
+    @apply p-4;
+  }
+
+  /* Modal adjustments for mobile */
+  .modal-content {
+    @apply w-[95vw] max-h-[90vh] overflow-y-auto;
   }
 }

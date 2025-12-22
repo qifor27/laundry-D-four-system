@@ -2,12 +2,7 @@
         </div>
     </div>
     
-    <!-- Mobile Menu Toggle Script -->
-    <script>
-        // Mobile menu toggle (if needed in future)
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Admin panel loaded');
-        });
-    </script>
+    <!-- JavaScript -->
+    <script src="<?= baseUrl('assets/js/main.js') ?>"></script>
 </body>
 </html>
