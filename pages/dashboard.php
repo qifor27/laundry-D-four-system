@@ -47,15 +47,11 @@ $recentTransactions = $db->query("
     LIMIT 10
 ")->fetchAll();
 
-include __DIR__ . '/../includes/header.php';
+include __DIR__ . '/../includes/header-admin.php';
 ?>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Page Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p class="text-gray-600 mt-2">Selamat datang di D'four Laundry Management System</p>
-    </div>
+<!-- Dashboard Content -->
+<div>
     
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -177,4 +173,4 @@ include __DIR__ . '/../includes/header.php';
     </div>
 </div>
 
-<?php include __DIR__ . '/../includes/footer.php'; ?>
+<?php include __DIR__ . '/../includes/footer-admin.php'; ?>

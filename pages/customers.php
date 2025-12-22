@@ -62,17 +62,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Get all customers
 $customers = $db->query("SELECT * FROM customers ORDER BY created_at DESC")->fetchAll();
 
-include __DIR__ . '/../includes/header.php';
+include __DIR__ . '/../includes/header-admin.php';
 ?>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Page Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-900">Data Pelanggan</h1>
-            <p class="text-gray-600 mt-2">Kelola data pelanggan laundry Anda</p>
-        </div>
-        <button onclick="openModal('add-customer-modal')" class="btn-primary mt-4 sm:mt-0">
+<!-- Customers Content -->
+<div>
+    <!-- Add Customer Button -->
+    <div class="mb-6 flex justify-end">
+        <button onclick="openModal('add-customer-modal')" class="btn-primary">
             <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
@@ -238,4 +235,4 @@ function deleteCustomer(id) {
 }
 </script>
 
-<?php include __DIR__ . '/../includes/footer.php'; ?>
+<?php include __DIR__ . '/../includes/footer-admin.php'; ?>
