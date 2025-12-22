@@ -121,6 +121,295 @@
 
 ### 🔴 Priority: HIGH (Harus Segera)
 
+#### Authentication & Login System
+
+- [ ] **Google OAuth 2.0 Login - Setup & Configuration**
+  - [ ] Setup Google Cloud Console project
+  - [ ] Enable Google+ API
+  - [ ] Create OAuth 2.0 credentials (Client ID & Secret)
+  - [ ] Add authorized redirect URIs (e.g., `http://localhost:8000/api/google-callback.php`)
+  - [ ] Save credentials securely
+
+---
+
+##### 🎨 **FRONTEND Tasks** (HTML, Tailwind CSS, JavaScript)
+
+- [ ] **Login Page UI** (`pages/login.php`)
+  - [ ] Create modern login page layout dengan Tailwind CSS
+  - [ ] Add logo dan branding
+  - [ ] Create responsive container (mobile-first)
+  - [ ] Add smooth fade-in animations
+  - [ ] Implement glassmorphism atau modern card design
+  
+- [ ] **Google Sign-In Button**
+  - [ ] Add Google Sign-In button dengan official styling
+  - [ ] Use Google's brand guidelines untuk button design
+  - [ ] Add hover effects dan transitions
+  - [ ] Add loading spinner saat authentication process
+  - [ ] Implement button disabled state
+  
+- [ ] **Google Sign-In JavaScript** (`assets/js/google-auth.js`)
+  - [ ] Load Google Sign-In JavaScript library
+    ```html
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    ```
+  - [ ] Initialize Google Sign-In dengan Client ID
+    ```javascript
+    google.accounts.id.initialize({
+      client_id: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
+      callback: handleCredentialResponse
+    });
+    ```
+  - [ ] Render Google Sign-In button
+  - [ ] Handle credential response dari Google
+  - [ ] Send JWT token ke backend via AJAX
+  - [ ] Handle success response (redirect to dashboard)
+  - [ ] Handle error response (show error message)
+  
+- [ ] **UI Feedback & States**
+  - [ ] Show loading overlay saat authentication
+  - [ ] Display success message sebelum redirect
+  - [ ] Show error messages dengan styling yang jelas
+  - [ ] Add toast notifications untuk feedback
+  - [ ] Implement smooth page transitions
+
+---
+
+##### ⚙️ **BACKEND Tasks** (PHP, MySQL)
+
+- [ ] **Database Schema** (`database/init_mysql.php`)
+  - [ ] Create `users` table
+    ```sql
+    CREATE TABLE users (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      google_id VARCHAR(255) UNIQUE,
+      email VARCHAR(255) UNIQUE NOT NULL,
+      name VARCHAR(255) NOT NULL,
+      profile_picture TEXT,
+      role ENUM('admin', 'cashier', 'user') DEFAULT 'user',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      last_login TIMESTAMP NULL,
+      INDEX idx_google_id (google_id),
+      INDEX idx_email (email)
+    );
+    ```
+  - [ ] Run migration untuk create table
+  
+- [ ] **Google OAuth Config** (`config/google-oauth.php`)
+  - [ ] Install Google API PHP Client
+    ```bash
+    composer require google/apiclient:"^2.0"
+    ```
+  - [ ] Create configuration file dengan Client ID & Secret
+  - [ ] Setup redirect URI
+  - [ ] Add helper functions untuk OAuth flow
+  
+- [ ] **Authentication API** (`api/google-auth.php`)
+  - [ ] Receive JWT token dari frontend
+  - [ ] Verify token dengan Google API
+    ```php
+    $client = new Google_Client(['client_id' => CLIENT_ID]);
+    $payload = $client->verifyIdToken($token);
+    ```
+  - [ ] Extract user info (google_id, email, name, picture)
+  - [ ] Check if user exists di database
+  - [ ] If new user: Insert ke `users` table
+  - [ ] If existing user: Update `last_login`
+  - [ ] Create PHP session
+  - [ ] Store user data di session
+    ```php
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['user_email'] = $user['email'];
+    $_SESSION['user_name'] = $user['name'];
+    ```
+  - [ ] Return JSON response (success/error)
+  
+- [ ] **Session Management** (`includes/auth.php`)
+  - [ ] Create helper function `isLoggedIn()`
+  - [ ] Create helper function `requireLogin()`
+  - [ ] Create helper function `getUserData()`
+  - [ ] Implement session security
+    - [ ] Session regeneration after login
+    - [ ] Secure session configuration
+    - [ ] HttpOnly cookies
+    - [ ] Session timeout (30 minutes inactivity)
+  
+- [ ] **Logout Functionality** (`api/logout.php`)
+  - [ ] Destroy PHP session
+  - [ ] Clear session cookies
+  - [ ] Redirect to login page
+  - [ ] Return JSON response untuk AJAX logout
+  
+- [ ] **Protected Pages Middleware**
+  - [ ] Add authentication check di semua protected pages
+    ```php
+    require_once '../includes/auth.php';
+    requireLogin(); // Redirect to login if not authenticated
+    ```
+  - [ ] Protect dashboard, customers, transactions pages
+  - [ ] Allow public access untuk `check-order.php`
+
+---
+
+- [ ] **Interactive Captcha System**
+  
+  **Pilih salah satu opsi berikut:**
+  
+  **Opsi 1: Google reCAPTCHA v3** (Recommended - Invisible, score-based)
+  
+  *Frontend Tasks:*
+  - [ ] Add reCAPTCHA script ke `pages/login.php`
+    ```html
+    <script src="https://www.google.com/recaptcha/api.js?render=YOUR_SITE_KEY"></script>
+    ```
+  - [ ] Execute reCAPTCHA saat form submit
+    ```javascript
+    grecaptcha.execute('YOUR_SITE_KEY', {action: 'login'})
+      .then(token => {
+        // Send token ke backend
+      });
+    ```
+  
+  *Backend Tasks:*
+  - [ ] Setup reCAPTCHA di Google Admin Console
+  - [ ] Get Site Key dan Secret Key
+  - [ ] Verify token di `api/google-auth.php`
+    ```php
+    $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret&response=$token");
+    $responseData = json_decode($response);
+    if ($responseData->success && $responseData->score >= 0.5) {
+      // Allow login
+    }
+    ```
+  - [ ] Set threshold score (0.5 recommended)
+  - [ ] Log failed attempts
+  
+  ---
+  
+  **Opsi 2: hCaptcha** (Privacy-focused alternative)
+  
+  *Frontend Tasks:*
+  - [ ] Add hCaptcha widget ke login page
+    ```html
+    <div class="h-captcha" data-sitekey="YOUR_SITE_KEY"></div>
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    ```
+  - [ ] Get response token saat form submit
+  
+  *Backend Tasks:*
+  - [ ] Setup hCaptcha account
+  - [ ] Get Site Key dan Secret Key
+  - [ ] Verify response di backend
+    ```php
+    $verify = file_get_contents("https://hcaptcha.com/siteverify", false, stream_context_create([
+      'http' => [
+        'method' => 'POST',
+        'content' => http_build_query(['secret' => $secret, 'response' => $token])
+      ]
+    ]));
+    ```
+  
+  ---
+  
+  **Opsi 3: Custom Interactive Captcha** (Fun & Engaging! 🎮)
+  
+  *Pilih salah satu jenis:*
+  
+  **A. Slider Captcha** (Paling Populer)
+  
+  *Frontend Tasks:* (`assets/js/slider-captcha.js`)
+  - [ ] Create slider UI dengan Tailwind CSS
+    ```html
+    <div class="slider-captcha">
+      <div class="slider-track"></div>
+      <div class="slider-thumb">Slide to verify →</div>
+    </div>
+    ```
+  - [ ] Implement drag functionality (mouse & touch)
+  - [ ] Add smooth animations saat slide
+  - [ ] Generate random target position
+  - [ ] Validate slider position (tolerance ±5px)
+  - [ ] Show success animation (checkmark, confetti)
+  - [ ] Reset slider on failure
+  
+  *Backend Tasks:* (`api/captcha-verify.php`)
+  - [ ] Generate random challenge value
+  - [ ] Store challenge di session
+  - [ ] Verify slider position dari frontend
+  - [ ] Rate limiting (max 5 attempts per minute)
+  - [ ] Return success/failure response
+  
+  ---
+  
+  **B. Math Captcha** (Simple & Effective)
+  
+  *Frontend Tasks:*
+  - [ ] Generate random math question (e.g., "5 + 3 = ?")
+  - [ ] Display dengan animasi yang menarik
+  - [ ] Create input field untuk answer
+  - [ ] Validate answer di client-side (basic check)
+  - [ ] Add countdown timer (30 seconds)
+  
+  *Backend Tasks:*
+  - [ ] Generate math question di backend
+  - [ ] Store correct answer di session
+  - [ ] Verify user's answer
+  - [ ] Regenerate question after 3 failed attempts
+  
+  ---
+  
+  **C. Puzzle Captcha** (Most Interactive)
+  
+  *Frontend Tasks:*
+  - [ ] Create puzzle pieces dengan Canvas API
+  - [ ] Implement drag & drop functionality
+  - [ ] Add snap-to-grid effect
+  - [ ] Validate puzzle completion
+  - [ ] Add visual feedback (glow effect saat correct)
+  
+  *Backend Tasks:*
+  - [ ] Generate puzzle configuration
+  - [ ] Store solution di session
+  - [ ] Verify puzzle completion
+  
+  ---
+  
+  **D. Drawing Captcha** (Creative)
+  
+  *Frontend Tasks:*
+  - [ ] Create canvas untuk drawing
+  - [ ] Implement touch/mouse drawing
+  - [ ] Detect shape (circle, line, etc.) dengan algorithm
+  - [ ] Show instruction ("Draw a circle")
+  - [ ] Visual feedback saat correct
+  
+  *Backend Tasks:*
+  - [ ] Generate random shape challenge
+  - [ ] Receive canvas data dari frontend
+  - [ ] Verify shape (simple pattern matching)
+  
+  ---
+  
+  **General Implementation (untuk Custom Captcha):**
+  
+  *Frontend:* (`assets/js/captcha.js`)
+  - [ ] Create captcha component yang reusable
+  - [ ] Add smooth animations dengan Tailwind transitions
+  - [ ] Make mobile-friendly (touch gestures)
+  - [ ] Add accessibility features (keyboard navigation)
+  - [ ] Implement retry mechanism
+  - [ ] Show attempt counter
+  
+  *Backend:* (`api/captcha-verify.php`)
+  - [ ] Create captcha verification endpoint
+  - [ ] Store captcha state di session
+  - [ ] Rate limiting (max attempts per IP/session)
+  - [ ] Log failed attempts untuk security
+  - [ ] Clear captcha after successful verification
+  - [ ] Return JSON response
+
+
+
 #### Security & Validation
 - [ ] **Input Validation**
   - Server-side validation untuk semua forms
@@ -352,9 +641,9 @@ Ini adalah tasks yang mudah dilakukan tapi berdampak besar:
 ## 📝 NOTES
 
 **Sebelum Mulai Development:**
-1. ✅ Baca `learning_by_doing.md` untuk understand struktur projek
+1. ✅ Baca `docs/learning_by_doing.md` untuk understand struktur projek & teknologi
 2. ✅ Setup development environment (PHP server + Tailwind watch)
-3. ✅ Initialize database (`php database/init.php`)
+3. ✅ Initialize database (`php database/init_mysql.php`)
 4. ✅ Test aplikasi di browser
 
 **Development Workflow:**
@@ -370,7 +659,13 @@ Ini adalah tasks yang mudah dilakukan tapi berdampak besar:
 - Commit code frequently dengan clear messages
 - Ask for help jika stuck!
 
+**New Features Coming:**
+- 🔐 Google OAuth Login - Modern authentication
+- 🎮 Interactive Captcha - Fun & engaging security
+- 🎨 Beautiful Login Page - Premium design
+
 ---
 
-*Last Updated: 2025-12-11*
+*Last Updated: 2025-12-22*
 *Prioritas bisa berubah sesuai kebutuhan bisnis*
+*Check `docs/learning_by_doing.md` untuk panduan lengkap!*

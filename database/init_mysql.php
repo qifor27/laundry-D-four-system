@@ -10,7 +10,7 @@ try {
     $db = Database::getInstance()->getConnection();
     
     echo "🚀 Starting MySQL database initialization...\n\n";
-    
+        
     // Create customers table
     $db->exec("
         CREATE TABLE IF NOT EXISTS customers (

@@ -1,8 +1,6 @@
 <?php
-/**
- * Transactions API
- * Handle AJAX requests untuk transaksi
- */
+
+
 
 require_once __DIR__ . '/../config/database_mysql.php';
 require_once __DIR__ . '/../includes/functions.php';
