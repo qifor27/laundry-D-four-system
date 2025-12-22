@@ -47,13 +47,10 @@ if (!isset($pageTitle)) {
                         🔍 Cek Order
                     </a>
                     
-                    <!-- Admin Button -->
+                    <!-- Admin Link -->
                     <a href="<?= baseUrl('pages/dashboard.php') ?>" 
-                       class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg hover:from-primary-600 hover:to-primary-700 transition-all duration-200 transform hover:scale-105">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-                        </svg>
-                        Admin
+                       class="nav-link text-gray-700 hover:text-primary-600 font-medium transition-colors duration-200 <?= (in_array(basename($_SERVER['PHP_SELF']), ['dashboard.php', 'customers.php', 'transactions.php'])) ? 'text-primary-600' : '' ?>">
+                        ⚙️ Admin
                     </a>
                 </div>
                 
