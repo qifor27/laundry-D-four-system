@@ -32,16 +32,16 @@ if (!isset($pageTitle)) {
         <div class="flex-1 flex flex-col overflow-hidden">
             <!-- Top Bar -->
             <header class="bg-white shadow-sm z-10 no-print">
-                <div class="px-4 sm:px-6 lg:px-8 py-4">
+                <div class="px-6 sm:px-8 lg:px-10 py-6">
                     <div class="flex items-center justify-between">
                         <!-- Page Title -->
                         <div>
                             <h1 class="text-2xl font-bold text-gray-900"><?= $pageTitle ?></h1>
-                            <p class="text-sm text-gray-500 mt-1">Kelola data laundry Anda</p>
+                            <p class="text-sm text-gray-500 mt-2">Kelola data laundry Anda</p>
                         </div>
                         
                         <!-- User Info & Actions -->
-                        <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-6">
                             <!-- Back to Public Site -->
                             <a href="<?= baseUrl('pages/check-order.php') ?>" 
                                class="text-sm text-gray-600 hover:text-primary-600 transition-colors duration-200">
@@ -52,7 +52,7 @@ if (!isset($pageTitle)) {
                             </a>
                             
                             <!-- User Avatar -->
-                            <div class="flex items-center space-x-2">
+                            <div class="flex items-center space-x-3">
                                 <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
                                     <span class="text-primary-600 font-semibold text-sm">A</span>
                                 </div>
@@ -67,4 +67,4 @@ if (!isset($pageTitle)) {
             </header>
             
             <!-- Main Content -->
-            <main class="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 lg:p-8">
+            <main class="flex-1 overflow-y-auto bg-gray-50 p-6 sm:p-8 lg:p-10">
