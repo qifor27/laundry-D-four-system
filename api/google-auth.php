@@ -124,7 +124,7 @@ try {
     echo json_encode([
         'success' => true,
         'needs_phone' => true,
-        'redirect' => getBaseUrl(). '/pages/complete-profile.php'
+        'redirect' => getBaseUrl(). '/pages/auth/complete-profile.php'
     ]);
     exit;
 }
