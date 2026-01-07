@@ -79,7 +79,7 @@ php database/init_mysql.php
 🚀 Starting MySQL database initialization...
 
 ✅ Table 'customers' created
-✅ Table 'service_types' created
+✅ Table 'service_types' created 
 ✅ Table 'transactions' created
 
 📦 Inserting default service types...
