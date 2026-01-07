@@ -2,6 +2,8 @@
 
 Panduan lengkap untuk memahami struktur project dan teknologi yang digunakan.
 
+**Last Updated: 2026-01-07**
+
 ---
 
 ## 🎯 Tujuan Dokumen
@@ -10,7 +12,7 @@ Dokumen ini dibuat untuk membantu Anda memahami:
 1. **Struktur folder dan file** dalam project ini
 2. **Fungsi masing-masing komponen**
 3. **Kaitan dengan teknologi**: Tailwind CSS, PHP Native, JavaScript, dan MySQL
-4. **Best practices** yang diterapkan
+4. **Fitur-fitur yang sudah diimplementasikan**
 
 ---
 
@@ -18,97 +20,219 @@ Dokumen ini dibuat untuk membantu Anda memahami:
 
 ```
 laundry-D-four/
-├── 📂 api/                    # API endpoints untuk AJAX requests
-├── 📂 assets/                 # Static files (CSS, JS, images)
-├── 📂 config/                 # Konfigurasi database
-├── 📂 database/               # Database schema & initialization
-├── 📂 docs/                   # Dokumentasi project
+├── 📂 api/                    # API endpoints
+│   ├── 📂 auth/               # Authentication APIs
+│   │   ├── login.php          # Login API
+│   │   ├── register.php       # Registration API
+│   │   ├── forgot-password.php
+│   │   └── reset-password.php
+│   ├── customers-api.php      # Customer CRUD API
+│   ├── transactions-api.php   # Transaction CRUD API
+│   ├── google-auth.php        # Google OAuth handler
+│   └── logout.php             # Logout API
+│
+├── 📂 assets/                 # Static files
+│   ├── 📂 css/
+│   │   ├── input.css          # Tailwind source
+│   │   └── style.css          # Compiled CSS
+│   ├── 📂 js/
+│   │   └── main.js            # Custom JavaScript
+│   └── 📂 images/
+│       └── bubbles/           # Bubble decorations
+│
+├── 📂 config/                 # Configuration
+│   ├── database_mysql.php     # MySQL connection (Singleton)
+│   ├── google-oauth.php       # Google OAuth config
+│   └── email.php              # SMTP email config
+│
+├── 📂 database/               # Database scripts
+│   ├── init_mysql.php         # Initialize tables
+│   ├── migrate_auth.php       # Auth tables migration
+│   ├── migrate_customer_user.php # Customer-User integration
+│   └── create_admin.php       # Create admin account
+│
+├── 📂 docs/                   # Documentation
+│   ├── to-do.md               # Development TODO
+│   ├── registration-flow.md   # Customer registration flow
+│   ├── GITTutor.md            # Git tutorial
+│   └── learning_by_doing.md   # This file!
+│
 ├── 📂 includes/               # Reusable PHP components
-├── 📂 pages/                  # Halaman-halaman aplikasi
-├── 📂 node_modules/           # Dependencies dari npm
-├── 📄 index.php               # Entry point aplikasi
+│   ├── auth.php               # Authentication helpers
+│   ├── email.php              # Email sending functions
+│   ├── functions.php          # Helper functions
+│   ├── header.php             # Page header
+│   ├── header-admin.php       # Admin header with sidebar
+│   └── footer.php             # Page footer
+│
+├── 📂 pages/                  # Application pages
+│   ├── 📂 auth/               # Authentication pages
+│   │   ├── login.php          # Customer login
+│   │   ├── register.php       # Customer registration
+│   │   ├── admin-login.php    # Admin login
+│   │   ├── forgot-password.php
+│   │   ├── reset-password.php
+│   │   └── verify-email.php
+│   ├── dashboard.php          # Admin dashboard
+│   ├── customer-dashboard.php # Customer dashboard
+│   ├── customers.php          # Customer management
+│   ├── transactions.php       # Transaction management
+│   └── check-order.php        # Public order checking
+│
+├── 📄 index.php               # Landing page
 ├── 📄 package.json            # npm configuration
-├── 📄 tailwind.config.js      # Tailwind CSS configuration
-├── 📄 start-server.bat        # Quick start script
+├── 📄 tailwind.config.js      # Tailwind configuration
 └── 📄 .gitignore              # Git ignore rules
 ```
 
 ---
 
-## 📂 Penjelasan Detail Setiap Folder
+## 🔐 Authentication System
 
-### 1. 📂 `api/` - API Endpoints
+### Teknologi yang Digunakan
 
-**Fungsi**: Menyediakan REST API endpoints untuk operasi CRUD via AJAX.
+| Komponen | Teknologi |
+|----------|-----------|
+| Session Management | PHP Sessions |
+| Password Hashing | `password_hash()` / `password_verify()` |
+| Google OAuth | Google Sign-In JavaScript + JWT verification |
+| Email Verification | PHPMailer (SMTP) |
 
-**File yang ada**:
-- `customers-api.php` - API untuk manajemen pelanggan
-- `transactions-api.php` - API untuk manajemen transaksi
+### File-File Terkait
 
-**Teknologi yang digunakan**:
-- ✅ **PHP Native**: Memproses request (GET, POST, PUT, DELETE)
-- ✅ **MySQL**: Query database menggunakan PDO
-- ✅ **JSON**: Response format untuk komunikasi dengan frontend
-
-**Contoh Flow**:
-```
-JavaScript (AJAX) → api/customers-api.php → Database (MySQL) → JSON Response → JavaScript (Update UI)
-```
-
-**Kaitan dengan JavaScript**:
-```javascript
-// Contoh AJAX call dari frontend
-fetch('/api/customers-api.php?action=getAll')
-  .then(response => response.json())
-  .then(data => {
-    // Update UI dengan data dari API
-  });
+#### `includes/auth.php`
+Helper functions untuk authentication:
+```php
+isLoggedIn()        // Check if user logged in
+requireLogin()      // Redirect to login if not authenticated
+getUserData()       // Get current user data from session
+loginUser($data)    // Create user session
+logoutUser()        // Destroy session
+hasRole($roles)     // Check user role
+getBaseUrl()        // Get application base URL
 ```
 
-**Best Practices yang diterapkan**:
-- ✅ RESTful API design
-- ✅ JSON response format yang konsisten
-- ✅ Error handling yang proper
-- ✅ HTTP status codes yang sesuai
+#### `api/auth/login.php`
+API endpoint untuk login:
+- Menerima: `{ email, password }`
+- Validasi password dengan `password_verify()`
+- Membuat session jika berhasil
+- Return: `{ success, user, redirect }`
+
+#### `api/auth/register.php`
+API endpoint untuk registrasi:
+- Menerima: `{ name, email, phone, password }`
+- Hash password dengan `password_hash()`
+- **Auto-link ke customer** berdasarkan phone number
+- Return: `{ success, message }`
+
+#### `api/google-auth.php`
+Handler untuk Google OAuth:
+- Menerima JWT token dari Google Sign-In
+- Verifikasi token dengan Google API
+- Create/update user di database
+- **Check if user has phone** → redirect ke complete-profile jika belum
 
 ---
 
-### 2. 📂 `assets/` - Static Files
+## 👤 Customer-User Integration
 
-**Struktur**:
+### Konsep
+Sistem menghubungkan data **Customer** (pelanggan laundry) dengan **User** (akun login) berdasarkan **nomor telepon**.
+
+### Database Schema
+
+```sql
+-- Tabel users (akun login)
+CREATE TABLE users (
+    id INT PRIMARY KEY,
+    email VARCHAR(255) UNIQUE,
+    name VARCHAR(255),
+    phone VARCHAR(20) UNIQUE,      -- Untuk linking
+    password_hash VARCHAR(255),
+    google_id VARCHAR(255),
+    role ENUM('superadmin','admin','cashier','user'),
+    login_method VARCHAR(20),
+    is_active BOOLEAN,
+    email_verified_at TIMESTAMP
+);
+
+-- Tabel customers (data pelanggan)
+CREATE TABLE customers (
+    id INT PRIMARY KEY,
+    user_id INT,                   -- FK ke users (linking)
+    name VARCHAR(255),
+    phone VARCHAR(20),             -- Untuk matching
+    address TEXT,
+    registered_at TIMESTAMP,       -- Kapan user ter-link
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
 ```
-assets/
-├── css/
-│   ├── input.css      # Tailwind directives & custom CSS
-│   └── style.css      # Compiled CSS (generated by Tailwind)
-└── js/
-    └── main.js        # Custom JavaScript
+
+### Alur Integrasi
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  USER REGISTER DENGAN PHONE: 081234567890                   │
+└────────────────────────┬────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────┐
+│  INSERT ke tabel USERS dengan phone tersebut                │
+└────────────────────────┬────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────────┐
+│  CEK: Apakah phone ada di tabel CUSTOMERS?                  │
+│                                                             │
+│  ✅ ADA → UPDATE customers SET user_id = [new_user_id]      │
+│  ❌ TIDAK → INSERT customer baru dengan user_id             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-#### 📄 `assets/css/input.css`
+### File-File Terkait
 
-**Fungsi**: Source file untuk Tailwind CSS compilation.
+- `api/auth/register.php` - Logic auto-link saat registrasi
+- `api/customers-api.php` - Include `is_registered` status
+- `pages/customers.php` - Tampilkan badge "Terdaftar/Belum Daftar"
+- `database/migrate_customer_user.php` - Migration script
 
-**Isi**:
-```css
-@tailwind base;      /* Reset CSS & base styles */
-@tailwind components; /* Tailwind component classes */
-@tailwind utilities;  /* Utility classes */
+---
 
-/* Custom CSS di sini */
+## 🎨 Tailwind CSS Setup
+
+### Konfigurasi (`tailwind.config.js`)
+
+```javascript
+module.exports = {
+  content: [
+    "./**/*.php",           // Scan semua file PHP
+    "./assets/js/**/*.js"   // Scan file JavaScript
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          50: '#faf5ff',
+          500: '#9333ea',
+          600: '#7e22ce',
+          // ...
+        },
+        secondary: {
+          500: '#22c55e',
+          // ...
+        }
+      },
+      fontFamily: {
+        'outfit': ['Outfit', 'sans-serif']
+      }
+    }
+  }
+}
 ```
 
-**Kaitan dengan Tailwind CSS**:
-- File ini adalah **input** untuk Tailwind compiler
-- Berisi **directives** Tailwind (@tailwind)
-- Tempat untuk menambahkan **custom CSS** jika diperlukan
+### Commands
 
-**Proses Compilation**:
-```
-input.css → Tailwind CLI → style.css (output)
-```
-
-**Command**:
 ```bash
 # Development (watch mode)
 npm run dev
@@ -117,1036 +241,159 @@ npm run dev
 npm run build
 ```
 
-#### 📄 `assets/css/style.css`
-
-**Fungsi**: File CSS yang sudah di-compile dan siap digunakan.
-
-**Karakteristik**:
-- ✅ Auto-generated (jangan edit manual!)
-- ✅ Berisi semua utility classes yang digunakan di HTML
-- ✅ Di-minify saat production build
-- ✅ File ini yang di-load di `<head>` HTML
-
-#### 📄 `assets/js/main.js`
-
-**Fungsi**: Custom JavaScript untuk interaktivitas aplikasi.
-
-**Teknologi**:
-- ✅ **Vanilla JavaScript** (ES6+)
-- ✅ **Fetch API** untuk AJAX requests
-- ✅ **DOM Manipulation** untuk update UI
-
-**Contoh Use Cases**:
-- Form submissions via AJAX
-- Dynamic table updates
-- Modal interactions
-- Client-side validation
-- Toast notifications
-
----
-
-### 3. 📂 `config/` - Configuration Files
-
-**File yang ada**:
-- `database.php` - Konfigurasi SQLite (legacy)
-- `database_mysql.php` - Konfigurasi MySQL (current)
-
-#### 📄 `config/database_mysql.php`
-
-**Fungsi**: Database connection menggunakan **Singleton Pattern**.
-
-**Teknologi PHP yang digunakan**:
-- ✅ **PDO (PHP Data Objects)**: Database abstraction layer
-- ✅ **Singleton Pattern**: Satu instance connection untuk efisiensi
-- ✅ **Exception Handling**: Error handling yang proper
-
-**Struktur Class**:
-```php
-class Database {
-    private static $instance = null;  // Singleton
-    private $conn;                     // PDO connection
-    
-    // Konfigurasi
-    private $host = "localhost";
-    private $db_name = "laundry_dfour";
-    private $username = "root";
-    private $password = "";
-    
-    // Methods
-    public static function getInstance()  // Get instance
-    public function getConnection()       // Get PDO object
-    public function getConfig()           // Get config info
-}
-```
-
-**Cara Penggunaan**:
-```php
-// Di file lain
-require_once 'config/database_mysql.php';
-
-$db = Database::getInstance()->getConnection();
-$stmt = $db->prepare("SELECT * FROM customers");
-$stmt->execute();
-$customers = $stmt->fetchAll();
-```
-
-**Keuntungan Singleton Pattern**:
-- ✅ Hanya satu koneksi database (efisien)
-- ✅ Reusable di semua file
-- ✅ Mudah di-maintain
-
----
-
-### 4. 📂 `database/` - Database Schema & Initialization
-
-**File yang ada**:
-- `init.php` - Inisialisasi SQLite (legacy)
-- `init_mysql.php` - Inisialisasi MySQL (current)
-- `create_database.sql` - SQL script untuk create database
-- `create_database.php` - PHP script untuk create database
-- `migrate_data.php` - Migrasi data dari SQLite ke MySQL
-- `laundry.db` - SQLite database file (legacy)
-
-#### 📄 `database/init_mysql.php`
-
-**Fungsi**: Membuat tabel dan insert data default.
-
-**Teknologi**:
-- ✅ **MySQL**: Database engine
-- ✅ **PDO**: Untuk execute SQL queries
-- ✅ **Transactions**: Untuk data integrity
-
-**Tabel yang dibuat**:
-
-1. **customers** - Data pelanggan
-```sql
-CREATE TABLE customers (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    phone VARCHAR(20) UNIQUE NOT NULL,
-    address TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_phone (phone)
-);
-```
-
-2. **service_types** - Jenis layanan laundry
-```sql
-CREATE TABLE service_types (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
-    unit VARCHAR(10) NOT NULL,  -- 'kg' atau 'pcs'
-    price_per_unit DECIMAL(10,2) NOT NULL,
-    description TEXT,
-    is_active TINYINT(1) DEFAULT 1,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-3. **transactions** - Transaksi laundry
-```sql
-CREATE TABLE transactions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    customer_id INT NOT NULL,
-    service_type VARCHAR(255) NOT NULL,
-    weight DECIMAL(10,2) DEFAULT 0,
-    quantity INT DEFAULT 1,
-    price DECIMAL(10,2) NOT NULL,
-    status ENUM('pending', 'processing', 'ready', 'completed', 'cancelled'),
-    notes TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
-);
-```
-
-**Best Practices Database**:
-- ✅ **Indexes** untuk kolom yang sering di-query (phone, status, dll)
-- ✅ **Foreign Keys** untuk data integrity
-- ✅ **ENUM** untuk status (membatasi nilai yang valid)
-- ✅ **Timestamps** untuk tracking (created_at, updated_at)
-- ✅ **ON DELETE CASCADE** untuk auto-delete related records
-
----
-
-### 5. 📂 `docs/` - Documentation
-
-**File yang ada**:
-- `GITTutor.md` - Tutorial Git & GitHub
-- `to-do.md` - Development TODO list
-- `learning_by_doing.md` - Dokumen ini!
-
-**Fungsi**: Menyimpan semua dokumentasi project untuk developer.
-
----
-
-### 6. 📂 `includes/` - Reusable Components
-
-**File yang ada**:
-- `header.php` - Header & navigation
-- `footer.php` - Footer & scripts
-- `functions.php` - Helper functions
-
-#### 📄 `includes/header.php`
-
-**Fungsi**: Template header yang digunakan di semua halaman.
-
-**Teknologi**:
-- ✅ **PHP**: Dynamic content (page title, active menu)
-- ✅ **Tailwind CSS**: Styling dengan utility classes
-- ✅ **Responsive Design**: Mobile-friendly navigation
-
-**Struktur**:
-```php
-<!DOCTYPE html>
-<html>
-<head>
-    <title><?= $pageTitle ?? "D'four Laundry" ?></title>
-    <link href="/assets/css/style.css" rel="stylesheet">
-    <!-- Google Fonts, Meta tags, dll -->
-</head>
-<body>
-    <nav>
-        <!-- Navigation menu -->
-    </nav>
-```
-
-**Kaitan dengan Tailwind CSS**:
-```html
-<!-- Contoh penggunaan Tailwind utility classes -->
-<nav class="bg-white shadow-lg sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <!-- Navigation items -->
-        </div>
-    </div>
-</nav>
-```
-
-**Tailwind Classes Explained**:
-- `bg-white` - Background putih
-- `shadow-lg` - Shadow besar
-- `sticky top-0` - Sticky positioning di top
-- `z-50` - Z-index 50 (di atas elemen lain)
-- `max-w-7xl` - Max width 80rem
-- `mx-auto` - Margin horizontal auto (center)
-- `px-4 sm:px-6 lg:px-8` - Responsive padding
-
-#### 📄 `includes/footer.php`
-
-**Fungsi**: Template footer dan load JavaScript.
-
-**Struktur**:
-```php
-    <footer class="bg-gray-800 text-white mt-auto">
-        <!-- Footer content -->
-    </footer>
-    
-    <script src="/assets/js/main.js"></script>
-</body>
-</html>
-```
-
-#### 📄 `includes/functions.php`
-
-**Fungsi**: Helper functions yang reusable.
-
-**Contoh Functions**:
-```php
-// Format currency
-function formatCurrency($amount) {
-    return 'Rp ' . number_format($amount, 0, ',', '.');
-}
-
-// Format date
-function formatDate($date) {
-    return date('d M Y H:i', strtotime($date));
-}
-
-// Get status badge
-function getStatusBadge($status) {
-    $badges = [
-        'pending' => 'badge-warning',
-        'processing' => 'badge-info',
-        'ready' => 'badge-success',
-        'completed' => 'badge-secondary',
-        'cancelled' => 'badge-danger'
-    ];
-    return $badges[$status] ?? 'badge-default';
-}
-```
-
-**Teknologi PHP**:
-- ✅ **Pure Functions**: Input → Output (no side effects)
-- ✅ **Type Safety**: Parameter validation
-- ✅ **Reusability**: DRY principle (Don't Repeat Yourself)
-
----
-
-### 7. 📂 `pages/` - Application Pages
-
-**File yang ada**:
-- `dashboard.php` - Dashboard dengan statistik
-- `customers.php` - Manajemen pelanggan
-- `transactions.php` - Manajemen transaksi
-- `check-order.php` - Cek status order (public)
-
-#### 📄 `pages/dashboard.php`
-
-**Fungsi**: Halaman utama dengan statistik dan data overview.
-
-**Struktur**:
-```php
-<?php
-// 1. Include dependencies
-require_once '../config/database_mysql.php';
-require_once '../includes/functions.php';
-
-// 2. Set page title
-$pageTitle = "Dashboard - D'four Laundry";
-
-// 3. Query data dari database
-$db = Database::getInstance()->getConnection();
-
-// Statistics
-$todaySales = $db->query("...")->fetch();
-$activeJobs = $db->query("...")->fetch();
-// ... dst
-
-// 4. Include header
-include '../includes/header.php';
-?>
-
-<!-- 5. HTML Content dengan Tailwind CSS -->
-<div class="max-w-7xl mx-auto px-4 py-8">
-    <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Card 1 -->
-        <div class="card-gradient">
-            <!-- Content -->
-        </div>
-    </div>
-    
-    <!-- Recent Transactions Table -->
-    <div class="card">
-        <table class="table">
-            <!-- Table content -->
-        </table>
-    </div>
-</div>
-
-<?php include '../includes/footer.php'; ?>
-```
-
-**Teknologi yang digunakan**:
-
-1. **PHP Native**:
-   - Database queries dengan PDO
-   - Data processing
-   - Template rendering
-
-2. **Tailwind CSS**:
-   - Grid system: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4`
-   - Responsive design: `sm:`, `md:`, `lg:` breakpoints
-   - Utility classes: `bg-`, `text-`, `p-`, `m-`, dll
-   - Custom classes: `card`, `card-gradient`, `table`
-
-3. **MySQL**:
-   - Aggregate functions: `COUNT()`, `SUM()`
-   - JOINs untuk relasi antar tabel
-   - Date functions: `DATE()`, `MONTH()`, `YEAR()`
-
-**Contoh Query**:
-```php
-// Today's sales
-$todaySales = $db->query("
-    SELECT COALESCE(SUM(price), 0) as total 
-    FROM transactions 
-    WHERE DATE(created_at) = CURDATE()
-")->fetch();
-```
-
-**Tailwind Grid System**:
-```html
-<!-- Responsive grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <!-- 1 column di mobile -->
-    <!-- 2 columns di tablet (md) -->
-    <!-- 4 columns di desktop (lg) -->
-</div>
-```
-
-#### 📄 `pages/customers.php`
-
-**Fungsi**: CRUD pelanggan dengan AJAX.
-
-**Fitur**:
-- ✅ List semua pelanggan (table)
-- ✅ Add customer (modal form)
-- ✅ Edit customer (modal form)
-- ✅ Delete customer (confirmation)
-- ✅ Search customer
-
-**Teknologi**:
-
-1. **PHP**: Render initial data
-2. **JavaScript**: AJAX operations
-3. **Tailwind CSS**: Styling & responsive
-
-**Flow CRUD**:
-```
-User Action → JavaScript Event → AJAX Request → API Endpoint → Database → JSON Response → Update UI
-```
-
-**Contoh JavaScript AJAX**:
-```javascript
-// Add customer
-async function addCustomer(formData) {
-    const response = await fetch('/api/customers-api.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-    });
-    
-    const result = await response.json();
-    
-    if (result.success) {
-        // Update UI
-        showToast('Customer added successfully!');
-        refreshTable();
-    }
-}
-```
-
-#### 📄 `pages/transactions.php`
-
-**Fungsi**: Manajemen transaksi laundry.
-
-**Fitur**:
-- ✅ Create transaction
-- ✅ Update status
-- ✅ View transaction details
-- ✅ Filter by status/date
-
-**Kompleksitas**:
-- Relasi dengan `customers` table
-- Relasi dengan `service_types` table
-- Kalkulasi harga otomatis
-- Status workflow management
-
-#### 📄 `pages/check-order.php`
-
-**Fungsi**: Public page untuk customer cek status order.
-
-**Karakteristik**:
-- ✅ No authentication required
-- ✅ Search by phone number
-- ✅ Show order status & progress
-- ✅ Customer-friendly UI
-
----
-
-### 8. 📄 Root Files
-
-#### `index.php`
-
-**Fungsi**: Entry point aplikasi, redirect ke dashboard.
-
-```php
-<?php
-// Redirect to dashboard
-header('Location: /pages/dashboard.php');
-exit;
-?>
-```
-
-#### `package.json`
-
-**Fungsi**: npm configuration untuk Tailwind CSS.
-
-```json
-{
-  "scripts": {
-    "dev": "tailwindcss -i ./assets/css/input.css -o ./assets/css/style.css --watch",
-    "build": "tailwindcss -i ./assets/css/input.css -o ./assets/css/style.css --minify"
-  },
-  "devDependencies": {
-    "tailwindcss": "^3.4.0"
-  }
-}
-```
-
-**Commands**:
-- `npm run dev` - Watch mode untuk development
-- `npm run build` - Build untuk production (minified)
-
-#### `tailwind.config.js`
-
-**Fungsi**: Konfigurasi Tailwind CSS.
-
-```javascript
-module.exports = {
-  content: [
-    "./**/*.php",           // Scan semua PHP files
-    "./assets/js/**/*.js"   // Scan JavaScript files
-  ],
-  theme: {
-    extend: {
-      colors: {
-        primary: { /* custom colors */ },
-        secondary: { /* custom colors */ }
-      },
-      animation: {
-        'fade-in': 'fadeIn 0.5s ease-in-out',
-      },
-      keyframes: {
-        fadeIn: { /* animation definition */ }
-      }
-    }
-  }
-}
-```
-
-**Konfigurasi Explained**:
-- `content`: File mana yang di-scan untuk class names
-- `theme.extend.colors`: Custom color palette
-- `theme.extend.animation`: Custom animations
-- `plugins`: Tailwind plugins (kosong untuk saat ini)
-
-#### `start-server.bat`
-
-**Fungsi**: Quick start script untuk Windows.
-
-```batch
-@echo off
-echo Starting D'four Laundry Server...
-start http://localhost:8000
-php -S localhost:8000
-```
-
----
-
-## 🔗 Kaitan Antar Teknologi
-
-### 1. **PHP Native + MySQL**
-
-**Konsep**: Server-side processing & data persistence.
-
-**Flow**:
-```
-User Request → PHP Script → MySQL Query → Process Data → HTML Response
-```
-
-**Contoh**:
-```php
-// PHP mengambil data dari MySQL
-$db = Database::getInstance()->getConnection();
-$stmt = $db->query("SELECT * FROM customers");
-$customers = $stmt->fetchAll();
-
-// Loop dan render HTML
-foreach ($customers as $customer) {
-    echo "<tr>";
-    echo "<td>{$customer['name']}</td>";
-    echo "<td>{$customer['phone']}</td>";
-    echo "</tr>";
-}
-```
-
-### 2. **Tailwind CSS + HTML**
-
-**Konsep**: Utility-first CSS framework.
-
-**Keuntungan**:
-- ✅ No need to write custom CSS
-- ✅ Responsive design built-in
-- ✅ Consistent design system
-- ✅ Fast development
-
-**Contoh**:
-```html
-<!-- Traditional CSS -->
-<div class="custom-card">
-    <h2 class="card-title">Title</h2>
-</div>
-
-<!-- Tailwind CSS -->
-<div class="bg-white rounded-lg shadow-md p-6">
-    <h2 class="text-xl font-bold text-gray-900">Title</h2>
-</div>
-```
-
-**Responsive Design**:
-```html
-<!-- Mobile: 1 column, Tablet: 2 columns, Desktop: 4 columns -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-    <!-- Items -->
-</div>
-```
-
-### 3. **JavaScript + PHP API**
-
-**Konsep**: Asynchronous operations untuk better UX.
-
-**Flow**:
-```
-User Action → JavaScript Event → Fetch API → PHP API → MySQL → JSON → JavaScript → Update DOM
-```
-
-**Contoh Complete Flow**:
-
-**Frontend (JavaScript)**:
-```javascript
-// 1. User clicks "Add Customer" button
-document.getElementById('addBtn').addEventListener('click', async () => {
-    const formData = {
-        name: document.getElementById('name').value,
-        phone: document.getElementById('phone').value,
-        address: document.getElementById('address').value
-    };
-    
-    // 2. Send AJAX request
-    const response = await fetch('/api/customers-api.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-    });
-    
-    // 3. Get JSON response
-    const result = await response.json();
-    
-    // 4. Update UI
-    if (result.success) {
-        addRowToTable(result.data);
-        showToast('Customer added!');
-    }
-});
-```
-
-**Backend (PHP API)**:
-```php
-// api/customers-api.php
-
-// 1. Get request data
-$data = json_decode(file_get_contents('php://input'), true);
-
-// 2. Validate data
-if (empty($data['name']) || empty($data['phone'])) {
-    echo json_encode(['success' => false, 'message' => 'Invalid data']);
-    exit;
-}
-
-// 3. Insert to database
-$db = Database::getInstance()->getConnection();
-$stmt = $db->prepare("INSERT INTO customers (name, phone, address) VALUES (?, ?, ?)");
-$stmt->execute([$data['name'], $data['phone'], $data['address']]);
-
-// 4. Return JSON response
-echo json_encode([
-    'success' => true,
-    'message' => 'Customer added successfully',
-    'data' => [
-        'id' => $db->lastInsertId(),
-        'name' => $data['name'],
-        'phone' => $data['phone']
-    ]
-]);
-```
-
----
-
-## 🎨 Tailwind CSS Best Practices
-
-### 1. **Utility-First Approach**
-
-**Gunakan utility classes** daripada custom CSS:
-
-```html
-<!-- ✅ Good: Utility classes -->
-<button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-    Click Me
-</button>
-
-<!-- ❌ Avoid: Custom CSS -->
-<button class="custom-button">Click Me</button>
-```
-
-### 2. **Responsive Design**
-
-**Gunakan breakpoint prefixes**:
-
-```html
-<!-- Mobile first approach -->
-<div class="text-sm md:text-base lg:text-lg">
-    <!-- Small text on mobile, larger on desktop -->
-</div>
-
-<div class="p-4 md:p-6 lg:p-8">
-    <!-- More padding on larger screens -->
-</div>
-```
-
-**Breakpoints**:
-- `sm:` - 640px
-- `md:` - 768px
-- `lg:` - 1024px
-- `xl:` - 1280px
-- `2xl:` - 1536px
-
-### 3. **Custom Configuration**
-
-**Extend Tailwind** di `tailwind.config.js`:
-
-```javascript
-theme: {
-  extend: {
-    colors: {
-      'brand-blue': '#1E40AF',
-      'brand-green': '#16A34A'
-    },
-    spacing: {
-      '128': '32rem',
-      '144': '36rem'
-    }
-  }
-}
-```
-
-### 4. **Component Extraction**
-
-**Untuk komponen yang sering dipakai**, buat custom class di `input.css`:
+### Custom Components di `input.css`
 
 ```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @layer components {
-  .btn-primary {
-    @apply bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition;
+  .card {
+    @apply bg-white rounded-2xl shadow-xl p-6;
   }
   
-  .card {
-    @apply bg-white rounded-lg shadow-md p-6;
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-500 to-primary-600 
+           text-white px-6 py-3 rounded-xl font-semibold;
+  }
+  
+  .form-input {
+    @apply w-full px-4 py-3 border-2 border-gray-200 
+           rounded-xl focus:border-primary-500;
   }
 }
 ```
 
 ---
 
-## 💻 PHP Native Best Practices
+## 📡 API Structure
 
-### 1. **PDO untuk Database**
+### Response Format Standard
 
-**Gunakan Prepared Statements** untuk prevent SQL injection:
-
-```php
-// ✅ Good: Prepared statement
-$stmt = $db->prepare("SELECT * FROM customers WHERE phone = ?");
-$stmt->execute([$phone]);
-
-// ❌ Bad: Direct query (SQL injection risk!)
-$result = $db->query("SELECT * FROM customers WHERE phone = '$phone'");
-```
-
-### 2. **Error Handling**
-
-**Gunakan try-catch**:
-
-```php
-try {
-    $stmt = $db->prepare("INSERT INTO customers (name, phone) VALUES (?, ?)");
-    $stmt->execute([$name, $phone]);
-    
-    echo json_encode(['success' => true]);
-} catch (PDOException $e) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Database error: ' . $e->getMessage()
-    ]);
-}
-```
-
-### 3. **Input Validation**
-
-**Validate & sanitize input**:
-
-```php
-// Validate required fields
-if (empty($data['name']) || empty($data['phone'])) {
-    throw new Exception('Name and phone are required');
-}
-
-// Sanitize input
-$name = htmlspecialchars(trim($data['name']));
-$phone = preg_replace('/[^0-9+]/', '', $data['phone']);
-
-// Validate format
-if (!preg_match('/^[0-9+]{10,15}$/', $phone)) {
-    throw new Exception('Invalid phone format');
-}
-```
-
-### 4. **Separation of Concerns**
-
-**Pisahkan logic**:
-- **Config**: Database connection
-- **Functions**: Helper functions
-- **API**: Business logic
-- **Pages**: Presentation layer
-
----
-
-## 🚀 JavaScript Best Practices
-
-### 1. **Async/Await untuk AJAX**
-
-```javascript
-// ✅ Modern: async/await
-async function fetchCustomers() {
-    try {
-        const response = await fetch('/api/customers-api.php');
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
-// ❌ Old: callbacks (callback hell)
-fetch('/api/customers-api.php')
-    .then(response => response.json())
-    .then(data => {
-        // Do something
-    })
-    .catch(error => {
-        console.error(error);
-    });
-```
-
-### 2. **DOM Manipulation**
-
-```javascript
-// Get elements
-const button = document.getElementById('myButton');
-const form = document.querySelector('form');
-
-// Add event listener
-button.addEventListener('click', handleClick);
-
-// Update content
-document.getElementById('result').innerHTML = 'Success!';
-
-// Add class
-element.classList.add('active');
-element.classList.remove('hidden');
-element.classList.toggle('show');
-```
-
-### 3. **Form Handling**
-
-```javascript
-form.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Prevent default form submission
-    
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData);
-    
-    const response = await fetch('/api/endpoint.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    });
-    
-    const result = await response.json();
-    // Handle result
-});
-```
-
----
-
-## 🔄 Complete Request Flow
-
-### Contoh: Add New Customer
-
-**1. User Interface (HTML + Tailwind)**:
-```html
-<form id="customerForm" class="space-y-4">
-    <input type="text" name="name" class="input" placeholder="Name" required>
-    <input type="tel" name="phone" class="input" placeholder="Phone" required>
-    <button type="submit" class="btn-primary">Add Customer</button>
-</form>
-```
-
-**2. JavaScript Event Handler**:
-```javascript
-document.getElementById('customerForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
-    
-    const response = await fetch('/api/customers-api.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    });
-    
-    const result = await response.json();
-    
-    if (result.success) {
-        showToast('Customer added!');
-        refreshTable();
-    }
-});
-```
-
-**3. PHP API Endpoint**:
-```php
-// api/customers-api.php
-require_once '../config/database_mysql.php';
-
-header('Content-Type: application/json');
-
-$data = json_decode(file_get_contents('php://input'), true);
-
-try {
-    // Validate
-    if (empty($data['name']) || empty($data['phone'])) {
-        throw new Exception('Invalid data');
-    }
-    
-    // Insert to database
-    $db = Database::getInstance()->getConnection();
-    $stmt = $db->prepare("INSERT INTO customers (name, phone) VALUES (?, ?)");
-    $stmt->execute([$data['name'], $data['phone']]);
-    
-    // Success response
-    echo json_encode([
-        'success' => true,
-        'message' => 'Customer added successfully',
-        'data' => [
-            'id' => $db->lastInsertId(),
-            'name' => $data['name'],
-            'phone' => $data['phone']
-        ]
-    ]);
-    
-} catch (Exception $e) {
-    echo json_encode([
-        'success' => false,
-        'message' => $e->getMessage()
-    ]);
-}
-```
-
-**4. MySQL Database**:
-```sql
-INSERT INTO customers (name, phone, address, created_at) 
-VALUES ('John Doe', '08123456789', NULL, NOW());
-```
-
-**5. JSON Response**:
 ```json
+// Success
 {
-    "success": true,
-    "message": "Customer added successfully",
-    "data": {
-        "id": 123,
-        "name": "John Doe",
-        "phone": "08123456789"
-    }
+  "success": true,
+  "message": "Operation successful",
+  "data": { ... }
+}
+
+// Error
+{
+  "success": false,
+  "error": "Error message here"
 }
 ```
 
-**6. Update UI (JavaScript)**:
-```javascript
-function refreshTable() {
-    // Fetch updated data
-    // Re-render table
-}
+### Customer API (`api/customers-api.php`)
 
-function showToast(message) {
-    // Show notification
-}
+| Action | Method | Description |
+|--------|--------|-------------|
+| `get_all` | GET | List semua customer dengan status registrasi |
+| `get_by_id` | GET | Get customer by ID |
+| `get_by_phone` | GET | Search customer by phone |
+| `create` | POST | Create customer (auto-link jika phone ada di users) |
+| `update` | POST | Update customer |
+| `delete` | POST | Delete customer |
+
+### Transaction API (`api/transactions-api.php`)
+
+| Action | Method | Description |
+|--------|--------|-------------|
+| `get_all` | GET | List semua transaksi |
+| `get_by_phone` | GET | Get transaksi by customer phone |
+| `create` | POST | Create transaksi baru |
+| `update_status` | POST | Update status transaksi |
+| `delete` | POST | Delete transaksi |
+
+---
+
+## 🗄️ Database Tables
+
+### `users`
+Akun login pengguna (admin, kasir, customer).
+
+### `customers`
+Data pelanggan laundry (bisa ter-link atau tidak ke users).
+
+### `transactions`
+Data transaksi laundry.
+
+### `service_types`
+Jenis layanan dan harga.
+
+### `password_resets`
+Token untuk reset password.
+
+---
+
+## 🔄 Application Flow
+
+### 1. Customer Registration Flow
+```
+Register Page → API /register → Insert users → Link/Create customer → Redirect to Login
+```
+
+### 2. Customer Login Flow
+```
+Login Page → API /login → Verify password → Create session → Redirect to Customer Dashboard
+```
+
+### 3. Google OAuth Flow
+```
+Click Google Button → Google Popup → JWT Token → API /google-auth → Verify Token → 
+Create/Update user → Check phone → Complete Profile or Dashboard
+```
+
+### 4. Admin Transaction Flow
+```
+Admin Login → Dashboard → Create Transaction → Select Customer → Select Service → 
+Calculate Price → Save → Update Status → Customer can check via Check Order page
 ```
 
 ---
 
-## 📚 Learning Path
+## 🛠️ Development Workflow
 
-### Level 1: Beginner
+### Start Development
 
-**Pahami dasar-dasar**:
-1. ✅ HTML structure
-2. ✅ PHP syntax & variables
-3. ✅ MySQL basic queries (SELECT, INSERT, UPDATE, DELETE)
-4. ✅ Tailwind utility classes
+1. **Start XAMPP** (Apache + MySQL)
+2. **Start Tailwind watch**:
+   ```bash
+   cd laundry-D-four
+   npm run dev
+   ```
+3. **Open browser**: `http://localhost/laundry-D-four`
 
-**Practice**:
-- Baca dan pahami `pages/dashboard.php`
-- Coba ubah warna atau text dengan Tailwind classes
-- Coba query database di `database/init_mysql.php`
+### Database Setup
 
-### Level 2: Intermediate
+```bash
+# Initialize database
+php database/init_mysql.php
 
-**Pahami konsep**:
-1. ✅ PDO & prepared statements
-2. ✅ AJAX dengan Fetch API
-3. ✅ JSON format
-4. ✅ Responsive design dengan Tailwind
+# Run migrations
+php database/migrate_auth.php
+php database/migrate_customer_user.php
 
-**Practice**:
-- Buat CRUD sederhana untuk service types
-- Tambah fitur search di customers page
-- Customize Tailwind config dengan warna sendiri
+# Create admin account
+php database/create_admin.php
+```
 
-### Level 3: Advanced
+### Login Credentials
 
-**Pahami arsitektur**:
-1. ✅ MVC pattern (Model-View-Controller)
-2. ✅ RESTful API design
-3. ✅ Database relationships & JOINs
-4. ✅ Authentication & authorization
-
-**Practice**:
-- Implement login system
-- Add role-based access control
-- Create reporting features dengan charts
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@dfour.com | admin123 |
 
 ---
 
-## 🎯 Next Steps
+## 📚 Related Documentation
 
-Setelah memahami struktur project ini, Anda bisa:
-
-1. **Eksplorasi Code**: Baca setiap file dan pahami fungsinya
-2. **Modifikasi**: Coba ubah styling atau tambah fitur kecil
-3. **Eksperimen**: Buat halaman baru atau API endpoint baru
-4. **Belajar**: Pelajari teknologi yang belum dikuasai
-5. **Build**: Buat fitur baru sesuai TODO list
+- `docs/to-do.md` - Development TODO list
+- `docs/registration-flow.md` - Detail alur registrasi
+- `docs/GITTutor.md` - Git & GitHub tutorial
 
 ---
 
-## 📖 Resources
-
-### Tailwind CSS
-- [Official Docs](https://tailwindcss.com/docs)
-- [Tailwind UI Components](https://tailwindui.com/)
-- [Tailwind Cheat Sheet](https://nerdcave.com/tailwind-cheat-sheet)
-
-### PHP
-- [PHP Manual](https://www.php.net/manual/en/)
-- [PDO Tutorial](https://www.php.net/manual/en/book.pdo.php)
-- [PHP Best Practices](https://phptherightway.com/)
-
-### JavaScript
-- [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-- [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
-- [JavaScript.info](https://javascript.info/)
-
-### MySQL
-- [MySQL Documentation](https://dev.mysql.com/doc/)
-- [SQL Tutorial](https://www.w3schools.com/sql/)
-
----
-
-**Happy Learning! 🚀**
-
-*Dokumen ini akan terus di-update seiring perkembangan project.*
+*Happy Coding! 🚀*

@@ -1,58 +1,60 @@
-# 🚀 Quick Start Guide - Laundry D'four
+# 🚀 Quick Start Guide - D'four Laundry
 
 Panduan lengkap untuk menjalankan aplikasi setelah clone dari GitHub.
+
+**Last Updated: 2026-01-07**
+
+---
 
 ## 📋 Prerequisites
 
 Pastikan sudah terinstall:
-- ✅ **XAMPP** (atau PHP 7.4+, MySQL, Apache)
+- ✅ **XAMPP** (Apache + MySQL + PHP 7.4+)
 - ✅ **Node.js** dan **npm** (untuk Tailwind CSS)
 - ✅ **Git** (untuk clone repository)
 
 ---
 
-## 🚀 Langkah-Langkah Setup (Untuk yang Baru Clone)
+## 🚀 Langkah-Langkah Setup
 
-### 1️⃣ **Clone Repository**
+### 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/username/laundry-D-four.git
-cd laundry-D-four
+git clone https://github.com/qifor27/laundry-D-four-system.git
+cd laundry-D-four-system
 ```
 
-### 2️⃣ **Install Dependencies**
+> **Note:** Folder harus berada di `htdocs` XAMPP, contoh: `E:\xampp2\htdocs\laundry-D-four`
 
-Install package Node.js untuk Tailwind CSS:
+### 2️⃣ Install Dependencies
+
 ```bash
 npm install
 ```
 
-### 3️⃣ **Setup Database MySQL**
+### 3️⃣ Setup Database MySQL
 
-#### A. Buat Database
+#### A. Start XAMPP
+1. Buka **XAMPP Control Panel**
+2. Start **Apache** dan **MySQL**
 
-**Opsi 1: Via phpMyAdmin**
+#### B. Buat Database
+
+**Via phpMyAdmin:**
 1. Buka `http://localhost/phpmyadmin`
-2. Klik tab "SQL"
-3. Copy-paste isi file `database/create_database.sql`
-4. Klik "Go" atau "Jalankan"
+2. Klik "New" → Nama database: `laundry_dfour`
+3. Klik "Create"
 
-**Opsi 2: Via MySQL CLI**
-```bash
-mysql -u root -p < database/create_database.sql
-```
-
-**Opsi 3: Manual**
+**Atau via SQL:**
 ```sql
 CREATE DATABASE IF NOT EXISTS laundry_dfour 
 CHARACTER SET utf8mb4 
 COLLATE utf8mb4_unicode_ci;
 ```
 
-#### B. Konfigurasi Database (Jika Perlu)
+#### C. Konfigurasi (Jika Perlu)
 
-Edit file `config/database_mysql.php` jika kredensial MySQL Anda berbeda:
-
+Edit `config/database_mysql.php` jika kredensial berbeda:
 ```php
 private $host = "localhost";
 private $db_name = "laundry_dfour";
@@ -60,237 +62,194 @@ private $username = "root";      // Ganti jika berbeda
 private $password = "";          // Ganti jika ada password
 ```
 
-#### C. Inisialisasi Tabel & Data
+#### D. Inisialisasi Database & Migrasi
 
-Jalankan script inisialisasi untuk membuat tabel dan data default:
+Jalankan script-script berikut secara berurutan:
 
-**Jika PHP sudah di PATH:**
 ```bash
-php database/init_mysql.php
+# 1. Inisialisasi tabel dasar (customers, transactions, service_types)
+E:\xampp2\php\php.exe database/init_mysql.php
+
+# 2. Migrasi tabel authentication (users, password_resets)
+E:\xampp2\php\php.exe database/migrate_auth.php
+
+# 3. Migrasi Customer-User Integration (phone di users, user_id di customers)
+E:\xampp2\php\php.exe database/migrate_customer_user.php
+
+# 4. Buat akun admin
+E:\xampp2\php\php.exe database/create_admin.php
 ```
 
-**Jika PHP belum di PATH (gunakan path lengkap):**
+> **Note:** Sesuaikan path PHP dengan lokasi XAMPP Anda. 
+> Contoh: `C:\xampp\php\php.exe` atau `E:\xampp2\php\php.exe`
+
+**Output yang diharapkan untuk tiap script:**
+- ✅ Tables created successfully
+- ✅ Admin baru berhasil dibuat
+
+### 4️⃣ Build Tailwind CSS
+
 ```bash
-"C:\xampp\php\php.exe" database/init_mysql.php
-```
-
-**Output yang diharapkan:**
-```
-🚀 Starting MySQL database initialization...
-
-✅ Table 'customers' created
-✅ Table 'service_types' created 
-✅ Table 'transactions' created
-
-📦 Inserting default service types...
-  ✓ Cuci Kering
-  ✓ Cuci Setrika
-  ✓ Setrika Saja
-  ✓ Bed Cover Single
-  ✓ Bed Cover Double
-  ✓ Selimut
-  ✓ Boneka Kecil
-  ✓ Boneka Besar
-✅ Default service types inserted
-
-🎉 Database initialized successfully!
-📊 Tables created: customers, transactions, service_types
-🔗 Indexes created for better performance
-🗄️  Database: laundry_dfour
-```
-
-### 4️⃣ **Build Tailwind CSS**
-
-Compile CSS untuk pertama kali:
-```bash
+# Production build
 npm run build
-```
 
-Atau untuk development mode (auto-compile saat ada perubahan):
-```bash
+# Atau development mode (auto-compile)
 npm run dev
 ```
 
-### 5️⃣ **Jalankan Server**
+### 5️⃣ Akses Aplikasi
 
-**Opsi 1: Menggunakan Batch File (Termudah)**
-- Double-click file `start-server.bat`
-- Browser akan otomatis membuka di `http://localhost:8000`
-
-**Opsi 2: Manual via Command Line**
-
-Jika PHP sudah di PATH:
-```bash
-php -S localhost:8000
+Buka browser:
+```
+http://localhost/laundry-D-four
 ```
 
-Jika PHP belum di PATH:
-```bash
-"C:\xampp\php\php.exe" -S localhost:8000
-```
+> **Note:** Pastikan folder project sesuai dengan URL. Jika folder bernama `laundry-D-four-system`, gunakan URL tersebut.
 
-### 6️⃣ **Akses Aplikasi**
+---
 
-Buka browser dan akses:
+## 🔐 Login Credentials
+
+### Admin Login
+| Field | Value |
+|-------|-------|
+| URL | `http://localhost/laundry-D-four/pages/auth/admin-login.php` |
+| Email | `admin@dfour.com` |
+| Password | `admin123` |
+
+### Customer Login/Register
+| Halaman | URL |
+|---------|-----|
+| Login | `http://localhost/laundry-D-four/pages/auth/login.php` |
+| Register | `http://localhost/laundry-D-four/pages/auth/register.php` |
+
+---
+
+## 🎯 Halaman yang Tersedia
+
+### 🌐 Public Pages (Tanpa Login)
+| Halaman | URL |
+|---------|-----|
+| Landing Page | `/` atau `/index.php` |
+| Cek Order | `/pages/check-order.php` |
+| Customer Login | `/pages/auth/login.php` |
+| Customer Register | `/pages/auth/register.php` |
+
+### 👤 Customer Pages (Login sebagai User)
+| Halaman | URL |
+|---------|-----|
+| Customer Dashboard | `/pages/customer-dashboard.php` |
+
+### 🔧 Admin Pages (Login sebagai Admin)
+| Halaman | URL |
+|---------|-----|
+| Admin Login | `/pages/auth/admin-login.php` |
+| Dashboard | `/pages/dashboard.php` |
+| Pelanggan | `/pages/customers.php` |
+| Transaksi | `/pages/transactions.php` |
+
+---
+
+## 📚 Flow Kerja Aplikasi
+
 ```
-http://localhost:8000
+┌─────────────────────────────────────────────────────────────────┐
+│                        LANDING PAGE                             │
+│                         (index.php)                             │
+└───────────────┬────────────────────────────────┬────────────────┘
+                │                                │
+                ▼                                ▼
+┌───────────────────────────┐      ┌───────────────────────────┐
+│     CUSTOMER FLOW         │      │      ADMIN FLOW           │
+│                           │      │                           │
+│  1. Register dengan HP    │      │  1. Login di admin-login  │
+│  2. Login                 │      │  2. Dashboard (statistik) │
+│  3. Customer Dashboard    │      │  3. Kelola Pelanggan      │
+│  4. Lihat transaksi       │      │  4. Kelola Transaksi      │
+│  5. Cek status order      │      │  5. Update status         │
+└───────────────────────────┘      └───────────────────────────┘
 ```
 
 ---
 
-## 📍 Lokasi PHP di Windows
+## ⚙️ Konfigurasi Opsional
 
-Biasanya PHP ada di salah satu lokasi berikut:
+### Google OAuth (Opsional)
+Untuk mengaktifkan login dengan Google:
 
-- **XAMPP:** `C:\xampp\php\php.exe`
-- **Laragon:** `C:\laragon\bin\php\php-8.x-Win32\php.exe`
-- **WAMP:** `C:\wamp64\bin\php\php-8.x\php.exe`
+1. Buat project di [Google Cloud Console](https://console.cloud.google.com)
+2. Enable Google+ API
+3. Buat OAuth 2.0 credentials
+4. Edit `config/google-oauth.php`:
+```php
+define('GOOGLE_CLIENT_ID', 'your-client-id.apps.googleusercontent.com');
+define('GOOGLE_CLIENT_SECRET', 'your-client-secret');
+```
+
+### Email SMTP (Opsional)
+Untuk mengaktifkan email verifikasi:
+
+1. Buat App Password di Gmail
+2. Edit `config/email.php`:
+```php
+define('SMTP_USERNAME', 'your-email@gmail.com');
+define('SMTP_PASSWORD', 'your-app-password');
+```
 
 ---
 
 ## 🔧 Troubleshooting
 
 ### 1. "php' is not recognized..."
+Gunakan path lengkap: `E:\xampp2\php\php.exe` atau tambahkan ke PATH Windows.
 
-**Solusi 1:** Tambahkan PHP ke PATH Windows
-1. Cari "Environment Variables" di Windows Search
-2. Edit "Path" di System Variables
-3. Tambahkan path PHP (misal: `C:\xampp\php`)
-4. Restart terminal/command prompt
+### 2. Database Connection Error
+- Pastikan MySQL di XAMPP sudah running
+- Cek kredensial di `config/database_mysql.php`
+- Pastikan database `laundry_dfour` sudah dibuat
 
-**Solusi 2:** Gunakan path lengkap
-```bash
-"C:\xampp\php\php.exe" -S localhost:8000
-```
-
-### 2. Port 8000 sudah digunakan
-
-Gunakan port lain:
-```bash
-php -S localhost:8080
-```
-Lalu akses di `http://localhost:8080`
-
-### 3. Database Connection Error
-
-**Cek apakah MySQL sudah running:**
-- Buka XAMPP Control Panel
-- Pastikan MySQL dalam status "Running"
-- Jika belum, klik tombol "Start" pada MySQL
-
-**Cek kredensial database:**
-- Pastikan username dan password di `config/database_mysql.php` sesuai dengan MySQL Anda
-- Default XAMPP: username=`root`, password=`` (kosong)
-
-**Cek apakah database sudah dibuat:**
-```bash
-mysql -u root -p -e "SHOW DATABASES LIKE 'laundry_dfour';"
-```
-
-### 4. CSS tidak muncul
-
-Pastikan Tailwind sudah di-compile:
+### 3. CSS tidak muncul
 ```bash
 npm run build
 ```
 
-Cek apakah file `assets/css/output.css` sudah ada dan tidak kosong.
-
-### 5. Error saat npm install
-
-Hapus folder `node_modules` dan `package-lock.json`, lalu install ulang:
+### 4. Error "Table doesn't exist"
+Jalankan semua migration script:
 ```bash
-rm -rf node_modules package-lock.json
-npm install
+php database/init_mysql.php
+php database/migrate_auth.php
+php database/migrate_customer_user.php
 ```
 
----
-
-## 📚 Workflow Development
-
-### Saat Mengembangkan Aplikasi:
-
-Buka **2 terminal** secara bersamaan:
-
-**Terminal 1 - Tailwind Watch:**
-```bash
-npm run dev
-```
-> Auto-compile CSS saat ada perubahan file
-
-**Terminal 2 - PHP Server:**
-```bash
-php -S localhost:8000
-```
-> Menjalankan aplikasi
-
-### Saat Production Build:
-
-```bash
-npm run build
-```
-> Compile CSS dengan minify untuk production
+### 5. Redirect URL salah
+Pastikan folder project sesuai dengan yang di URL. Jika perlu, sesuaikan base URL di aplikasi.
 
 ---
 
-## 🎯 Halaman yang Tersedia
+## 📚 Dokumentasi Lainnya
 
-Setelah aplikasi berjalan, Anda bisa akses:
-
-### 🌐 **Public Page** (Akses Langsung)
-- **Landing Page:** `http://localhost:8000/` → Otomatis redirect ke Cek Order
-- **Cek Order:** `http://localhost:8000/pages/check-order.php` - Customer bisa cek status pesanan dengan nomor HP
-
-### 🔐 **Admin Pages** (Klik button "Admin" di navbar)
-1. **Dashboard:** `http://localhost:8000/pages/dashboard.php` - Statistik & overview
-2. **Pelanggan:** `http://localhost:8000/pages/customers.php` - Manajemen data pelanggan
-3. **Transaksi:** `http://localhost:8000/pages/transactions.php` - Manajemen transaksi laundry
-
-> **Note:** Saat ini belum ada authentication. Semua halaman bisa diakses langsung via URL. Authentication dengan Google OAuth akan ditambahkan di update berikutnya.
+| File | Deskripsi |
+|------|-----------|
+| `docs/learning_by_doing.md` | Panduan lengkap struktur project |
+| `docs/to-do.md` | TODO list development |
+| `docs/registration-flow.md` | Alur registrasi customer |
+| `docs/GITTutor.md` | Tutorial Git & GitHub |
 
 ---
 
-## 🎨 Next Steps
+## 💡 Tips Development
 
-Setelah aplikasi berjalan, Anda bisa:
+1. **Jalankan 2 terminal:**
+   - Terminal 1: `npm run dev` (Tailwind watch)
+   - Terminal 2: Buka browser ke localhost
 
-1. ✅ Tambah pelanggan di halaman **Pelanggan**
-2. ✅ Buat transaksi baru di halaman **Transaksi**
-3. ✅ Update status pesanan
-4. ✅ Customer bisa cek status via halaman **Cek Order** (menggunakan nomor HP)
+2. **Gunakan F12** untuk debug di browser console
 
----
+3. **Cek error PHP** di:
+   - XAMPP logs: `xampp/apache/logs/error.log`
+   - Atau enable error display di PHP
 
-## 💡 Tips
-
-- Gunakan **Ctrl+C** untuk stop server
-- Refresh browser (F5) untuk melihat perubahan
-- Check console browser (F12) jika ada error JavaScript
-- Database MySQL: `laundry_dfour`
-- Gunakan `npm run dev` saat development untuk auto-compile CSS
-- Gunakan `npm run build` sebelum deploy ke production
-
----
-
-## 📦 Struktur Database
-
-Aplikasi menggunakan 3 tabel utama:
-
-1. **customers** - Data pelanggan (nama, telepon, alamat)
-2. **service_types** - Jenis layanan laundry (nama, harga, satuan)
-3. **transactions** - Transaksi laundry (customer, service, status, dll)
-
-Lihat detail schema di `database/init_mysql.php`
-
----
-
-## 🆘 Butuh Bantuan?
-
-Jika masih ada masalah:
-1. Cek file `README.md` untuk dokumentasi lengkap
-2. Cek file `docs/learning_by_doing.md` untuk panduan belajar
-3. Pastikan semua prerequisites sudah terinstall dengan benar
-4. Cek error log di console/terminal
+4. **Commit sering** dengan pesan yang jelas
 
 ---
 
