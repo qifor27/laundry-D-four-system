@@ -278,7 +278,143 @@
 
 ---
 
-## 📚 DOCUMENTATION
+## � GIT COLLABORATION WORKFLOW
+
+> **Panduan untuk memulai kolaborasi tim Frontend & Backend**
+
+### 🌿 Branch Strategy
+
+```
+main                    ← Branch production (protected)
+├── develop             ← Branch development utama
+├── feature/frontend-*  ← Branch untuk tim Frontend
+└── feature/backend-*   ← Branch untuk tim Backend
+```
+
+### 📋 Setup Awal (Untuk Semua Anggota Tim)
+
+- [ ] **Clone Repository**
+  ```bash
+  git clone https://github.com/qifor27/laundry-D-four-system.git
+  cd laundry-D-four-system
+  ```
+
+- [ ] **Buat Branch develop** (Admin/Lead saja)
+  ```bash
+  git checkout -b develop
+  git push -u origin develop
+  ```
+
+- [ ] **Setup Environment**
+  - Copy `config/database.example.php` ke `config/database.php`
+  - Sesuaikan kredensial database lokal
+  - Import `database/schema.sql`
+
+### 👨‍💻 Tim Frontend
+
+**Folder yang dikerjakan:**
+- `assets/css/` - Stylesheet
+- `assets/js/` - JavaScript
+- `pages/` - Views/Templates (bagian HTML/UI)
+- `includes/` - Components (header, sidebar, footer)
+
+**Cara Mulai:**
+```bash
+# 1. Ambil update terbaru
+git checkout develop
+git pull origin develop
+
+# 2. Buat branch baru
+git checkout -b feature/frontend-[nama-fitur]
+# Contoh: feature/frontend-login-redesign
+
+# 3. Kerjakan perubahan...
+
+# 4. Commit & Push
+git add .
+git commit -m "style: redesign login page dengan glassmorphism"
+git push -u origin feature/frontend-[nama-fitur]
+
+# 5. Buat Pull Request ke develop di GitHub
+```
+
+**Naming Convention Commit (Frontend):**
+- `style:` - Perubahan CSS/styling
+- `feat:` - Fitur UI baru
+- `fix:` - Bug fix UI
+- `refactor:` - Restructure code tanpa mengubah fungsi
+
+### ⚙️ Tim Backend
+
+**Folder yang dikerjakan:**
+- `api/` - API endpoints
+- `config/` - Konfigurasi
+- `database/` - SQL scripts, migrations
+- `pages/` - Logic PHP (bagian server-side)
+
+**Cara Mulai:**
+```bash
+# 1. Ambil update terbaru
+git checkout develop
+git pull origin develop
+
+# 2. Buat branch baru
+git checkout -b feature/backend-[nama-fitur]
+# Contoh: feature/backend-monthly-reports
+
+# 3. Kerjakan perubahan...
+
+# 4. Commit & Push
+git add .
+git commit -m "feat(api): add monthly reports endpoint"
+git push -u origin feature/backend-[nama-fitur]
+
+# 5. Buat Pull Request ke develop di GitHub
+```
+
+**Naming Convention Commit (Backend):**
+- `feat(api):` - Endpoint baru
+- `feat(db):` - Perubahan database
+- `fix:` - Bug fix
+- `security:` - Perbaikan keamanan
+
+### 🔄 Merge Workflow
+
+```
+feature/* → develop → main
+```
+
+1. **Feature ke Develop**: Pull Request + Code Review
+2. **Develop ke Main**: Setelah testing selesai (Admin only)
+
+### ⚠️ Aturan Penting
+
+| ❌ Jangan | ✅ Lakukan |
+|-----------|-----------|
+| Push langsung ke `main` | Buat Pull Request |
+| Commit file `config/database.php` | Pakai `.gitignore` |
+| Merge tanpa review | Minta review minimal 1 orang |
+| Commit besar sekaligus | Commit kecil dan sering |
+
+### 📊 Progress Tracking
+
+#### Frontend Tasks
+- [ ] Login/Register Redesign
+- [ ] User Dashboard Redesign
+- [ ] Admin Dashboard Redesign
+- [ ] Responsive Mobile View
+- [ ] Dark Mode Toggle
+
+#### Backend Tasks
+- [ ] Complete Profile API
+- [ ] Monthly Reports API
+- [ ] Email Notification System
+- [ ] CSRF Protection
+- [ ] Rate Limiting
+
+---
+
+## �📚 DOCUMENTATION
 
 - [x] **Registration Flow** - `docs/registration-flow.md`
 - [ ] **User Manual** - Panduan penggunaan aplikasi
