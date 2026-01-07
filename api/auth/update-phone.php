@@ -12,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-require_once '../../config/database_mysql.php';
-require_once '../../includes/auth.php';
+require_once '/../../config/database_mysql.php';
+require_once '/../../includes/auth.php';
 
 try {
     // step 1:check apakah user sudah login
