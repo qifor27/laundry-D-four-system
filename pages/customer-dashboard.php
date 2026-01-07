@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Customer Dashboard Page
  * Halaman khusus untuk pelanggan setelah login
@@ -14,57 +15,40 @@ $pageTitle = "Dashboard Pelanggan - D'four Laundry";
 $db = Database::getInstance()->getConnection();
 $userData = getUserData();
 
-// Ambil phone dari user
-$db = Database::getInstance()->getConnection();
+// Ambil phone dari session user
+$userId = $userData['id'];
 $stmt = $db->prepare("SELECT phone FROM users WHERE id = ?");
-$stmt->execute([$user['id']]);
-$userData = $stmt->fetch(PDO::FETCH_ASSOC);
-$userPhone = $userData['phone'] ?? '';
+$stmt->execute([$userId]);
+$userRow = $stmt->fetch(PDO::FETCH_ASSOC);
+$userPhone = $userRow['phone'] ?? '';
+
+// Data user dari session
+$userName = $userData['name'] ?? 'Pelanggan';
+$userEmail = $userData['email'] ?? '';
+$userPicture = $userData['picture'] ?? null;
 
 // Ambil transaksi berdasarkan phone
 $transactions = [];
-if ($userPhone){
-    $stmt = $db->prepare("
-        SELECT t.*, c.name as customer_name
-        FROM transactions t
-        JOIN customers c ON t.customer_id = c.id
-        WHERE c.phone = ?
-        ORDER BY t.created_at DESC
-        ");
-        $stmt->execute([$userPhone]);
-        $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-// Get customer's transactions based on email
-$userEmail = $userData['email'] ?? '';
-$userName = $userData['name'] ?? 'Pelanggan';
-$userPicture = $userData['picture'] ?? null;
-
-// Try to find customer by matching email or phone
 $customerData = null;
-$transactions = [];
 
-// First, try to find customer with matching name pattern
-$stmt = $db->prepare("
-    SELECT * FROM customers 
-    WHERE name LIKE :name 
-    LIMIT 1
-");
-$stmt->execute([':name' => '%' . $userName . '%']);
-$customerData = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($userPhone) {
+    // Find customer by phone
+    $stmt = $db->prepare("SELECT * FROM customers WHERE phone = ?");
+    $stmt->execute([$userPhone]);
+    $customerData = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// If customer found, get their transactions
-if ($customerData) {
-    $stmt = $db->prepare("
-        SELECT t.*, s.name as service_name, s.unit, s.price_per_unit
-        FROM transactions t
-        LEFT JOIN service_types s ON t.service_type = s.name
-        WHERE t.customer_id = :customer_id
-        ORDER BY t.created_at DESC
-        LIMIT 10
-    ");
-    $stmt->execute([':customer_id' => $customerData['id']]);
-    $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if ($customerData) {
+        $stmt = $db->prepare("
+            SELECT t.*, s.name as service_name, s.unit, s.price_per_unit
+            FROM transactions t
+            LEFT JOIN service_types s ON t.service_type = s.name
+            WHERE t.customer_id = ?
+            ORDER BY t.created_at DESC
+            LIMIT 10
+        ");
+        $stmt->execute([$customerData['id']]);
+        $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 
 // Count transactions by status
@@ -80,21 +64,23 @@ foreach ($transactions as $trx) {
 ?>
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle) ?></title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Tailwind CSS -->
     <link href="<?= baseUrl('assets/css/style.css') ?>" rel="stylesheet">
 </head>
+
 <body class="bg-gray-50 font-outfit min-h-screen">
-    
+
     <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -106,7 +92,7 @@ foreach ($transactions as $trx) {
                     </div>
                     <span class="text-xl font-bold text-gray-900">D'four<span class="text-primary-600">Laundry</span></span>
                 </a>
-                
+
                 <!-- User Menu -->
                 <div class="flex items-center space-x-4">
                     <div class="flex items-center space-x-3">
@@ -122,7 +108,7 @@ foreach ($transactions as $trx) {
                             <p class="text-xs text-gray-500">Pelanggan</p>
                         </div>
                     </div>
-                    
+
                     <button onclick="handleLogout()" class="text-gray-500 hover:text-red-600 transition-colors p-2" title="Logout">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
@@ -132,10 +118,10 @@ foreach ($transactions as $trx) {
             </div>
         </div>
     </header>
-    
+
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
+
         <!-- Welcome Section -->
         <div class="mb-8">
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">
@@ -143,7 +129,7 @@ foreach ($transactions as $trx) {
             </h1>
             <p class="text-gray-600 mt-2">Pantau status cucian Anda di sini</p>
         </div>
-        
+
         <!-- Quick Stats -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
             <!-- Active Orders -->
@@ -160,7 +146,7 @@ foreach ($transactions as $trx) {
                     </div>
                 </div>
             </div>
-            
+
             <!-- Completed -->
             <div class="card bg-gradient-to-br from-secondary-500 to-secondary-600 text-white">
                 <div class="flex items-center justify-between">
@@ -175,7 +161,7 @@ foreach ($transactions as $trx) {
                     </div>
                 </div>
             </div>
-            
+
             <!-- Total Orders -->
             <div class="card bg-gradient-to-br from-purple-500 to-purple-600 text-white">
                 <div class="flex items-center justify-between">
@@ -191,7 +177,7 @@ foreach ($transactions as $trx) {
                 </div>
             </div>
         </div>
-        
+
         <!-- Recent Orders -->
         <div class="card">
             <div class="flex items-center justify-between mb-6">
@@ -200,7 +186,7 @@ foreach ($transactions as $trx) {
                     Cek dengan Nomor HP →
                 </a>
             </div>
-            
+
             <?php if (empty($transactions)): ?>
                 <div class="text-center py-12">
                     <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -238,9 +224,9 @@ foreach ($transactions as $trx) {
                                     <?php endif; ?>
                                 </div>
                             </div>
-                            
+
                             <!-- Progress Bar -->
-                            <?php 
+                            <?php
                             $statusOrder = ['pending' => 1, 'washing' => 2, 'drying' => 3, 'ironing' => 4, 'done' => 5, 'picked_up' => 6];
                             $currentStep = $statusOrder[$trx['status']] ?? 1;
                             $progress = ($currentStep / 6) * 100;
@@ -259,7 +245,7 @@ foreach ($transactions as $trx) {
                 </div>
             <?php endif; ?>
         </div>
-        
+
         <!-- Quick Links -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
             <a href="<?= baseUrl('pages/check-order.php') ?>" class="card hover:scale-[1.02] transition-transform flex items-center gap-4">
@@ -273,7 +259,7 @@ foreach ($transactions as $trx) {
                     <p class="text-sm text-gray-500">Cari dengan nomor telepon</p>
                 </div>
             </a>
-            
+
             <a href="<?= baseUrl() ?>" class="card hover:scale-[1.02] transition-transform flex items-center gap-4">
                 <div class="w-12 h-12 bg-secondary-100 rounded-xl flex items-center justify-center">
                     <svg class="w-6 h-6 text-secondary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -286,9 +272,9 @@ foreach ($transactions as $trx) {
                 </div>
             </a>
         </div>
-        
+
     </main>
-    
+
     <!-- Footer -->
     <footer class="bg-white border-t border-gray-200 py-6 mt-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -297,21 +283,24 @@ foreach ($transactions as $trx) {
     </footer>
 
     <script>
-    function handleLogout() {
-        if (confirm('Apakah Anda yakin ingin logout?')) {
-            fetch('<?= baseUrl('api/logout.php') ?>', {
-                method: 'POST',
-                headers: { 'Accept': 'application/json' }
-            })
-            .then(response => response.json())
-            .then(data => {
-                window.location.href = data.redirect || '<?= baseUrl('pages/login.php') ?>';
-            })
-            .catch(() => {
-                window.location.href = '<?= baseUrl('pages/login.php') ?>';
-            });
+        function handleLogout() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                fetch('<?= baseUrl('api/logout.php') ?>', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        window.location.href = data.redirect || '<?= baseUrl('pages/login.php') ?>';
+                    })
+                    .catch(() => {
+                        window.location.href = '<?= baseUrl('pages/login.php') ?>';
+                    });
+            }
         }
-    }
     </script>
 </body>
+
 </html>

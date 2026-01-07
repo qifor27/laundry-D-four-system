@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Authentication Helper Functions
  * 
@@ -12,12 +13,12 @@ if (session_status() == PHP_SESSION_NONE) {
     ini_set('session.cookie_httponly', 1);
     ini_set('session.use_only_cookies', 1);
     ini_set('session.cookie_samesite', 'Lax');
-    
+
     // Use secure cookies if HTTPS
     if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
         ini_set('session.cookie_secure', 1);
     }
-    
+
     session_start();
 }
 
@@ -30,12 +31,13 @@ require_once __DIR__ . '/../config/google-oauth.php';
  * @return bool True if user has active session
  */
 if (!function_exists('isLoggedIn')) {
-    function isLoggedIn() {
+    function isLoggedIn()
+    {
         // Check if user_id exists in session
         if (!isset($_SESSION['user_id'])) {
             return false;
         }
-        
+
         // Check session timeout
         if (isset($_SESSION['last_activity'])) {
             $inactiveTime = time() - $_SESSION['last_activity'];
@@ -45,10 +47,10 @@ if (!function_exists('isLoggedIn')) {
                 return false;
             }
         }
-        
+
         // Update last activity time
         $_SESSION['last_activity'] = time();
-        
+
         return true;
     }
 }
@@ -59,7 +61,8 @@ if (!function_exists('isLoggedIn')) {
  * @param string $redirectUrl Optional custom redirect URL after login
  * @return void
  */
-function requireLogin($redirectUrl = null) {
+function requireLogin($redirectUrl = null)
+{
     if (!isLoggedIn()) {
         // Store intended destination
         if ($redirectUrl) {
@@ -67,7 +70,7 @@ function requireLogin($redirectUrl = null) {
         } else {
             $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
         }
-        
+
         // Redirect to login page
         $loginUrl = getBaseUrl() . '/pages/login.php';
         header("Location: $loginUrl");
@@ -81,22 +84,23 @@ function requireLogin($redirectUrl = null) {
  * @param string|array $roles Required role(s)
  * @return void
  */
-function requireRole($roles) {
+function requireRole($roles)
+{
     requireLogin();
-    
+
     if (is_string($roles)) {
         $roles = [$roles];
     }
-    
+
     $userRole = $_SESSION['user_role'] ?? 'user';
-    
+
     if (!in_array($userRole, $roles)) {
         // Set error message
         $_SESSION['flash_message'] = [
             'type' => 'error',
             'message' => 'Anda tidak memiliki akses ke halaman tersebut.'
         ];
-        
+
         // Redirect to dashboard
         $dashboardUrl = getBaseUrl() . '/pages/dashboard.php';
         header("Location: $dashboardUrl");
@@ -109,11 +113,12 @@ function requireRole($roles) {
  * 
  * @return array|null User data or null if not logged in
  */
-function getUserData() {
+function getUserData()
+{
     if (!isLoggedIn()) {
         return null;
     }
-    
+
     return [
         'id' => $_SESSION['user_id'] ?? null,
         'google_id' => $_SESSION['user_google_id'] ?? null,
@@ -130,10 +135,11 @@ function getUserData() {
  * @param array $userData User data from database
  * @return void
  */
-function loginUser($userData) {
+function loginUser($userData)
+{
     // Regenerate session ID for security
     session_regenerate_id(true);
-    
+
     // Store user data in session
     $_SESSION['user_id'] = $userData['id'];
     $_SESSION['user_google_id'] = $userData['google_id'] ?? null;
@@ -141,7 +147,7 @@ function loginUser($userData) {
     $_SESSION['user_name'] = $userData['name'];
     $_SESSION['user_picture'] = $userData['profile_picture'] ?? null;
     $_SESSION['user_role'] = $userData['role'] ?? 'user';
-    
+
     // Set login time and last activity
     $_SESSION['login_time'] = time();
     $_SESSION['last_activity'] = time();
@@ -152,10 +158,11 @@ function loginUser($userData) {
  * 
  * @return void
  */
-function logoutUser() {
+function logoutUser()
+{
     // Unset all session variables
     $_SESSION = [];
-    
+
     // Delete session cookie
     if (ini_get('session.use_cookies')) {
         $params = session_get_cookie_params();
@@ -169,7 +176,7 @@ function logoutUser() {
             $params['httponly']
         );
     }
-    
+
     // Destroy the session
     session_destroy();
 }
@@ -179,17 +186,18 @@ function logoutUser() {
  * 
  * @return string URL to redirect to
  */
-function getRedirectAfterLogin() {
+function getRedirectAfterLogin()
+{
     $redirectUrl = $_SESSION['redirect_after_login'] ?? null;
-    
+
     // Clear stored redirect
     unset($_SESSION['redirect_after_login']);
-    
+
     // Default to dashboard
     if (!$redirectUrl) {
         return getBaseUrl() . '/pages/dashboard.php';
     }
-    
+
     return $redirectUrl;
 }
 
@@ -199,17 +207,18 @@ function getRedirectAfterLogin() {
  * @param string|array $roles Role(s) to check
  * @return bool True if user has the role
  */
-function hasRole($roles) {
+function hasRole($roles)
+{
     if (!isLoggedIn()) {
         return false;
     }
-    
+
     if (is_string($roles)) {
         $roles = [$roles];
     }
-    
+
     $userRole = $_SESSION['user_role'] ?? 'user';
-    
+
     return in_array($userRole, $roles);
 }
 
@@ -218,7 +227,8 @@ function hasRole($roles) {
  * 
  * @return bool True if user is admin or superadmin
  */
-function isAdmin() {
+function isAdmin()
+{
     return hasRole(['admin', 'superadmin']);
 }
 
@@ -227,7 +237,8 @@ function isAdmin() {
  * 
  * @return bool True if user is superadmin
  */
-function isSuperAdmin() {
+function isSuperAdmin()
+{
     return hasRole(['superadmin']);
 }
 
@@ -236,17 +247,18 @@ function isSuperAdmin() {
  * 
  * @return string Base URL
  */
-function getBaseUrl() {
+function getBaseUrl()
+{
     $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
     $host = $_SERVER['HTTP_HOST'];
-    
+
     // Get script path and find project root
     $scriptPath = dirname($_SERVER['SCRIPT_NAME']);
-    
-    // Remove /pages, /api, /includes from path to get project root
-    $baseDir = preg_replace('#/(pages|api|includes)$#', '', $scriptPath);
+
+    // Remove /pages/*, /api/*, /includes/* from path to get project root
+    $baseDir = preg_replace('#/(pages|api|includes)(/.*)?$#', '', $scriptPath);
     $baseDir = rtrim($baseDir, '/');
-    
+
     return $protocol . '://' . $host . $baseDir;
 }
 
@@ -255,7 +267,8 @@ function getBaseUrl() {
  * 
  * @return string CSRF token
  */
-function generateCsrfToken() {
+function generateCsrfToken()
+{
     if (!isset($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     }
@@ -268,7 +281,8 @@ function generateCsrfToken() {
  * @param string $token Token to validate
  * @return bool True if valid
  */
-function validateCsrfToken($token) {
+function validateCsrfToken($token)
+{
     if (!isset($_SESSION['csrf_token'])) {
         return false;
     }
@@ -280,8 +294,8 @@ function validateCsrfToken($token) {
  * 
  * @return string HTML input field
  */
-function csrfField() {
+function csrfField()
+{
     $token = generateCsrfToken();
     return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($token) . '">';
 }
-?>
