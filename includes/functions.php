@@ -140,9 +140,12 @@ function getFlashMessage() {
 
 /**
  * Check if user is logged in (optional untuk auth)
+ * Note: This is a simple version, auth.php has a more complete implementation
  */
-function isLoggedIn() {
-    return isset($_SESSION['user_id']);
+if (!function_exists('isLoggedIn')) {
+    function isLoggedIn() {
+        return isset($_SESSION['user_id']);
+    }
 }
 
 /**
@@ -162,8 +165,9 @@ function baseUrl($path = '') {
     $host = $_SERVER['HTTP_HOST'];
     $scriptPath = dirname($_SERVER['PHP_SELF']);
     
-    // Remove /pages, /api, /includes from path to get project root
-    $baseDir = preg_replace('#/(pages|api|includes)$#', '', $scriptPath);
+    // Remove /pages/*, /api/*, /includes/* from path to get project root
+    // This handles nested folders like /pages/auth
+    $baseDir = preg_replace('#/(pages|api|includes)(/.*)?$#', '', $scriptPath);
     $baseDir = rtrim($baseDir, '/');
     
     return $protocol . '://' . $host . $baseDir . '/' . ltrim($path, '/');

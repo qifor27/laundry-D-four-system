@@ -60,6 +60,46 @@ try {
     ");
     echo "✅ Table 'transactions' created\n";
     
+    // Create users table for authentication (email/password + Google OAuth)
+    $db->exec("
+        CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            google_id VARCHAR(255) UNIQUE,
+            email VARCHAR(255) UNIQUE NOT NULL,
+            name VARCHAR(255) NOT NULL,
+            password_hash VARCHAR(255) NULL,
+            profile_picture TEXT,
+            role ENUM('superadmin', 'admin', 'cashier', 'user') DEFAULT 'user',
+            login_method ENUM('email', 'google') DEFAULT 'email',
+            is_active TINYINT(1) DEFAULT 1,
+            email_verified_at TIMESTAMP NULL,
+            verification_token VARCHAR(64) NULL,
+            verification_expires TIMESTAMP NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            last_login TIMESTAMP NULL,
+            INDEX idx_google_id (google_id),
+            INDEX idx_email (email),
+            INDEX idx_role (role),
+            INDEX idx_verification_token (verification_token)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ");
+    echo "✅ Table 'users' created\n";
+    
+    // Create password_resets table for forgot password
+    $db->exec("
+        CREATE TABLE IF NOT EXISTS password_resets (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            email VARCHAR(255) NOT NULL,
+            token VARCHAR(64) NOT NULL UNIQUE,
+            expires_at TIMESTAMP NOT NULL,
+            used_at TIMESTAMP NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_token (token),
+            INDEX idx_email (email)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ");
+    echo "✅ Table 'password_resets' created\n";
+    
     // Insert default service types jika belum ada
     $stmt = $db->query("SELECT COUNT(*) as count FROM service_types");
     $count = $stmt->fetch()['count'];
@@ -94,7 +134,7 @@ try {
     }
     
     echo "\n🎉 Database initialized successfully!\n";
-    echo "📊 Tables created: customers, transactions, service_types\n";
+    echo "📊 Tables created: customers, transactions, service_types, users\n";
     echo "🔗 Indexes created for better performance\n";
     echo "🗄️  Database: " . Database::getInstance()->getConfig()['database'] . "\n";
     

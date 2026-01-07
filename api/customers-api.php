@@ -32,9 +32,16 @@ try {
                 throw new Exception('Format nomor telepon tidak valid');
             }
             
-            $stmt = $db->prepare("INSERT INTO customers (name, phone, address) VALUES (?, ?, ?)");
-            $stmt->execute([$name, $phone, $address]);
+            $stmt = $db->prepare("SELECT id FROM users WHERE phone = ?");
+            $stmt->execute([$phone]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $userId = $user ? $user['id'] : null;
+            $registeredAt = $user ? date('Y-m-d H:i:s') : null;
             
+            $stmt = $db->prepare("INSERT INTO customers (user_id, name, phone, address, registered_at) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$userId, $name, $phone, $address, $registeredAt]);
+
             $response['success'] = true;
             $response['message'] = 'Pelanggan berhasil ditambahkan';
             $response['customer_id'] = $db->lastInsertId();
@@ -79,17 +86,22 @@ try {
             break;
             
         case 'get_by_id':
-            // Get single customer
             $id = $_GET['id'] ?? 0;
-            
-            $stmt = $db->prepare("SELECT * FROM customers WHERE id = ?");
+            $stmt = $db->prepare("
+                SELECT c.*,
+                       u.email as user_email,
+                       CASE WHEN c.user_id IS NOT NULL THEN 1 ELSE 0 END as is_registered
+                FROM customers c
+                LEFT JOIN users u ON c.user_id = u.id
+                WHERE c.id = ?
+            ");
             $stmt->execute([$id]);
             $customer = $stmt->fetch();
-            
+
             if (!$customer) {
                 throw new Exception('Pelanggan tidak ditemukan');
             }
-            
+
             $response['success'] = true;
             $response['data'] = $customer;
             break;
@@ -98,21 +110,35 @@ try {
             // Search customer by phone
             $phone = $_GET['phone'] ?? '';
             
-            $stmt = $db->prepare("SELECT * FROM customers WHERE phone LIKE ?");
+            $stmt = $db->prepare("
+                SELECT c.*,
+                       u.email as user_email,
+                       CASE WHEN c.user_id IS NOT NULL THEN 1 ELSE 0 END as is_registered
+                FROM customers c
+                LEFT JOIN users u ON c.user_id = u.id
+                WHERE c.phone LIKE ?
+            ");
             $stmt->execute(["%{$phone}%"]);
             $customers = $stmt->fetchAll();
-            
+
             $response['success'] = true;
             $response['data'] = $customers;
             break;
             
         case 'get_all':
             // Get all customers
-            $stmt = $db->query("SELECT * FROM customers ORDER BY name ASC");
-            
-            $response['success'] = true;
-            $response['data'] = $stmt->fetchAll();
-            break;
+          $stmt = $db->query("
+          SELECT c.*,
+          u.email as user_email,
+          CASE WHEN c.user_id IS NOT NULL THEN 1 ELSE 0 END as
+          is_registered
+          FROM customers c
+          LEFT JOIN users u ON c.user_id = u.id
+          ORDER BY c.name ASC");
+
+          $response['success'] = true;
+          $response['data'] = $stmt->fetchAll();
+          break;
             
         default:
             throw new Exception('Action tidak valid');

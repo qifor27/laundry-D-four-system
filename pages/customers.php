@@ -4,6 +4,9 @@
  * CRUD untuk manajemen pelanggan
  */
 
+require_once __DIR__ . '/../includes/auth.php';
+requireLogin(); // Redirect to login if not authenticated
+
 require_once __DIR__ . '/../config/database_mysql.php';
 require_once __DIR__ . '/../includes/functions.php';
 
@@ -59,8 +62,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get all customers
-$customers = $db->query("SELECT * FROM customers ORDER BY created_at DESC")->fetchAll();
+// Get all customers with registration status
+$customers = $db->query("
+    SELECT c.*, 
+           u.email as user_email,
+           CASE WHEN c.user_id IS NOT NULL THEN 1 ELSE 0 END as is_registered
+    FROM customers c
+    LEFT JOIN users u ON c.user_id = u.id
+    ORDER BY c.created_at DESC
+")->fetchAll();
 
 include __DIR__ . '/../includes/header-admin.php';
 ?>
@@ -105,6 +115,7 @@ include __DIR__ . '/../includes/header-admin.php';
                             <th>No. Telepon</th>
                             <th>Alamat</th>
                             <th>Terdaftar</th>
+                            <th> Status </th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -117,6 +128,13 @@ include __DIR__ . '/../includes/header-admin.php';
                             <td class="text-sm text-gray-600"><?= htmlspecialchars($customer['address']) ?: '-' ?></td>
                             <td class="text-sm text-gray-600"><?= formatDate($customer['created_at'], false) ?></td>
                             <td>
+                                <?php if ($customer['is_registered']): ?>
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Terdaftar</span>
+                                <?php else: ?>
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Belum Daftar</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
                                 <div class="flex space-x-2">
                                     <button onclick='editCustomer(<?= json_encode($customer) ?>)' 
                                             class="text-primary-600 hover:text-primary-800 font-medium text-sm">
@@ -126,6 +144,12 @@ include __DIR__ . '/../includes/header-admin.php';
                                             class="text-red-600 hover:text-red-800 font-medium text-sm">
                                         Hapus
                                     </button>
+                                    <?php if (!$customer['is_registered']): ?>
+                                    <button onclick="inviteCustomer('<?= htmlspecialchars($customer['phone']) ?>')" 
+                                            class="text-blue-600 hover:text-blue-800 font-medium text-sm">
+                                        Undang
+                                    </button>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                         </tr>
@@ -232,6 +256,19 @@ function deleteCustomer(id) {
         document.body.appendChild(form);
         form.submit();
     }
+}
+
+function inviteCustomer(phone) {
+    const registerUrl = `${window.location.origin}/laundry-D-four/pages/auth/register.php?phone=${phone}`;
+    
+    // Copy ke clipboard
+    navigator.clipboard.writeText(registerUrl).then(() => {
+        alert('Link registrasi sudah dicopy!\n\nKirim ke customer via WhatsApp.');
+    }).catch(() => {
+        // Fallback: buka WhatsApp langsung
+        const waUrl = `https://wa.me/62${phone.substring(1)}?text=Silakan daftar di D'four Laundry: ${encodeURIComponent(registerUrl)}`;
+        window.open(waUrl, '_blank');
+    });
 }
 </script>
 

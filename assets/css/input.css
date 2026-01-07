@@ -102,6 +102,51 @@
   }
 }
 
+/* Bubble Decorations */
+.bubble-decoration {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.6;
+  animation: float 20s ease-in-out infinite;
+}
+
+.bubble-pink {
+  background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+}
+
+.bubble-purple {
+  background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);
+}
+
+.bubble-blue {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+}
+
+.bubble-cyan {
+  background: linear-gradient(135deg, #cffafe 0%, #a5f3fc 100%);
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-20px) scale(1.05);
+  }
+}
+
 /* Print Styles */
 @media print {
   .no-print {

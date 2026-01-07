@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <defs>
+    <radialGradient id="pinkGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#f472b6;stop-opacity:0.9" />
+      <stop offset="60%" style="stop-color:#f9a8d4;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#fce7f3;stop-opacity:0" />
+    </radialGradient>
+    <filter id="blur">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" />
+    </filter>
+  </defs>
+  <circle cx="250" cy="250" r="220" fill="url(#pinkGrad)" filter="url(#blur)" />
+</svg>

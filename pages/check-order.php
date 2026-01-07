@@ -4,6 +4,9 @@
  * Portal untuk customer cek status order mereka
  */
 
+require_once __DIR__ . '/../includes/auth.php';
+requireLogin(); // Customer must be logged in to check orders
+
 require_once __DIR__ . '/../config/database_mysql.php';
 require_once __DIR__ . '/../includes/functions.php';
 
