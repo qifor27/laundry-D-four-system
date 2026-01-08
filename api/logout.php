@@ -23,11 +23,11 @@ if ($wantsJson || $isAjax) {
     echo json_encode([
         'success' => true,
         'message' => 'Logout berhasil',
-        'redirect' => getBaseUrl() . '/pages/login.php'
+        'redirect' => getBaseUrl() . '/pages/auth/login.php'
     ]);
 } else {
     // Redirect for regular requests
-    header('Location: ' . getBaseUrl() . '/pages/login.php');
+    header('Location: ' . getBaseUrl() . '/pages/auth/login.php');
 }
 exit;
 ?>

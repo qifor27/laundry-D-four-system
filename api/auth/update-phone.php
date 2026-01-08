@@ -12,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-require_once '/../../config/database_mysql.php';
-require_once '/../../includes/auth.php';
+require_once __DIR__ . '/../../config/database_mysql.php';
+require_once __DIR__ . '/../../includes/auth.php';
 
 try {
     // step 1:check apakah user sudah login
@@ -67,11 +67,12 @@ try {
 
     // step 6: update nomor HP di table users
 
-    $stmt = $dp->prepare("
+    $stmt = $db->prepare("
         UPDATE users
-        SET phone = ?, updated_at = NOW()
+        SET phone = ?
         WHERE id = ?
     ");
+    $stmt->execute([$phone, $userId]);
 
     // update session dengan phone baru 
     $_SESSION['user_phone'] = $phone;

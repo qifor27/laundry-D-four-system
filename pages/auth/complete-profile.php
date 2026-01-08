@@ -1,11 +1,11 @@
 <?php
  
- require_once '/../../includes/functions.php';
- require_once '/../../includes/auth.php';
+ require_once __DIR__ . '/../../includes/functions.php';
+ require_once __DIR__ . '/../../includes/auth.php';
 
  // step 1: cek apakah user sudah login
 
- if (!isUserLoggedIn()) {
+ if (!isLoggedIn()) {
     header('Location: '. baseUrl() . '/pages/auth/login.php');
     exit;
  }
@@ -29,7 +29,7 @@
  require_once __DIR__ . '/../../config/database_mysql.php';
  $db = Database::getInstance()->getConnection();
  $stmt = $db->prepare("SELECT phone FROM users WHERE id = ?");
- $stmt->execute([$userData['d']]);
+ $stmt->execute([$userData['id']]);
  $userFromDb = $stmt->fetch(PDO::FETCH_ASSOC);
 
  if (!empty($userFromDb['phone'])) {
@@ -304,12 +304,10 @@
          */
 
         function showError(message) {
-            const el = document.getElemetById
-            ('alertError');
+            const el = document.getElementById('alertError');
             document.getElementById('alertErrorText').textContent = message;
             el.classList.add('show');
-            document.getElementById('alertSuccess').
-            classList.remove('show')
+            document.getElementById('alertSuccess').classList.remove('show');
 
             // scroll ke alert
             el.scrollIntoView({

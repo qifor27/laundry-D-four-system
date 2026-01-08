@@ -1,0 +1,156 @@
+<?php
+/**
+ * Google OAuth Configuration Template
+ * 
+ * PETUNJUK:
+ * 1. Copy file ini ke config/google-oauth.php
+ * 2. Ganti YOUR_GOOGLE_CLIENT_ID dengan Client ID dari Google Cloud Console
+ * 3. Ganti YOUR_GOOGLE_CLIENT_SECRET dengan Client Secret dari Google Cloud Console
+ * 
+ * Cara mendapatkan credentials:
+ * 1. Buka https://console.cloud.google.com/
+ * 2. Buat project baru
+ * 3. Pergi ke APIs & Services > Credentials
+ * 4. Buat OAuth 2.0 Client ID (Web application)
+ * 5. Authorized JavaScript origins: http://localhost
+ * 6. Authorized redirect URIs: http://localhost/laundry-D-four-system/api/google-callback.php
+ */
+
+// ============================================
+// SESSION CONFIGURATION
+// ============================================
+
+// Session timeout dalam detik (30 menit)
+if (!defined('SESSION_TIMEOUT')) {
+    define('SESSION_TIMEOUT', 1800);
+}
+
+// ============================================
+// GOOGLE OAUTH CREDENTIALS
+// ============================================
+
+// Google Client ID - GANTI DENGAN MILIK ANDA
+if (!defined('GOOGLE_CLIENT_ID')) {
+    define('GOOGLE_CLIENT_ID', 'YOUR_GOOGLE_CLIENT_ID');
+}
+
+// Google Client Secret - GANTI DENGAN MILIK ANDA
+if (!defined('GOOGLE_CLIENT_SECRET')) {
+    define('GOOGLE_CLIENT_SECRET', 'YOUR_GOOGLE_CLIENT_SECRET');
+}
+
+// ============================================
+// OTHER CONFIGURATION
+// ============================================
+
+// Default role untuk user baru yang register via Google
+if (!defined('DEFAULT_USER_ROLE')) {
+    define('DEFAULT_USER_ROLE', 'user');
+}
+
+// Google Redirect URI (auto-generated)
+if (!defined('GOOGLE_REDIRECT_URI')) {
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    define('GOOGLE_REDIRECT_URI', $protocol . '://' . $host . '/laundry-D-four-system/api/google-callback.php');
+}
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+/**
+ * Check if Google OAuth is properly configured
+ * 
+ * @return bool True if configured with real credentials
+ */
+function isGoogleOAuthConfigured() {
+    if (!defined('GOOGLE_CLIENT_ID') || GOOGLE_CLIENT_ID === 'YOUR_GOOGLE_CLIENT_ID') {
+        return false;
+    }
+    
+    if (!defined('GOOGLE_CLIENT_SECRET') || GOOGLE_CLIENT_SECRET === 'YOUR_GOOGLE_CLIENT_SECRET') {
+        return false;
+    }
+    
+    return true;
+}
+
+/**
+ * Verify Google ID Token
+ * 
+ * Memverifikasi JWT token dari Google Sign-In dan mengembalikan informasi user
+ * 
+ * @param string $idToken JWT token dari Google
+ * @return array|false User info array atau false jika gagal
+ */
+function verifyGoogleToken($idToken) {
+    // Google's token verification endpoint
+    $url = 'https://oauth2.googleapis.com/tokeninfo?id_token=' . urlencode($idToken);
+    
+    // Initialize cURL
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_TIMEOUT => 10
+    ]);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+    curl_close($ch);
+    
+    // Check for cURL errors
+    if ($error) {
+        error_log("Google token verification cURL error: " . $error);
+        return false;
+    }
+    
+    // Check HTTP response code
+    if ($httpCode !== 200) {
+        error_log("Google token verification failed with HTTP code: " . $httpCode);
+        return false;
+    }
+    
+    // Decode response
+    $payload = json_decode($response, true);
+    
+    if (!$payload) {
+        error_log("Google token verification: Failed to decode response");
+        return false;
+    }
+    
+    // Verify audience (client ID)
+    if (!isset($payload['aud']) || $payload['aud'] !== GOOGLE_CLIENT_ID) {
+        error_log("Google token verification: Invalid audience");
+        return false;
+    }
+    
+    // Verify issuer
+    $validIssuers = ['accounts.google.com', 'https://accounts.google.com'];
+    if (!isset($payload['iss']) || !in_array($payload['iss'], $validIssuers)) {
+        error_log("Google token verification: Invalid issuer");
+        return false;
+    }
+    
+    // Check if token is expired
+    if (isset($payload['exp']) && $payload['exp'] < time()) {
+        error_log("Google token verification: Token expired");
+        return false;
+    }
+    
+    // Return user info
+    return [
+        'google_id' => $payload['sub'] ?? null,
+        'email' => $payload['email'] ?? null,
+        'email_verified' => ($payload['email_verified'] ?? 'false') === 'true' || $payload['email_verified'] === true,
+        'name' => $payload['name'] ?? null,
+        'picture' => $payload['picture'] ?? null,
+        'given_name' => $payload['given_name'] ?? null,
+        'family_name' => $payload['family_name'] ?? null
+    ];
+}
+
+?>
