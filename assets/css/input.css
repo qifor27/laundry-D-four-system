@@ -5,93 +5,24 @@
 /* Custom Global Styles */
 @layer base {
   body {
-    @apply antialiased font-outfit;
+    @apply antialiased;
   }
 
   html {
     scroll-behavior: smooth;
-  }
-
-  /* Default heading styles with large typography*/
-  h1 {
-    @apply text-3xl md:text-4xl font-bold text-dark-900;
-  }
-
-  h2 {
-    @apply text-xl md:text-2xl font-semibold text-dark-800;
-  }
-
-  h3 {
-    @apply text-lg font-medium text-dark-700;
   }
 }
 
 /* Custom Components */
 @layer components {
 
-  .glass-card {
-    @apply bg-white/70 backdrop-blur-[10px] border border-white/30 rounded-3xl shadow-glass p-6;
-    transition: all 0.3s ease;
-  }
-
-  .glass-card:hover {
-    @apply shadow-glass-lg;
-    transform: translateY(-4px);
-  }
-
-  .glass-card-dark {
-    @apply bg-dark-900/70 backdrop-blur-[10px] border border-white/10 rounded-3xl shadow-glass p-6 text-white;
-  }
-
-  /* Cards - Standard */
-  .card {
-    @apply bg-white rounded-3xl shadow-soft p-6 transition-all duration-200;
-  }
-
-  .card:hover {
-    @apply shadow-soft-lg;
-  }
-
-  .card-gradient {
-    @apply bg-gradient-primary rounded-3xl p-6 text-white shadow-glow-purple;
-  }
-
-  /* stat card*/
-  .stat-card {
-    @apply relative bg-white rounded-3xl p-6 shadow-soft overflow-hidden;
-  }
-
-  .stat-card:after {
-    content: '';
-    @apply absolute -top-5 -right-5 w-24 h-24 bg-gradient-blob rounded-full opacity-50;
-  }
-
-  /* Buttons - Gradient Style */
-  .btn-gradient {
-    @apply bg-gradient-primary text-white font-semibold py-3 px-6 rounded-xl;
-    @apply transition-all duration-200;
-    @apply hover:shadow-glow-purple hover:-translate-y-0.5;
-  }
-
-
-
-
-  /* Primary Button - Standard */
+  /* Buttons */
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-6 rounded-xl;
-    @apply transition-all duration-200 shadow-soft hover:shadow-soft-lg;
-    @apply hover:-translate-y-0.5;
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5;
   }
 
   .btn-secondary {
-    @apply bg-dark-200 hover:bg-dark-300 text-dark-800 font-medium py-2.5 px-6 rounded-xl;
-    @apply transition-all duration-200;
-  }
-
-  .btn-royal {
-    @apply bg-royal-600 hover:bg-royal-700 text-white font-medium py-3.5 px-8;
-    @apply rounded-full transition-all duration-200;
-    @apply hover:shadow-lg hover:-translate-y-0.5;
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2.5 px-6 rounded-lg transition-all duration-200;
   }
 
   .btn-success {
@@ -102,97 +33,41 @@
     @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200;
   }
 
-  /*FORM ELEMENTS */
+  /* Cards */
+  .card {
+    @apply bg-white rounded-2xl shadow-lg p-6 transition-all duration-200 hover:shadow-xl;
+  }
+
+  .card-gradient {
+    @apply bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl p-6 text-white shadow-xl;
+  }
+
+  /* Form Elements */
   .form-input {
-    @apply w-full px-4 py-2.5 border border-gray-200 rounded-xl;
-    @apply focus:ring-2 focus:ring-primary-500 focus:border-transparent;
-    @apply transition-all duration-200 bg-white;
+    @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200;
   }
 
   .form-label {
-    @apply block text-sm font-medium text-dark-700 mb-2;
+    @apply block text-sm font-medium text-gray-700 mb-2;
   }
 
-  .input-underline {
-    @apply w-full bg-transparent border-0 border-b-2 border-dark-200 py-3 px-0;
-    @apply text-dark-800 placeholder-dark-400;
-    @apply focus:border-royal-600 focus:ring-0 focus:outline-none;
-    @apply transition-all duration-300;
-  }
-
-  .input-underline:focus {
-    border-bottom-color: #4f46e5;
-  }
-
-  /* FLoating label effect */
-  .input-group {
-    @apply relative;
-  }
-
-  .input-group .floating-label {
-    @apply absolute left-0 top-3 text-dark-400 transition-all duration-300 pointer-events-none;
-  }
-
-  .input-group .input-underline:focus~.floating-label,
-  .input-group .input-underline:not(:placeholder-shown)~.floating-label {
-    @apply -top-4 text-xs text-royal-600;
-  }
-
-  /* Admin Sideber */
-  .admin-sidebar {
-    @apply bg-gradient-admin min-h-screen w-20 py-6 px-3;
-    @apply flex flex-col items-center rounded-r-4xl;
-  }
-
-  .sidebar-icon {
-    @apply w-12 h-12 flex items-center justify-center;
-    @apply bg-white/20 rounded-2xl text-white mb-4;
-    @apply transition-all duration-200 cursor-pointer;
-  }
-
-  .sidebar-icon:hover,
-  .sidebar-icon.active {
-    @apply bg-white/40;
-  }
-
-  /** status Badges */
+  /* Status Badges */
   .badge {
     @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
   }
 
-  .badge-success {
-    @apply bg-secondary-100 text-secondary-700;
-  }
-
-  .badge-warning {
-    @apply bg-amber-100 text-amber-700;
-  }
-
-  .badge-danger {
-    @apply bg-red-100 text-red-700;
-  }
-
-  .badge-info {
-    @apply bg-royal-100 text-royal-700;
-  }
-
-  .badge-purple {
-    @apply bg-primary-100 text-primary-700;
-  }
-
-  /** Modal */
+  /* Modal */
   .modal-overlay {
-    @apply fixed inset-0 bg-black/50 z-40 backdrop-blur-sm;
+    @apply fixed inset-0 bg-black bg-opacity-50 z-40 backdrop-blur-sm;
   }
 
   .modal-content {
-    @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
-    @apply bg-white rounded-3xl shadow-glass-lg z-50 w-full max-w-md p-6;
+    @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl z-50 w-full max-w-md p-6;
   }
 
-  /** Table */
+  /* Table */
   .table-wrapper {
-    @apply overflow-x-auto rounded-2xl border border-dark-100 bg-white;
+    @apply overflow-x-auto rounded-lg border border-gray-200;
   }
 
   .table {
@@ -200,125 +75,127 @@
   }
 
   .table thead {
-    @apply bg-dark-50 text-dark-600 uppercase text-xs font-semibold;
+    @apply bg-gray-50 text-gray-700 uppercase text-xs font-semibold;
   }
 
   .table th {
-    @apply px-6 py-4 border-b border-dark-100;
+    @apply px-6 py-4;
   }
 
   .table td {
-    @apply px-6 py-4 border-b border-dark-100;
+    @apply px-6 py-4 border-b border-gray-200;
   }
 
   .table tbody tr {
-    @apply hover:bg-dark-50 transition-colors duration-150;
+    @apply hover:bg-gray-50 transition-colors duration-150;
   }
 
-  /* Navigation TABS*/
-  .nav-tabs {
-    @apply flex items-center bg-white/50 backdrop-blur-sm rounded-full p-1;
+  /* Page Backgrounds */
+  .bg-auth {
+    @apply min-h-screen bg-dark-50;
   }
 
-  .nav-tab {
-    @apply px-5 py-2 rounded-full text-sm font-medium text-dark-500;
+  /* =========================================
+     AUTH PAGE COMPONENTS
+     Login/Register with Liquid Glass
+     ========================================= */
+
+  /* Auth Branding Panel - Purple Gradient */
+  .auth-branding {
+    @apply flex-1 p-8 md:p-16 flex flex-col justify-start pt-12 md:pt-20 relative overflow-hidden;
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+  }
+
+  .auth-branding::before {
+    content: '';
+    @apply absolute w-[200%] h-[200%];
+    top: -50%;
+    left: -50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
+    animation: auth-rotate 30s linear infinite;
+  }
+
+  @keyframes auth-rotate {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Auth Form Panel */
+  .auth-form {
+    @apply flex-1 bg-white p-8 md:p-16 flex flex-col justify-start pt-12 md:pt-20;
+  }
+
+  .auth-form-inner {
+    @apply w-full max-w-md mx-auto;
+  }
+
+  /* Liquid Glass Bubbles */
+  .glass-bubble {
+    @apply absolute rounded-full;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: float 20s ease-in-out infinite;
+  }
+
+  .glass-bubble-1 {
+    @apply w-48 h-48 -top-12 -right-12;
+    animation-delay: 0s;
+  }
+
+  .glass-bubble-2 {
+    @apply w-36 h-36 bottom-24 -left-8;
+    animation-delay: -5s;
+  }
+
+  .glass-bubble-3 {
+    @apply w-24 h-24;
+    top: 40%;
+    right: 20%;
+    animation-delay: -10s;
+  }
+
+  .glass-bubble-4 {
+    @apply w-20 h-20 bottom-8;
+    right: 30%;
+    animation-delay: -15s;
+  }
+
+  .glass-bubble-5 {
+    @apply w-28 h-28;
+    top: 20%;
+    left: 10%;
+    animation-delay: -8s;
+  }
+
+  /* Auth Inputs */
+  .auth-input {
+    @apply w-full px-4 py-3.5 border-2 border-dark-200 rounded-xl text-base;
+    @apply focus:outline-none focus:border-primary-600 focus:ring-4 focus:ring-primary-100;
+    @apply transition-all duration-200;
+  }
+
+  /* Auth Button */
+  .auth-btn {
+    @apply w-full py-3.5 px-6 rounded-xl text-base font-semibold text-white;
     @apply transition-all duration-200 cursor-pointer;
+    background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
   }
 
-  .nav-tab:hover {
-    @apply text-dark-700;
+  .auth-btn:hover {
+    @apply -translate-y-0.5;
+    box-shadow: 0 10px 20px rgba(147, 51, 234, 0.3);
   }
 
-  .nav-tab.active {
-    @apply bg-white text-dark-900 shadow-soft;
+  .auth-btn:disabled {
+    @apply opacity-60 cursor-not-allowed translate-y-0;
   }
-
-  /*avatar*/
-  .avatar {
-    @apply w-10 h-10 rounded-full object-cover border-2 border-white shadow-soft;
-  }
-
-  .avatar-lg {
-    @apply w-14 h-14 rounded-full object-cover
-  }
-
-  /* Customer-item */
-  .customer-item {
-    @apply flex items-center gap-3 p-3 rounded-xl hover:bg-dark-50;
-    @apply transition-all duration-200 cursor-pointer;
-  }
-
-  .customer-item .customer-name {
-    @apply font-medium text-dark-800;
-  }
-
-  .customer-item .customer-location {
-    @apply text-sm text-dark-400;
-  }
-
 }
-
-/* =========================================
-   BACKGROUND DECORATIONS
-   Bubble & Gradient Blobs
-   ========================================= */
-.bubble-decoration {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.bubble {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  opacity: 0.6;
-  animation: float 20s ease-in-out infinite;
-}
-
-.bubble-pink {
-  background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
-}
-
-.bubble-purple {
-  background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);
-}
-
-.bubble-blue {
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-}
-
-.bubble-cyan {
-  background: linear-gradient(135deg, #cffafe 0%, #a5f3fc 100%);
-}
-
-/* Gradient blob decoration */
-.gradient-blob {
-  @apply absolute rounded-full opacity-30;
-  background: linear-gradient(135deg, #C8B6FF 0%, #FFB6F3 100%);
-  filter: blur(40px);
-}
-
-/* Page Backgrounds */
-
-/* .bg-user-dashboard*/
-.bg-user-dashboard {
-  @apply min-h-screen;
-  background: linear-gradient(135deg, #FFB6F3 0%, #C8B6FF 50%, #A5B4FC 100%);
-}
-
-/*admin dashboard background*/
-.bg-admin-dashboard {
-  @apply min-h-screen bg-accent-50;
-}
-
-.bg-auth {
-  @apply min-h-screen bg-dark-50;
-}
-
-/* Note: The following classes are already defined in @layer components above */
 
 /* Custom Utilities */
 @layer utilities {
@@ -391,7 +268,6 @@
   }
 
   .card,
-  .glass-card,
   .modal-content {
     @apply shadow-none;
   }
@@ -409,25 +285,12 @@
   }
 
   /* Adjust card padding on small screens */
-  .card,
-  .glass-card {
-    @apply p-4 rounded-2xl;
+  .card {
+    @apply p-4;
   }
 
   /* Modal adjustments for mobile */
   .modal-content {
     @apply w-[95vw] max-h-[90vh] overflow-y-auto;
-  }
-
-  .stat-number {
-    @apply text-3xl;
-  }
-
-  .admin-sidebar {
-    @apply w-16 px-2;
-  }
-
-  .sidebar-icon {
-    @apply w-10 h-10;
   }
 }
