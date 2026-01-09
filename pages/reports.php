@@ -21,8 +21,8 @@ include __DIR__ . '/../includes/header-admin.php';
 
 <!-- Reports Content -->
 <div>
-    <!-- Page Header -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+    <!-- Page Header + Filter -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">📊 Laporan Bulanan</h1>
             <p class="text-gray-600">Statistik dan analisis transaksi</p>
@@ -51,20 +51,20 @@ include __DIR__ . '/../includes/header-admin.php';
             </button>
         </form>
     </div>
-
+    
     <!-- Export Buttons -->
-        <div class="card mb-6">
+    <div class="card mb-6">
         <h3 class="text-lg font-bold text-gray-900 mb-4">📤 Export Laporan</h3>
         <div class="flex flex-wrap gap-3">
             <!-- Export Monthly Summary -->
             <div class="flex gap-2">
                 <a href="<?= baseUrl() ?>/api/export-api.php?type=monthly_summary&month=<?= $selectedMonth ?>&year=<?= $selectedYear ?>&format=csv" 
-                class="btn-secondary text-sm">
+                   class="btn-secondary text-sm">
                     📊 Ringkasan (Excel)
                 </a>
                 <a href="<?= baseUrl() ?>/api/export-api.php?type=monthly_summary&month=<?= $selectedMonth ?>&year=<?= $selectedYear ?>&format=pdf" 
-                target="_blank"
-                class="btn-secondary text-sm">
+                   target="_blank"
+                   class="btn-secondary text-sm">
                     📊 Ringkasan (Print)
                 </a>
             </div>
@@ -72,12 +72,12 @@ include __DIR__ . '/../includes/header-admin.php';
             <!-- Export Transactions -->
             <div class="flex gap-2">
                 <a href="<?= baseUrl() ?>/api/export-api.php?type=transactions&month=<?= $selectedMonth ?>&year=<?= $selectedYear ?>&format=csv" 
-                class="btn-secondary text-sm">
+                   class="btn-secondary text-sm">
                     📋 Transaksi (Excel)
                 </a>
                 <a href="<?= baseUrl() ?>/api/export-api.php?type=transactions&month=<?= $selectedMonth ?>&year=<?= $selectedYear ?>&format=pdf" 
-                target="_blank"
-                class="btn-secondary text-sm">
+                   target="_blank"
+                   class="btn-secondary text-sm">
                     📋 Transaksi (Print)
                 </a>
             </div>
@@ -85,12 +85,12 @@ include __DIR__ . '/../includes/header-admin.php';
             <!-- Export Service Report -->
             <div class="flex gap-2">
                 <a href="<?= baseUrl() ?>/api/export-api.php?type=service_report&month=<?= $selectedMonth ?>&year=<?= $selectedYear ?>&format=csv" 
-                class="btn-secondary text-sm">
+                   class="btn-secondary text-sm">
                     🧺 Per Layanan (Excel)
                 </a>
                 <a href="<?= baseUrl() ?>/api/export-api.php?type=service_report&month=<?= $selectedMonth ?>&year=<?= $selectedYear ?>&format=pdf" 
-                target="_blank"
-                class="btn-secondary text-sm">
+                   target="_blank"
+                   class="btn-secondary text-sm">
                     🧺 Per Layanan (Print)
                 </a>
             </div>
@@ -98,12 +98,12 @@ include __DIR__ . '/../includes/header-admin.php';
             <!-- Export Customers -->
             <div class="flex gap-2">
                 <a href="<?= baseUrl() ?>/api/export-api.php?type=customers&month=<?= $selectedMonth ?>&year=<?= $selectedYear ?>&format=csv" 
-                class="btn-secondary text-sm">
+                   class="btn-secondary text-sm">
                     👥 Pelanggan (Excel)
                 </a>
                 <a href="<?= baseUrl() ?>/api/export-api.php?type=customers&month=<?= $selectedMonth ?>&year=<?= $selectedYear ?>&format=pdf" 
-                target="_blank"
-                class="btn-secondary text-sm">
+                   target="_blank"
+                   class="btn-secondary text-sm">
                     👥 Pelanggan (Print)
                 </a>
             </div>
