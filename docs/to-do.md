@@ -177,90 +177,127 @@
 
 ## ⚙️ BACKEND TASKS
 
-### 🔴 Priority: HIGH (Harus Segera)
+> **Branch Strategy:** Setiap grup fitur dikerjakan di branch terpisah untuk meminimalisir merge conflict.
 
-#### Complete Profile for Google Users 🚧
-- [ ] **pages/auth/complete-profile.php** - Halaman untuk user Google melengkapi HP
-- [ ] **api/auth/update-phone.php** - API untuk menyimpan nomor HP dan link customer
+### 🌿 Daftar Branch Backend
 
-#### Security \u0026 Validation
-- [ ] **CSRF Protection**
-  - Generate CSRF tokens
-  - Validate tokens pada form submissions
+| No | Branch | Priority | Status |
+|----|--------|----------|--------|
+| 1 | `feature/backend-complete-profile` | 🔴 HIGH | ✅ Selesai |
+| 2 | `feature/backend-monthly-reports` | 🟡 MEDIUM | ⬜ Belum |
+| 3 | `feature/backend-export-reports` | 🟡 MEDIUM | ⬜ Belum |
+| 4 | `feature/backend-email-notifications` | 🟡 MEDIUM | ⬜ Belum |
+| 5 | `feature/backend-whatsapp-integration` | 🟡 MEDIUM | ⬜ Belum |
+| 6 | `feature/backend-payment-methods` | 🟡 MEDIUM | ⬜ Belum |
+| 7 | `feature/backend-security` | 🔴 HIGH | ⬜ Terakhir |
+| 8 | `feature/backend-loyalty` | 🟢 LOW | ⬜ Belum |
+| 9 | `feature/backend-multi-branch` | 🟢 LOW | ⬜ Belum |
 
-- [ ] **Rate Limiting**
-  - Limit API requests per IP
-  - Prevent brute force attacks
+---
 
-### 🟡 Priority: MEDIUM
+### Branch 1: `feature/backend-complete-profile` ✅
 
-#### 📊 Laporan Bulanan (Monthly Reports) - NEW!
+- [x] **pages/auth/complete-profile.php** - Halaman untuk user Google melengkapi HP
+- [x] **api/auth/update-phone.php** - API untuk menyimpan nomor HP dan link customer
+- [x] **config/google-oauth.php.template** - Template konfigurasi Google OAuth
+- [x] **docs/tutorial-complete-profile.md** - Tutorial lengkap
+- [x] **docs/testing-complete-profile.md** - Panduan testing
+- [x] **docs/setup-google-oauth.md** - Setup Google OAuth
 
-- [ ] **Halaman Reports** (`pages/reports.php`)
-  - UI untuk pilih periode laporan (bulan/tahun)
-  - Tampilkan ringkasan statistik
-  - Charts untuk visualisasi data
+---
 
-- [ ] **API Reports** (`api/reports-api.php`)
-  - [ ] `action=monthly_summary` - Ringkasan transaksi per bulan
-    - Total transaksi
-    - Total pendapatan
-    - Rata-rata per transaksi
-    - Perbandingan dengan bulan sebelumnya (%)
-  
-  - [ ] `action=daily_breakdown` - Detail per hari dalam sebulan
-    - Jumlah transaksi per hari
-    - Pendapatan per hari
-    - Chart trend harian
-  
-  - [ ] `action=service_report` - Laporan per jenis layanan
-    - Layanan paling populer
-    - Pendapatan per layanan
-    - Persentase kontribusi
-  
-  - [ ] `action=customer_report` - Laporan pelanggan
-    - Top 10 pelanggan (by transaksi/spending)
-    - Customer baru per bulan
-    - Customer aktif vs dormant
-  
-  - [ ] `action=status_report` - Laporan status transaksi
-    - Breakdown per status
-    - Rata-rata waktu penyelesaian
-    - Transaksi pending/stuck
+### Branch 2: `feature/backend-monthly-reports` 🟡
 
-- [ ] **Export Laporan**
-  - Export ke Excel (PHPSpreadsheet)
-  - Export ke PDF (TCPDF/MPDF)
-  - Auto-email laporan bulanan (opsional)
+**Files:**
+- [ ] `pages/reports.php` - UI halaman laporan
+- [ ] `api/reports-api.php` - API endpoint laporan
 
-- [ ] **Dashboard Widget**
-  - Quick stats di dashboard admin
-  - Mini chart trend minggu ini
-  - Comparison with last period
+**API Actions:**
+- [ ] `action=monthly_summary` - Ringkasan transaksi per bulan
+- [ ] `action=daily_breakdown` - Detail per hari dalam sebulan
+- [ ] `action=service_report` - Laporan per jenis layanan
+- [ ] `action=customer_report` - Laporan pelanggan
+- [ ] `action=status_report` - Laporan status transaksi
 
-#### Notification System
-- [ ] **Email Notifications**
-  - Konfigurasi SMTP yang benar
-  - Template email yang bagus
-  
-- [ ] **WhatsApp Integration** (optional)
-  - Menggunakan API WhatsApp Business
-  - Notifikasi order ready
+**Dashboard Widget:**
+- [ ] Quick stats di dashboard admin
+- [ ] Mini chart trend minggu ini
+- [ ] Comparison with last period
 
-#### Payment Management
-- [ ] **Multiple Payment Methods**
-  - Cash, Transfer, E-wallet
-  - Payment status tracking
+---
 
-### 🟢 Priority: LOW (Nice to Have)
+### Branch 3: `feature/backend-export-reports` 🟡
 
-- [ ] **Multi-Branch Support**
-  - Branch management
-  - Consolidated reporting
+> **Dependency:** Harus setelah `feature/backend-monthly-reports`
 
-- [ ] **Customer Loyalty**
-  - Points system
-  - Rewards/discount
+- [ ] Export ke Excel (PHPSpreadsheet)
+- [ ] Export ke PDF (TCPDF/MPDF)
+- [ ] Auto-email laporan bulanan (opsional)
+
+---
+
+### Branch 4: `feature/backend-email-notifications` 🟡
+
+- [ ] Konfigurasi SMTP yang benar
+- [ ] Template email yang bagus
+- [ ] Email notifikasi order status
+
+---
+
+### Branch 5: `feature/backend-whatsapp-integration` 🟡
+
+> **Opsional** - Bisa di-skip jika tidak diperlukan
+
+- [ ] Menggunakan API WhatsApp Business
+- [ ] Notifikasi order ready
+- [ ] Template pesan WhatsApp
+
+---
+
+### Branch 6: `feature/backend-payment-methods` 🟡
+
+- [ ] Multiple Payment Methods (Cash, Transfer, E-wallet)
+- [ ] Payment status tracking
+- [ ] Bukti pembayaran upload (opsional)
+
+---
+
+### Branch 7: `feature/backend-security` 🔴
+
+> **⚠️ DIKERJAKAN TERAKHIR** - Karena update banyak file form dan API
+
+**CSRF Protection:**
+- [ ] Function `requireCsrf()` di `includes/auth.php`
+- [ ] Update semua form dengan `csrfField()`
+- [ ] Update semua API dengan `requireCsrf()`
+
+**Rate Limiting:**
+- [ ] Limit API requests per IP
+- [ ] Prevent brute force attacks
+- [ ] Logging failed attempts
+
+**Dokumentasi:**
+- [ ] `docs/tutorial-csrf-protection.md` ✅
+
+---
+
+### Branch 8: `feature/backend-loyalty` 🟢
+
+> **Nice to Have** - Prioritas rendah
+
+- [ ] Points system
+- [ ] Rewards/discount
+- [ ] Customer tier (Bronze, Silver, Gold)
+
+---
+
+### Branch 9: `feature/backend-multi-branch` 🟢
+
+> **Nice to Have** - Major feature, paling akhir
+
+- [ ] Branch management
+- [ ] Consolidated reporting
+- [ ] Per-branch dashboard
 
 ---
 
