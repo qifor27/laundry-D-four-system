@@ -11,7 +11,7 @@ class Database {
     
     // Konfigurasi database MySQL
     private $host = "localhost";
-    private $db_name = "laundry_dfour";
+    private $db_name = "db_laundrydfour";
     private $username = "root";
     private $password = "";
     private $charset = "utf8mb4";
