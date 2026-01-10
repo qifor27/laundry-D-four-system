@@ -184,7 +184,7 @@
 | No | Branch | Priority | Status |
 |----|--------|----------|--------|
 | 1 | `feature/backend-complete-profile` | 🔴 HIGH | ✅ Selesai |
-| 2 | `feature/backend-monthly-reports` | 🟡 MEDIUM | ⬜ Belum |
+| 2 | `feature/backend-monthly-reports` | 🟡 MEDIUM | ✅ Selesai |
 | 3 | `feature/backend-export-reports` | 🟡 MEDIUM | ⬜ Belum |
 | 4 | `feature/backend-email-notifications` | 🟡 MEDIUM | ⬜ Belum |
 | 5 | `feature/backend-whatsapp-integration` | 🟡 MEDIUM | ⬜ Belum |
