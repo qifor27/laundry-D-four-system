@@ -55,6 +55,7 @@ function sendEmail($to, $subject, $body, $options = []) {
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = SMTP_PORT;
         $mail->CharSet    = 'UTF-8';
+        $mail->Timeout    = 5;  // 5 second timeout to prevent slow loading
 
         // recipients
         $mail->setFrom(SMTP_USERNAME, EMAIL_FROM_NAME);

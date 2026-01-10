@@ -62,26 +62,38 @@ try {
             $response['success'] = true;
             $response['message'] = 'Status berhasil diupdate';
 
-            // Setelah update status berhasil, kirim email
-            require_once __DIR__ . '/../includes/email-helper.php';
+            // Optional: Send email notification (wrapped in try-catch to not block status update)
+            try {
+                // Get transaction data first
+                $txStmt = $db->prepare("SELECT * FROM transactions WHERE id = ?");
+                $txStmt->execute([$id]);
+                $transaction = $txStmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($transaction) {
+                    require_once __DIR__ . '/../includes/email-helper.php';
+                    
+                    // Get customer data
+                    $customerStmt = $db->prepare("
+                        SELECT c.*, u.email 
+                        FROM customers c 
+                        LEFT JOIN users u ON c.user_id = u.id 
+                        WHERE c.id = ?
+                    ");
+                    $customerStmt->execute([$transaction['customer_id']]);
+                    $customer = $customerStmt->fetch(PDO::FETCH_ASSOC);
 
-            // Get customer data
-            $customerStmt = $db->prepare("
-                SELECT c.*, u.email 
-                FROM customers c 
-                LEFT JOIN users u ON c.user_id = u.id 
-                WHERE c.id = ?
-            ");
-            $customerStmt->execute([$transaction['customer_id']]);
-            $customer = $customerStmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($customer) {
-                // Send email based on new status
-                if ($status === 'done') {
-                    sendReadyForPickupEmail($transaction, $customer);
-                } else {
-                    sendOrderStatusEmail($transaction, $customer, $status);
+                    if ($customer && !empty($customer['email'])) {
+                        // Send email based on new status
+                        if ($status === 'done') {
+                            sendReadyForPickupEmail($transaction, $customer);
+                        } else {
+                            sendOrderStatusEmail($transaction, $customer, $status);
+                        }
+                    }
                 }
+            } catch (Exception $emailError) {
+                // Log error but don't fail the status update
+                error_log("Email notification failed: " . $emailError->getMessage());
             }
             break;
             

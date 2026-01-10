@@ -44,8 +44,8 @@ define('EMAIL_REPLY_TO', 'cs@dfourlaundry.com');
 // FEATURE FLAGS
 // ================================================
 
-// Aktifkan email notifications
-define('EMAIL_ENABLED', true);
+// Aktifkan email notifications (set false untuk disable sementara)
+define('EMAIL_ENABLED', false);
 
 // Debug mode (tampilkan error detail)
 define('EMAIL_DEBUG', false);
