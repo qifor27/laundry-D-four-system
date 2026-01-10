@@ -186,7 +186,7 @@
 | 1 | `feature/backend-complete-profile` | 🔴 HIGH | ✅ Selesai |
 | 2 | `feature/backend-monthly-reports` | 🟡 MEDIUM | ✅ Selesai |
 | 3 | `feature/backend-export-reports` | 🟡 MEDIUM | ✅ Selesai |
-| 4 | `feature/backend-email-notifications` | 🟡 MEDIUM | ⬜ Belum |
+| 4 | `feature/backend-email-notifications` | 🟡 MEDIUM | ✅ Selesai |
 | 5 | `feature/backend-whatsapp-integration` | 🟡 MEDIUM | ⬜ Belum |
 | 6 | `feature/backend-payment-methods` | 🟡 MEDIUM | ⬜ Belum |
 | 7 | `feature/backend-security` | 🔴 HIGH | ⬜ Terakhir |
