@@ -2,7 +2,7 @@
 
 Panduan lengkap untuk menjalankan aplikasi setelah clone dari GitHub.
 
-**Last Updated: 2026-01-07**
+**Last Updated: 2026-01-10**
 
 ---
 
@@ -11,6 +11,7 @@ Panduan lengkap untuk menjalankan aplikasi setelah clone dari GitHub.
 Pastikan sudah terinstall:
 - ✅ **XAMPP** (Apache + MySQL + PHP 7.4+)
 - ✅ **Node.js** dan **npm** (untuk Tailwind CSS)
+- ✅ **Composer** (untuk PHP dependencies) - [Download](https://getcomposer.org/Composer-Setup.exe)
 - ✅ **Git** (untuk clone repository)
 
 ---
@@ -28,9 +29,18 @@ cd laundry-D-four-system
 
 ### 2️⃣ Install Dependencies
 
+**A. Install Node.js Dependencies (Tailwind CSS):**
 ```bash
 npm install
 ```
+
+**B. Install PHP Dependencies (PHPMailer):**
+```bash
+composer install
+```
+
+> 💡 Jika belum punya Composer, download di: https://getcomposer.org/Composer-Setup.exe
+
 
 ### 3️⃣ Setup Database MySQL
 
@@ -186,15 +196,22 @@ define('GOOGLE_CLIENT_ID', 'your-client-id.apps.googleusercontent.com');
 define('GOOGLE_CLIENT_SECRET', 'your-client-secret');
 ```
 
-### Email SMTP (Opsional)
-Untuk mengaktifkan email verifikasi:
+### Email Notifications (Opsional)
+Untuk mengaktifkan email notifikasi ke pelanggan:
 
-1. Buat App Password di Gmail
-2. Edit `config/email.php`:
+**Library:** PHPMailer (sudah terinstall via `composer install`)
+
+**Konfigurasi:**
+1. Copy `config/email.php.template` ke `config/email.php`
+2. Buat App Password di Gmail: https://myaccount.google.com/apppasswords
+3. Edit `config/email.php`:
 ```php
 define('SMTP_USERNAME', 'your-email@gmail.com');
-define('SMTP_PASSWORD', 'your-app-password');
+define('SMTP_PASSWORD', 'your-16-char-app-password');
 ```
+
+**Dokumentasi lengkap:** `docs/tutorial-email-notifications.md`
+
 
 ---
 
