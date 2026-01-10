@@ -148,7 +148,12 @@ Pesanan Anda telah kami terima:
 🧺 Layanan: {service_type}
 💰 Total: Rp {price}
 
-Kami akan segera memproses pesanan Anda.
+💳 *Pembayaran via Transfer Bank:*
+🏦 Bank: {bank_name}
+🔢 No. Rek: {bank_account}
+👤 A/N: {bank_holder}
+
+Mohon transfer sebelum pengambilan.
 
 Terima kasih! 🙏
 ");
@@ -174,12 +179,45 @@ Kabar baik! Pesanan Anda sudah selesai:
 📦 No. Pesanan: #{order_id}
 💰 Total: Rp {price}
 
-Silakan diambil di:
+💳 *Pembayaran via Transfer Bank:*
+🏦 Bank: {bank_name}
+🔢 No. Rek: {bank_account}
+👤 A/N: {bank_holder}
+
+Silakan transfer lalu ambil di:
 📍 D'four Laundry
 🕐 Jam: 08.00 - 21.00 WIB
 
 Ditunggu kedatangannya! 😊
 ");
+
+define('WA_TEMPLATE_PAYMENT_REMINDER', "
+*{business_name}*
+
+Halo {customer_name}! 👋
+
+Kami ingin mengingatkan bahwa pesanan Anda belum dibayar:
+📦 No. Pesanan: #{order_id}
+💰 Total: Rp {price}
+
+💳 *Silakan Transfer ke:*
+🏦 Bank: {bank_name}
+🔢 No. Rek: {bank_account}
+👤 A/N: {bank_holder}
+
+Jika sudah transfer, mohon konfirmasi ke admin.
+
+Terima kasih! 🙏
+");
+
+// ================================================
+// BANK ACCOUNT CONFIGURATION
+// ================================================
+
+// Info Rekening Bank (bisa lebih dari satu)
+define('WA_BANK_NAME', 'BCA');
+define('WA_BANK_ACCOUNT', '1234567890');
+define('WA_BANK_HOLDER', "D'four Laundry");
 
 // ================================================
 // HELPER FUNCTION
@@ -320,6 +358,9 @@ function sendOrderCreatedWA($transaction, $customer) {
     $message = str_replace('{order_id}', $transaction['id'], $message);
     $message = str_replace('{service_type}', $transaction['service_type'], $message);
     $message = str_replace('{price}', number_format($transaction['price'], 0, ',', '.'), $message);
+    $message = str_replace('{bank_name}', WA_BANK_NAME, $message);
+    $message = str_replace('{bank_account}', WA_BANK_ACCOUNT, $message);
+    $message = str_replace('{bank_holder}', WA_BANK_HOLDER, $message);
     
     return sendWhatsApp($customer['phone'], $message);
 }
@@ -363,6 +404,29 @@ function sendReadyForPickupWA($transaction, $customer) {
     $message = str_replace('{customer_name}', $customer['name'], $message);
     $message = str_replace('{order_id}', $transaction['id'], $message);
     $message = str_replace('{price}', number_format($transaction['price'], 0, ',', '.'), $message);
+    $message = str_replace('{bank_name}', WA_BANK_NAME, $message);
+    $message = str_replace('{bank_account}', WA_BANK_ACCOUNT, $message);
+    $message = str_replace('{bank_holder}', WA_BANK_HOLDER, $message);
+    
+    return sendWhatsApp($customer['phone'], $message);
+}
+
+/**
+ * Send Payment Reminder WhatsApp
+ */
+function sendPaymentReminderWA($transaction, $customer) {
+    if (empty($customer['phone'])) {
+        return ['success' => false, 'message' => 'Customer has no phone'];
+    }
+    
+    $message = WA_TEMPLATE_PAYMENT_REMINDER;
+    $message = str_replace('{business_name}', WA_BUSINESS_NAME, $message);
+    $message = str_replace('{customer_name}', $customer['name'], $message);
+    $message = str_replace('{order_id}', $transaction['id'], $message);
+    $message = str_replace('{price}', number_format($transaction['price'], 0, ',', '.'), $message);
+    $message = str_replace('{bank_name}', WA_BANK_NAME, $message);
+    $message = str_replace('{bank_account}', WA_BANK_ACCOUNT, $message);
+    $message = str_replace('{bank_holder}', WA_BANK_HOLDER, $message);
     
     return sendWhatsApp($customer['phone'], $message);
 }
