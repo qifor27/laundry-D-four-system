@@ -24,7 +24,7 @@ if (!$id) {
 
 // Get transaction with customer info
 $stmt = $db->prepare("
-    SELECT t.*, c.name as customer_name, c.phone, c.email, c.address
+    SELECT t.*, c.name as customer_name, c.phone
     FROM transactions t 
     JOIN customers c ON t.customer_id = c.id 
     WHERE t.id = ?
@@ -92,18 +92,6 @@ include __DIR__ . '/../includes/header-admin.php';
                     <p class="text-sm text-gray-500">Telepon</p>
                     <p class="font-medium"><?= htmlspecialchars($transaction['phone']) ?></p>
                 </div>
-                <?php if ($transaction['email']): ?>
-                <div>
-                    <p class="text-sm text-gray-500">Email</p>
-                    <p class="font-medium"><?= htmlspecialchars($transaction['email']) ?></p>
-                </div>
-                <?php endif; ?>
-                <?php if ($transaction['address']): ?>
-                <div>
-                    <p class="text-sm text-gray-500">Alamat</p>
-                    <p class="font-medium"><?= htmlspecialchars($transaction['address']) ?></p>
-                </div>
-                <?php endif; ?>
             </div>
         </div>
 
