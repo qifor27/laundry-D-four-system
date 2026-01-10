@@ -61,6 +61,28 @@ try {
             
             $response['success'] = true;
             $response['message'] = 'Status berhasil diupdate';
+
+            // Setelah update status berhasil, kirim email
+            require_once __DIR__ . '/../includes/email-helper.php';
+
+            // Get customer data
+            $customerStmt = $db->prepare("
+                SELECT c.*, u.email 
+                FROM customers c 
+                LEFT JOIN users u ON c.user_id = u.id 
+                WHERE c.id = ?
+            ");
+            $customerStmt->execute([$transaction['customer_id']]);
+            $customer = $customerStmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($customer) {
+                // Send email based on new status
+                if ($status === 'done') {
+                    sendReadyForPickupEmail($transaction, $customer);
+                } else {
+                    sendOrderStatusEmail($transaction, $customer, $status);
+                }
+            }
             break;
             
         case 'get_by_id':

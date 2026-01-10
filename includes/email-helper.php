@@ -57,7 +57,7 @@ function sendEmail($to, $subject, $body, $options = []) {
         $mail->CharSet    = 'UTF-8';
 
         // recipients
-        $mail->setFrom(SMPT_USERNAME, EMAIL_FROM_NAME);
+        $mail->setFrom(SMTP_USERNAME, EMAIL_FROM_NAME);
         $mail->addAddress($to);
         $mail->addReplyTo(EMAIL_REPLY_TO ?? SMTP_USERNAME, EMAIL_FROM_NAME);
 
@@ -72,7 +72,7 @@ function sendEmail($to, $subject, $body, $options = []) {
         logEmail($to, $subject, 'sent');
         return ['success' => true, 'message' => 'Email berhasil terkirim!'];
 
-    } catch (Exaption $e) {
+        } catch (Exception $e) {
         $errorMsg = $mail->ErrorInfo;
         logEmail($to, $subject, 'failed: ' . $errorMsg);
         return ['success' => false, 'message' => 'Gagal kirim email: ' . $errorMsg];
@@ -164,6 +164,8 @@ function getEmailStatusLabel($status) {
 function getOrderStatusEmailTemplate($transaction, $customer, $newStatus) {
     $statusLabel = getEmailStatusLabel($newStatus);
     $statusColor = $newStatus === 'done' ? '#22c55e' : '#9333ea';
+    $formattedPrice = number_format($transaction['price'], 0, ',', '.');
+    $currentYear = date('Y');
     
     return <<<HTML
 <!DOCTYPE html>
@@ -212,7 +214,7 @@ function getOrderStatusEmailTemplate($transaction, $customer, $newStatus) {
                         </tr>
                         <tr>
                             <td style="padding:8px 0;color:#6b7280;">Total</td>
-                            <td style="padding:8px 0;color:#111827;font-weight:bold;text-align:right;">Rp " . number_format($transaction['price'], 0, ',', '.') . "</td>
+                                                        <td style="padding:8px 0;color:#111827;font-weight:bold;text-align:right;">Rp {$formattedPrice}</td>
                         </tr>
                     </table>
                 </div>
@@ -228,7 +230,7 @@ function getOrderStatusEmailTemplate($transaction, $customer, $newStatus) {
             <!-- Footer -->
             <div style="background:#f9fafb;padding:20px;text-align:center;border-top:1px solid #e5e7eb;">
                 <p style="color:#6b7280;font-size:12px;margin:0;">
-                    © " . date('Y') . " D'four Laundry. All rights reserved.
+                                        © {$currentYear} D'four Laundry. All rights reserved.
                 </p>
                 <p style="color:#9ca3af;font-size:11px;margin:10px 0 0;">
                     Email ini dikirim otomatis, mohon tidak membalas email ini.
@@ -292,6 +294,8 @@ HTML;
  * Ready for Pickup Template
  */
 function getReadyForPickupEmailTemplate($transaction, $customer) {
+    $formattedPrice = number_format($transaction['price'], 0, ',', '.');
+    
     return <<<HTML
 <!DOCTYPE html>
 <html>
@@ -321,7 +325,7 @@ function getReadyForPickupEmailTemplate($transaction, $customer) {
                 </div>
                 
                 <p style="color:#374151;font-size:16px;">
-                    <strong>Total Pembayaran:</strong> Rp " . number_format($transaction['price'], 0, ',', '.') . "
+                    <strong>Total Pembayaran:</strong> Rp {$formattedPrice}
                 </p>
                 
                 <div style="background:#f9fafb;border-radius:8px;padding:15px;margin:20px 0;">
