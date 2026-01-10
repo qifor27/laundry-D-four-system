@@ -194,22 +194,97 @@ function isEmailConfigured() {
 
 ---
 
-## Langkah 2: Email Helper
+## Langkah 2: Install Composer & PHPMailer
+
+### A. Install Composer (Jika Belum Punya)
+
+#### Langkah 1: Download Composer
+
+1. Buka: https://getcomposer.org/Composer-Setup.exe
+2. Jalankan file `Composer-Setup.exe` yang sudah didownload
+3. Ikuti wizard instalasi:
+   - Pilih mode: **Install for all users**
+   - Pilih PHP executable: `C:\xampp\php\php.exe`
+   - Centang **Add to PATH** (biasanya otomatis)
+   - Klik **Next** sampai selesai
+
+#### Langkah 2: Verifikasi Instalasi
+
+Buka **PowerShell baru** (tutup yang lama, buka baru), lalu ketik:
+
+```bash
+composer --version
+```
+
+Jika berhasil, akan muncul seperti:
+```
+Composer version 2.x.x 2024-xx-xx
+```
+
+> ⚠️ **PENTING:** Setelah install Composer, Anda HARUS buka terminal BARU (tutup yang lama) agar PATH ter-update!
+
+---
+
+### B. Install PHPMailer
+
+Setelah Composer terinstall, jalankan di folder project:
+
+```bash
+cd c:\xampp\htdocs\laundry-D-four-system
+composer require phpmailer/phpmailer
+```
+
+Jika berhasil, akan muncul:
+```
+Using version ^6.x for phpmailer/phpmailer
+./composer.json has been created
+Loading composer repositories with package information
+...
+```
+
+### Hasil Instalasi
+
+Setelah berhasil, struktur folder akan seperti ini:
+
+```
+laundry-D-four-system/
+├── vendor/                  ← BARU (folder library)
+│   ├── autoload.php         ← File penting!
+│   └── phpmailer/
+├── composer.json            ← BARU (daftar dependencies)
+├── composer.lock            ← BARU (version lock)
+└── ...
+```
+
+### C. Update .gitignore
+
+Tambahkan ke `.gitignore` agar folder vendor tidak ikut ke-commit:
+
+```
+# Composer dependencies
+vendor/
+```
+
+---
+
+## Langkah 3: Email Helper (PHPMailer)
 
 ### 📄 File: `includes/email-helper.php`
 
 Buat file baru di: `c:\xampp\htdocs\laundry-D-four-system\includes\email-helper.php`
 
-### Kode (Tanpa Library Eksternal):
+### Kode dengan PHPMailer:
 
 ```php
 <?php
 /**
- * Email Helper Functions
+ * Email Helper Functions (PHPMailer)
  * 
- * Fungsi-fungsi untuk mengirim email menggunakan PHP mail() atau SMTP socket.
- * Tidak memerlukan library eksternal seperti PHPMailer.
+ * Fungsi-fungsi untuk mengirim email menggunakan PHPMailer + Gmail SMTP.
  */
+
+// Load Composer autoloader
+require_once __DIR__ . '/../vendor/autoload.php';
 
 // Load email config
 $emailConfigPath = __DIR__ . '/../config/email.php';
@@ -217,8 +292,12 @@ if (file_exists($emailConfigPath)) {
     require_once $emailConfigPath;
 }
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 /**
- * Send Email via SMTP
+ * Send Email via PHPMailer + Gmail SMTP
  * 
  * @param string $to Recipient email
  * @param string $subject Email subject
@@ -237,54 +316,55 @@ function sendEmail($to, $subject, $body, $options = []) {
         return ['success' => false, 'message' => 'Email not configured properly'];
     }
     
-    $fromEmail = $options['from'] ?? EMAIL_FROM;
-    $fromName = $options['from_name'] ?? EMAIL_FROM_NAME;
-    $replyTo = $options['reply_to'] ?? EMAIL_REPLY_TO;
+    $mail = new PHPMailer(true);
     
-    // Build headers
-    $headers = [
-        'MIME-Version: 1.0',
-        'Content-Type: text/html; charset=UTF-8',
-        'From: ' . $fromName . ' <' . $fromEmail . '>',
-        'Reply-To: ' . $replyTo,
-        'X-Mailer: PHP/' . phpversion()
-    ];
-    
-    // Try to send via PHP mail()
-    // Note: For production, use PHPMailer or similar library
     try {
-        $result = @mail($to, $subject, $body, implode("\r\n", $headers));
-        
-        if ($result) {
-            logEmail($to, $subject, 'sent');
-            return ['success' => true, 'message' => 'Email sent successfully'];
-        } else {
-            logEmail($to, $subject, 'failed');
-            return ['success' => false, 'message' => 'Failed to send email. Check server mail configuration.'];
+        // Server settings
+        if (defined('EMAIL_DEBUG') && EMAIL_DEBUG) {
+            $mail->SMTPDebug = SMTP::DEBUG_SERVER;
         }
+        
+        $mail->isSMTP();
+        $mail->Host       = SMTP_HOST;
+        $mail->SMTPAuth   = true;
+        $mail->Username   = SMTP_USERNAME;
+        $mail->Password   = SMTP_PASSWORD;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = SMTP_PORT;
+        $mail->CharSet    = 'UTF-8';
+        
+        // Recipients
+        $mail->setFrom(SMTP_USERNAME, EMAIL_FROM_NAME);
+        $mail->addAddress($to);
+        $mail->addReplyTo(EMAIL_REPLY_TO ?? SMTP_USERNAME, EMAIL_FROM_NAME);
+        
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body    = $body;
+        $mail->AltBody = strip_tags($body); // Plain text version
+        
+        $mail->send();
+        
+        logEmail($to, $subject, 'sent');
+        return ['success' => true, 'message' => 'Email berhasil dikirim!'];
+        
     } catch (Exception $e) {
-        logEmail($to, $subject, 'error: ' . $e->getMessage());
-        return ['success' => false, 'message' => 'Error: ' . $e->getMessage()];
+        $errorMsg = $mail->ErrorInfo;
+        logEmail($to, $subject, 'failed: ' . $errorMsg);
+        return ['success' => false, 'message' => 'Gagal kirim email: ' . $errorMsg];
     }
 }
 
 /**
  * Send Order Status Email
- * 
- * @param array $transaction Transaction data
- * @param array $customer Customer data
- * @param string $newStatus New status
- * @return array
  */
 function sendOrderStatusEmail($transaction, $customer, $newStatus) {
-    // Check if customer has email
     if (empty($customer['email'])) {
         return ['success' => false, 'message' => 'Customer has no email'];
     }
     
     $subject = "Update Status Pesanan #" . $transaction['id'] . " - D'four Laundry";
-    
-    // Load template
     $body = getOrderStatusEmailTemplate($transaction, $customer, $newStatus);
     
     return sendEmail($customer['email'], $subject, $body);
@@ -292,10 +372,6 @@ function sendOrderStatusEmail($transaction, $customer, $newStatus) {
 
 /**
  * Send Order Created Email
- * 
- * @param array $transaction Transaction data
- * @param array $customer Customer data
- * @return array
  */
 function sendOrderCreatedEmail($transaction, $customer) {
     if (empty($customer['email'])) {
@@ -303,7 +379,6 @@ function sendOrderCreatedEmail($transaction, $customer) {
     }
     
     $subject = "Pesanan Baru #" . $transaction['id'] . " - D'four Laundry";
-    
     $body = getOrderCreatedEmailTemplate($transaction, $customer);
     
     return sendEmail($customer['email'], $subject, $body);
@@ -311,10 +386,6 @@ function sendOrderCreatedEmail($transaction, $customer) {
 
 /**
  * Send Ready for Pickup Email
- * 
- * @param array $transaction Transaction data
- * @param array $customer Customer data
- * @return array
  */
 function sendReadyForPickupEmail($transaction, $customer) {
     if (empty($customer['email'])) {
@@ -322,7 +393,6 @@ function sendReadyForPickupEmail($transaction, $customer) {
     }
     
     $subject = "Pesanan #" . $transaction['id'] . " Siap Diambil! - D'four Laundry";
-    
     $body = getReadyForPickupEmailTemplate($transaction, $customer);
     
     return sendEmail($customer['email'], $subject, $body);
@@ -358,10 +428,19 @@ function getEmailStatusLabel($status) {
     ];
     return $labels[$status] ?? $status;
 }
+```
 
+---
+
+## Langkah 4: Template Email
+
+Tambahkan template email di akhir file `includes/email-helper.php`:
+
+```php
 // ================================================
 // EMAIL TEMPLATES
 // ================================================
+
 
 /**
  * Order Status Update Template

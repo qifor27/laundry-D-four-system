@@ -13,8 +13,11 @@ belajarOOP/
 # Google OAuth credentials (contains secrets)
 config/google-oauth.php
 
-# Gmail SMTP credentials (contains secrets)
+# Email config (contains credentials)
 config/email.php
+
+# Composer dependencies
+vendor/
 
 # Design inspiration:
 # https://dribbble.com/shots/25585058-LaundryWeb-Website-Concept-Design 
