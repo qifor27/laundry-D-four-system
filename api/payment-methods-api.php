@@ -18,7 +18,7 @@ require_once __DIR__ . '/../config/database_mysql.php';
 require_once __DIR__ . '/../includes/auth.php';
 
 // Require admin login
-requireAdmin();
+requireRole(['admin', 'superadmin']);
 
 $db = Database::getInstance()->getConnection();
 
