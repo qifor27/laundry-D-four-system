@@ -19,10 +19,10 @@ define('SMTP_HOST', 'smtp.gmail.com');
 define('SMTP_PORT', 587);
 
 // SMTP Username (email address)
-define('SMTP_USERNAME', 'reyhandwisaputra1234@gmail.com');
+define('SMTP_USERNAME', 'your-email@gmail.com');
 
 // SMTP Password (App Password for Gmail)
-define('SMTP_PASSWORD', 'txmzvzforcvxsjgj');
+define('SMTP_PASSWORD', 'your-app-password');
 
 // SMTP Encryption (tls atau ssl)
 define('SMTP_ENCRYPTION', 'tls');
