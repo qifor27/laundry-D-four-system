@@ -148,12 +148,7 @@ Pesanan Anda telah kami terima:
 🧺 Layanan: {service_type}
 💰 Total: Rp {price}
 
-💳 *Pembayaran via Transfer Bank:*
-🏦 Bank: {bank_name}
-🔢 No. Rek: {bank_account}
-👤 A/N: {bank_holder}
-
-Mohon transfer sebelum pengambilan.
+Kami akan segera memproses pesanan Anda.
 
 Terima kasih! 🙏
 ");
@@ -179,13 +174,13 @@ Kabar baik! Pesanan Anda sudah selesai:
 📦 No. Pesanan: #{order_id}
 💰 Total: Rp {price}
 
-💳 *Pembayaran via Transfer Bank:*
-🏦 Bank: {bank_name}
-🔢 No. Rek: {bank_account}
-👤 A/N: {bank_holder}
+💳 *Opsi Pembayaran:*
+1️⃣ Bayar di tempat (Cash)
+2️⃣ Transfer Bank:
+   🏦 {bank_name} - {bank_account}
+   👤 A/N: {bank_holder}
 
-Silakan transfer lalu ambil di:
-📍 D'four Laundry
+📍 Lokasi: D'four Laundry
 🕐 Jam: 08.00 - 21.00 WIB
 
 Ditunggu kedatangannya! 😊
@@ -200,10 +195,11 @@ Kami ingin mengingatkan bahwa pesanan Anda belum dibayar:
 📦 No. Pesanan: #{order_id}
 💰 Total: Rp {price}
 
-💳 *Silakan Transfer ke:*
-🏦 Bank: {bank_name}
-🔢 No. Rek: {bank_account}
-👤 A/N: {bank_holder}
+💳 *Opsi Pembayaran:*
+1️⃣ Bayar di tempat saat ambil
+2️⃣ Transfer Bank:
+   🏦 {bank_name} - {bank_account}
+   👤 A/N: {bank_holder}
 
 Jika sudah transfer, mohon konfirmasi ke admin.
 
