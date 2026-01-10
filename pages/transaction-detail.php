@@ -1,7 +1,7 @@
 <?php
 /**
  * Transaction Detail Page
- * Menampilkan detail transaksi dengan tombol WhatsApp
+ * Menampilkan detail transaksi dengan tombol WhatsApp dan pembayaran
  */
 
 require_once __DIR__ . '/../includes/auth.php';
@@ -10,6 +10,7 @@ requireLogin();
 require_once __DIR__ . '/../config/database_mysql.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/whatsapp-helper.php';
+require_once __DIR__ . '/../includes/payment-helper.php';
 
 $pageTitle = "Detail Transaksi - D'four Laundry";
 $db = Database::getInstance()->getConnection();
@@ -44,12 +45,10 @@ $customer = [
 ];
 
 // Generate WhatsApp URLs
-$waUrls = [
-    'order_created' => getOrderCreatedWAUrl($transaction, $customer),
-    'status_update' => getStatusUpdateWAUrl($transaction, $customer, $transaction['status']),
-    'ready_pickup' => getReadyForPickupWAUrl($transaction, $customer),
-    'payment_reminder' => getPaymentReminderWAUrl($transaction, $customer)
-];
+$waUrls = getAllWhatsAppUrls($transaction, $customer);
+
+// Get active payment methods
+$paymentMethods = getActivePaymentMethods();
 
 include __DIR__ . '/../includes/header-admin.php';
 ?>
@@ -73,9 +72,15 @@ include __DIR__ . '/../includes/header-admin.php';
                     <?= formatDate($transaction['created_at']) ?>
                 </p>
             </div>
-            <span class="badge <?= getStatusBadge($transaction['status']) ?>">
-                <?= getStatusLabel($transaction['status']) ?>
-            </span>
+            <div class="text-right">
+                <span class="badge <?= getStatusBadge($transaction['status']) ?>">
+                    <?= getStatusLabel($transaction['status']) ?>
+                </span>
+                <br>
+                <span class="badge <?= getPaymentStatusBadge($transaction['payment_status'] ?? 'unpaid') ?> mt-2 inline-block">
+                    <?= getPaymentStatusLabel($transaction['payment_status'] ?? 'unpaid') ?>
+                </span>
+            </div>
         </div>
     </div>
 
@@ -117,63 +122,82 @@ include __DIR__ . '/../includes/header-admin.php';
                     <p class="text-sm text-gray-500">Total</p>
                     <p class="text-xl font-bold text-primary-600"><?= formatRupiah($transaction['price']) ?></p>
                 </div>
-                <?php if ($transaction['notes']): ?>
-                <div>
-                    <p class="text-sm text-gray-500">Catatan</p>
-                    <p class="font-medium"><?= htmlspecialchars($transaction['notes']) ?></p>
-                </div>
-                <?php endif; ?>
             </div>
         </div>
     </div>
+
+    <!-- Payment Confirmation (jika belum bayar) -->
+    <?php if (($transaction['payment_status'] ?? 'unpaid') !== 'paid'): ?>
+    <div class="card mt-6 bg-yellow-50 border-yellow-200">
+        <h2 class="text-lg font-semibold text-yellow-800 mb-4">💳 Konfirmasi Pembayaran</h2>
+        <form id="payment-form" class="space-y-4">
+            <input type="hidden" name="transaction_id" value="<?= $transaction['id'] ?>">
+            
+            <div>
+                <label class="form-label">Metode Pembayaran</label>
+                <select name="payment_method_id" class="form-input" required>
+                    <?php foreach ($paymentMethods as $method): ?>
+                    <option value="<?= $method['id'] ?>">
+                        <?= htmlspecialchars($method['name']) ?>
+                        <?php if ($method['bank_name']): ?>
+                            (<?= $method['bank_name'] ?> - <?= $method['account_number'] ?>)
+                        <?php endif; ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            
+            <div>
+                <label class="form-label">Catatan (opsional)</label>
+                <input type="text" name="notes" class="form-input" placeholder="Contoh: Transfer bukti #123">
+            </div>
+            
+            <button type="submit" class="btn-primary w-full">
+                ✓ Konfirmasi Pembayaran
+            </button>
+        </form>
+    </div>
+    <?php endif; ?>
 
     <!-- WhatsApp Actions -->
     <div class="card mt-6">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">📱 Kirim WhatsApp</h2>
         <p class="text-gray-600 text-sm mb-4">
-            Klik tombol di bawah untuk membuka WhatsApp Web dengan pesan terisi. Anda hanya perlu klik Send.
+            Klik tombol di bawah untuk membuka WhatsApp Web dengan pesan terisi.
         </p>
         
         <?php if (empty($transaction['phone'])): ?>
             <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-yellow-800">
-                ⚠️ Pelanggan ini tidak memiliki nomor HP. Tambahkan nomor HP terlebih dahulu.
+                ⚠️ Pelanggan ini tidak memiliki nomor HP.
             </div>
         <?php else: ?>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <!-- Order Created -->
                 <?php if ($waUrls['order_created']): ?>
-                <a href="<?= $waUrls['order_created'] ?>" 
-                   target="_blank"
+                <a href="<?= $waUrls['order_created'] ?>" target="_blank"
                    class="flex flex-col items-center justify-center p-4 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors">
                     <span class="text-2xl mb-2">📦</span>
                     <span class="text-sm font-medium text-green-800 text-center">Pesanan Diterima</span>
                 </a>
                 <?php endif; ?>
 
-                <!-- Status Update -->
                 <?php if ($waUrls['status_update']): ?>
-                <a href="<?= $waUrls['status_update'] ?>" 
-                   target="_blank"
+                <a href="<?= $waUrls['status_update'] ?>" target="_blank"
                    class="flex flex-col items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors">
                     <span class="text-2xl mb-2">🔄</span>
                     <span class="text-sm font-medium text-blue-800 text-center">Update Status</span>
                 </a>
                 <?php endif; ?>
 
-                <!-- Ready Pickup -->
                 <?php if ($waUrls['ready_pickup']): ?>
-                <a href="<?= $waUrls['ready_pickup'] ?>" 
-                   target="_blank"
+                <a href="<?= $waUrls['ready_pickup'] ?>" target="_blank"
                    class="flex flex-col items-center justify-center p-4 bg-amber-50 hover:bg-amber-100 rounded-lg border border-amber-200 transition-colors">
                     <span class="text-2xl mb-2">✅</span>
                     <span class="text-sm font-medium text-amber-800 text-center">Siap Diambil</span>
                 </a>
                 <?php endif; ?>
 
-                <!-- Payment Reminder -->
                 <?php if ($waUrls['payment_reminder']): ?>
-                <a href="<?= $waUrls['payment_reminder'] ?>" 
-                   target="_blank"
+                <a href="<?= $waUrls['payment_reminder'] ?>" target="_blank"
                    class="flex flex-col items-center justify-center p-4 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors">
                     <span class="text-2xl mb-2">💳</span>
                     <span class="text-sm font-medium text-red-800 text-center">Reminder Bayar</span>
@@ -211,9 +235,6 @@ include __DIR__ . '/../includes/header-admin.php';
     <!-- Delete Transaction -->
     <div class="card mt-6 bg-red-50 border-red-200">
         <h2 class="text-lg font-semibold text-red-800 mb-4">⚠️ Zona Bahaya</h2>
-        <p class="text-red-600 text-sm mb-4">
-            Menghapus transaksi bersifat permanen dan tidak dapat dibatalkan.
-        </p>
         <button onclick="deleteTransaction()" class="btn-danger">
             Hapus Transaksi
         </button>
@@ -221,6 +242,34 @@ include __DIR__ . '/../includes/header-admin.php';
 </div>
 
 <script>
+// Confirm payment
+document.getElementById('payment-form')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    formData.append('action', 'confirm');
+    
+    try {
+        const response = await fetch('../api/payments-api.php', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showNotification('Pembayaran berhasil dikonfirmasi!', 'success');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification(result.message || 'Gagal konfirmasi pembayaran', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Terjadi kesalahan', 'error');
+    }
+});
+
+// Update status
 async function updateStatus(status) {
     try {
         const formData = new FormData();
@@ -247,10 +296,9 @@ async function updateStatus(status) {
     }
 }
 
+// Delete transaction
 async function deleteTransaction() {
-    if (!confirm('Yakin ingin menghapus transaksi ini? Tindakan ini tidak dapat dibatalkan.')) {
-        return;
-    }
+    if (!confirm('Yakin ingin menghapus transaksi ini?')) return;
     
     try {
         const formData = new FormData();

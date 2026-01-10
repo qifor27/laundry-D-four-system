@@ -3,13 +3,10 @@
  * WhatsApp Helper Functions (Manual - Click to Chat)
  * 
  * Gratis 100% - Menggunakan WhatsApp Web Click-to-Chat
- * Tidak memerlukan API atau biaya bulanan.
- * 
- * Cara kerja:
- * 1. Generate URL WhatsApp dengan pesan terisi
- * 2. Admin klik tombol, WhatsApp Web terbuka
- * 3. Admin klik Send di WhatsApp Web
+ * TERINTEGRASI dengan Payment Methods (data bank dari database)
  */
+
+require_once __DIR__ . '/../config/database_mysql.php';
 
 // ================================================
 // CONFIGURATION
@@ -19,21 +16,12 @@ define('WA_BUSINESS_NAME', "D'four Laundry");
 define('WA_BUSINESS_ADDRESS', "Jl. Contoh No. 123");
 define('WA_BUSINESS_HOURS', "08.00 - 21.00 WIB");
 
-// Info Rekening Bank (sesuaikan dengan rekening Anda)
-define('WA_BANK_NAME', 'BCA');
-define('WA_BANK_ACCOUNT', '1234567890');
-define('WA_BANK_HOLDER', "D'four Laundry");
-
 // ================================================
 // URL GENERATOR
 // ================================================
 
 /**
  * Generate WhatsApp Click-to-Chat URL
- * 
- * @param string $phone Nomor HP (08xxx atau 628xxx)
- * @param string $message Pesan
- * @return string WhatsApp Web URL
  */
 function generateWhatsAppURL($phone, $message) {
     $phone = formatPhoneNumber($phone);
@@ -45,20 +33,51 @@ function generateWhatsAppURL($phone, $message) {
  * Format phone number to international format (tanpa +)
  */
 function formatPhoneNumber($phone) {
-    // Remove non-numeric characters
     $phone = preg_replace('/[^0-9]/', '', $phone);
     
-    // Convert 08xxx to 628xxx
     if (substr($phone, 0, 1) === '0') {
         $phone = '62' . substr($phone, 1);
     }
     
-    // Add 62 if not present
     if (substr($phone, 0, 2) !== '62') {
         $phone = '62' . $phone;
     }
     
     return $phone;
+}
+
+// ================================================
+// DYNAMIC BANK LIST FROM DATABASE
+// ================================================
+
+/**
+ * Get bank list from database for WhatsApp message
+ * Returns formatted string with all active bank accounts
+ */
+function getBankListForWA() {
+    try {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->query("
+            SELECT bank_name, account_number, account_holder 
+            FROM payment_methods 
+            WHERE type = 'bank_transfer' AND is_active = 1
+            ORDER BY name
+        ");
+        $banks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if (empty($banks)) {
+            return "   (Belum ada rekening terdaftar)";
+        }
+        
+        $text = "";
+        foreach ($banks as $bank) {
+            $text .= "\n   🏦 {$bank['bank_name']} - {$bank['account_number']}";
+            $text .= "\n      A/N: {$bank['account_holder']}";
+        }
+        return $text;
+    } catch (Exception $e) {
+        return "\n   🏦 (Error loading bank data)";
+    }
 }
 
 // ================================================
@@ -112,10 +131,11 @@ Terima kasih telah menunggu! 🙏";
 }
 
 /**
- * Generate Ready for Pickup Message (dengan opsi pembayaran)
+ * Generate Ready for Pickup Message (dengan opsi pembayaran DINAMIS)
  */
 function getReadyForPickupMessage($transaction, $customer) {
     $price = number_format($transaction['price'], 0, ',', '.');
+    $bankList = getBankListForWA();
     
     return "*" . WA_BUSINESS_NAME . "*
 
@@ -127,9 +147,7 @@ Kabar baik! Pesanan Anda sudah selesai:
 
 💳 *Opsi Pembayaran:*
 1️⃣ Bayar di tempat (Cash)
-2️⃣ Transfer Bank:
-   🏦 " . WA_BANK_NAME . " - " . WA_BANK_ACCOUNT . "
-   👤 A/N: " . WA_BANK_HOLDER . "
+2️⃣ Transfer Bank:{$bankList}
 
 📍 Lokasi: " . WA_BUSINESS_ADDRESS . "
 🕐 Jam: " . WA_BUSINESS_HOURS . "
@@ -138,10 +156,11 @@ Ditunggu kedatangannya! 😊";
 }
 
 /**
- * Generate Payment Reminder Message
+ * Generate Payment Reminder Message (DINAMIS)
  */
 function getPaymentReminderMessage($transaction, $customer) {
     $price = number_format($transaction['price'], 0, ',', '.');
+    $bankList = getBankListForWA();
     
     return "*" . WA_BUSINESS_NAME . "*
 
@@ -153,9 +172,7 @@ Kami ingin mengingatkan bahwa pesanan Anda belum dibayar:
 
 💳 *Opsi Pembayaran:*
 1️⃣ Bayar di tempat saat ambil
-2️⃣ Transfer Bank:
-   🏦 " . WA_BANK_NAME . " - " . WA_BANK_ACCOUNT . "
-   👤 A/N: " . WA_BANK_HOLDER . "
+2️⃣ Transfer Bank:{$bankList}
 
 Jika sudah transfer, mohon konfirmasi ke admin.
 
@@ -163,39 +180,27 @@ Terima kasih! 🙏";
 }
 
 // ================================================
-// COMPLETE URL GENERATORS (untuk tombol)
+// URL GENERATORS (untuk tombol)
 // ================================================
 
-/**
- * Get WhatsApp URL for Order Created
- */
 function getOrderCreatedWAUrl($transaction, $customer) {
     if (empty($customer['phone'])) return null;
     $message = getOrderCreatedMessage($transaction, $customer);
     return generateWhatsAppURL($customer['phone'], $message);
 }
 
-/**
- * Get WhatsApp URL for Status Update
- */
 function getStatusUpdateWAUrl($transaction, $customer, $status) {
     if (empty($customer['phone'])) return null;
     $message = getStatusUpdateMessage($transaction, $customer, $status);
     return generateWhatsAppURL($customer['phone'], $message);
 }
 
-/**
- * Get WhatsApp URL for Ready Pickup
- */
 function getReadyForPickupWAUrl($transaction, $customer) {
     if (empty($customer['phone'])) return null;
     $message = getReadyForPickupMessage($transaction, $customer);
     return generateWhatsAppURL($customer['phone'], $message);
 }
 
-/**
- * Get WhatsApp URL for Payment Reminder
- */
 function getPaymentReminderWAUrl($transaction, $customer) {
     if (empty($customer['phone'])) return null;
     $message = getPaymentReminderMessage($transaction, $customer);
@@ -204,7 +209,6 @@ function getPaymentReminderWAUrl($transaction, $customer) {
 
 /**
  * Get all WhatsApp URLs for a transaction
- * Returns array of URLs for different message types
  */
 function getAllWhatsAppUrls($transaction, $customer) {
     return [
