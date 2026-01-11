@@ -10,6 +10,12 @@ Sistem manajemen laundry modern menggunakan **PHP Native**, **Tailwind CSS**, da
 - ✅ **Cek Status Order** - Portal untuk customer
 - ✅ **Update Status Real-time** - Tracking progress pesanan
 - ✅ **Responsive Design** - Mobile-friendly interface
+- ✅ **Laporan Bulanan** - Monthly reports dengan chart
+- ✅ **Export Laporan** - Export ke CSV/Print PDF
+- ✅ **Metode Pembayaran** - Kelola rekening bank (Cash/Transfer)
+- ✅ **WhatsApp Integration** - Notifikasi manual Click-to-Chat (GRATIS)
+- ✅ **Email Notifications** - SMTP Gmail (opsional)
+- ✅ **Google OAuth Login** - Login dengan akun Google
 
 ## 📋 Requirements
 

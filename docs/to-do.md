@@ -187,11 +187,10 @@
 | 2 | `feature/backend-monthly-reports` | 🟡 MEDIUM | ✅ Selesai |
 | 3 | `feature/backend-export-reports` | 🟡 MEDIUM | ✅ Selesai |
 | 4 | `feature/backend-email-notifications` | 🟡 MEDIUM | ✅ Selesai |
-| 5 | `feature/backend-whatsapp-integration` | 🟡 MEDIUM | ⬜ Belum |
-| 6 | `feature/backend-payment-methods` | 🟡 MEDIUM | ⬜ Belum |
-| 7 | `feature/backend-security` | 🔴 HIGH | ⬜ Terakhir |
-| 8 | `feature/backend-loyalty` | 🟢 LOW | ⬜ Belum |
-| 9 | `feature/backend-multi-branch` | 🟢 LOW | ⬜ Belum |
+| 5 | `feature/backend-whatsapp-payment-integration` | 🟡 MEDIUM | ✅ Selesai |
+| 6 | `feature/backend-security` | 🔴 HIGH | ⬜ Terakhir |
+| 7 | `feature/backend-loyalty` | 🟢 LOW | ⬜ Belum |
+| 8 | `feature/backend-multi-branch` | 🟢 LOW | ⬜ Belum |
 
 ---
 
@@ -206,63 +205,71 @@
 
 ---
 
-### Branch 2: `feature/backend-monthly-reports` 🟡
+### Branch 2: `feature/backend-monthly-reports` ✅
 
 **Files:**
-- [ ] `pages/reports.php` - UI halaman laporan
-- [ ] `api/reports-api.php` - API endpoint laporan
+- [x] `pages/reports.php` - UI halaman laporan
+- [x] `api/reports-api.php` - API endpoint laporan
 
 **API Actions:**
-- [ ] `action=monthly_summary` - Ringkasan transaksi per bulan
-- [ ] `action=daily_breakdown` - Detail per hari dalam sebulan
-- [ ] `action=service_report` - Laporan per jenis layanan
-- [ ] `action=customer_report` - Laporan pelanggan
-- [ ] `action=status_report` - Laporan status transaksi
+- [x] `action=monthly_summary` - Ringkasan transaksi per bulan
+- [x] `action=daily_breakdown` - Detail per hari dalam sebulan
+- [x] `action=service_report` - Laporan per jenis layanan
+- [x] `action=customer_report` - Laporan pelanggan
+- [x] `action=status_report` - Laporan status transaksi
 
 **Dashboard Widget:**
-- [ ] Quick stats di dashboard admin
-- [ ] Mini chart trend minggu ini
-- [ ] Comparison with last period
+- [x] Quick stats di dashboard admin
+- [x] Mini chart trend minggu ini
+- [x] Comparison with last period
 
 ---
 
-### Branch 3: `feature/backend-export-reports` 🟡
+### Branch 3: `feature/backend-export-reports` ✅
 
 > **Dependency:** Harus setelah `feature/backend-monthly-reports`
 
-- [ ] Export ke Excel (PHPSpreadsheet)
-- [ ] Export ke PDF (TCPDF/MPDF)
-- [ ] Auto-email laporan bulanan (opsional)
+- [x] Export ke CSV (Simple Excel)
+- [x] Export ke Print View (PDF via browser)
+- [x] `api/export-api.php` - API endpoint export
 
 ---
 
-### Branch 4: `feature/backend-email-notifications` 🟡
+### Branch 4: `feature/backend-email-notifications` ✅
 
-- [ ] Konfigurasi SMTP yang benar
-- [ ] Template email yang bagus
-- [ ] Email notifikasi order status
-
----
-
-### Branch 5: `feature/backend-whatsapp-integration` 🟡
-
-> **Opsional** - Bisa di-skip jika tidak diperlukan
-
-- [ ] Menggunakan API WhatsApp Business
-- [ ] Notifikasi order ready
-- [ ] Template pesan WhatsApp
+- [x] `includes/email-helper.php` - PHPMailer integration
+- [x] `config/email.php.template` - Template konfigurasi SMTP
+- [x] Template email HTML (Order Created, Status Update, Ready Pickup)
+- [x] `docs/tutorial-email-notifications.md` - Tutorial lengkap
 
 ---
 
-### Branch 6: `feature/backend-payment-methods` 🟡
+### Branch 5: `feature/backend-whatsapp-payment-integration` ✅
 
-- [ ] Multiple Payment Methods (Cash, Transfer, E-wallet)
-- [ ] Payment status tracking
-- [ ] Bukti pembayaran upload (opsional)
+> **Note:** Branch 5 & 6 (WhatsApp + Payment) digabung karena terintegrasi erat
+
+**WhatsApp (Manual Click-to-Chat - GRATIS):**
+- [x] `includes/whatsapp-helper.php` - Generate WA URLs & messages
+- [x] `formatPhoneNumber()` - Konversi 08xxx ke 628xxx
+- [x] `getBankListForWA()` - Ambil bank dari database (dinamis)
+- [x] Tombol WA di `pages/transaction-detail.php`
+
+**Payment Methods:**
+- [x] `database/migrate_payments.php` - Migrasi tabel
+- [x] `api/payment-methods-api.php` - CRUD rekening bank
+- [x] `api/payments-api.php` - Konfirmasi pembayaran
+- [x] `includes/payment-helper.php` - Helper functions
+- [x] `pages/payment-methods.php` - Admin panel rekening
+- [x] `pages/transaction-detail.php` - Detail + konfirmasi bayar
+
+**Dokumentasi:**
+- [x] `docs/tutorial-whatsapp-payment-integration.md`
+- [x] `docs/tutorial-whatsapp-integration.md`
+- [x] `docs/tutorial-payment-methods.md`
 
 ---
 
-### Branch 7: `feature/backend-security` 🔴
+### Branch 6: `feature/backend-security` 🔴
 
 > **⚠️ DIKERJAKAN TERAKHIR** - Karena update banyak file form dan API
 
@@ -281,7 +288,7 @@
 
 ---
 
-### Branch 8: `feature/backend-loyalty` 🟢
+### Branch 7: `feature/backend-loyalty` 🟢
 
 > **Nice to Have** - Prioritas rendah
 
@@ -291,7 +298,7 @@
 
 ---
 
-### Branch 9: `feature/backend-multi-branch` 🟢
+### Branch 8: `feature/backend-multi-branch` 🟢
 
 > **Nice to Have** - Major feature, paling akhir
 

@@ -86,7 +86,10 @@ E:\xampp2\php\php.exe database/migrate_auth.php
 # 3. Migrasi Customer-User Integration (phone di users, user_id di customers)
 E:\xampp2\php\php.exe database/migrate_customer_user.php
 
-# 4. Buat akun admin
+# 4. Migrasi Payment Methods (payment_methods, payments tables)
+E:\xampp2\php\php.exe database/migrate_payments.php
+
+# 5. Buat akun admin
 E:\xampp2\php\php.exe database/create_admin.php
 ```
 
