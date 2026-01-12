@@ -160,7 +160,7 @@ function getEmailStatusLabel($status) {
 
 
 /**
- * Order Status Update Template
+ * Order Status Update Template (Mobile Responsive)
  */
 function getOrderStatusEmailTemplate($transaction, $customer, $newStatus) {
     $statusLabel = getEmailStatusLabel($newStatus);
@@ -170,184 +170,287 @@ function getOrderStatusEmailTemplate($transaction, $customer, $newStatus) {
     
     return <<<HTML
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Update Status Pesanan - D'four Laundry</title>
+    <!--[if mso]>
+    <style type="text/css">
+        body, table, td {font-family: Arial, sans-serif !important;}
+    </style>
+    <![endif]-->
 </head>
-<body style="margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif;background:#f5f5f5;">
-    <div style="max-width:600px;margin:0 auto;padding:20px;">
-        <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
-            <!-- Header -->
-            <div style="background:linear-gradient(135deg,#9333ea,#7c3aed);padding:30px;text-align:center;">
-                <h1 style="color:#fff;margin:0;font-size:24px;">D'four Laundry</h1>
-                <p style="color:rgba(255,255,255,0.9);margin:10px 0 0;">Update Status Pesanan</p>
-            </div>
-            
-            <!-- Content -->
-            <div style="padding:30px;">
-                <p style="color:#374151;font-size:16px;margin:0 0 20px;">
-                    Halo <strong>{$customer['name']}</strong>,
-                </p>
-                
-                <p style="color:#374151;font-size:16px;margin:0 0 20px;">
-                    Status pesanan Anda telah diperbarui:
-                </p>
-                
-                <!-- Status Badge -->
-                <div style="text-align:center;margin:30px 0;">
-                    <span style="background:{$statusColor};color:#fff;padding:12px 24px;border-radius:50px;font-weight:bold;font-size:18px;">
-                        {$statusLabel}
-                    </span>
-                </div>
-                
-                <!-- Order Details -->
-                <div style="background:#f9fafb;border-radius:12px;padding:20px;margin:20px 0;">
-                    <h3 style="color:#374151;margin:0 0 15px;font-size:14px;text-transform:uppercase;">Detail Pesanan</h3>
-                    <table style="width:100%;border-collapse:collapse;">
-                        <tr>
-                            <td style="padding:8px 0;color:#6b7280;">No. Pesanan</td>
-                            <td style="padding:8px 0;color:#111827;font-weight:bold;text-align:right;">#{$transaction['id']}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding:8px 0;color:#6b7280;">Layanan</td>
-                            <td style="padding:8px 0;color:#111827;text-align:right;">{$transaction['service_type']}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding:8px 0;color:#6b7280;">Total</td>
-                                                        <td style="padding:8px 0;color:#111827;font-weight:bold;text-align:right;">Rp {$formattedPrice}</td>
-                        </tr>
-                    </table>
-                </div>
-                
-                <!-- CTA Button -->
-                <div style="text-align:center;margin:30px 0;">
-                    <a href="#" style="display:inline-block;background:#9333ea;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:bold;">
-                        Cek Status Pesanan
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Footer -->
-            <div style="background:#f9fafb;padding:20px;text-align:center;border-top:1px solid #e5e7eb;">
-                <p style="color:#6b7280;font-size:12px;margin:0;">
-                                        © {$currentYear} D'four Laundry. All rights reserved.
-                </p>
-                <p style="color:#9ca3af;font-size:11px;margin:10px 0 0;">
-                    Email ini dikirim otomatis, mohon tidak membalas email ini.
-                </p>
-            </div>
-        </div>
-    </div>
+<body style="margin:0;padding:0;background-color:#f5f5f5;-webkit-font-smoothing:antialiased;">
+    <!-- Wrapper Table -->
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f5f5f5;">
+        <tr>
+            <td align="center" style="padding:20px 10px;">
+                <!-- Main Container -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#9333ea,#7c3aed);padding:30px 20px;text-align:center;">
+                            <h1 style="color:#ffffff;margin:0;font-size:26px;font-family:'Segoe UI',Arial,sans-serif;font-weight:bold;">D'four Laundry</h1>
+                            <p style="color:rgba(255,255,255,0.9);margin:10px 0 0;font-size:16px;font-family:'Segoe UI',Arial,sans-serif;">Update Status Pesanan</p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding:30px 20px;font-family:'Segoe UI',Arial,sans-serif;">
+                            <p style="color:#374151;font-size:17px;margin:0 0 20px;line-height:1.5;">
+                                Halo <strong>{$customer['name']}</strong>,
+                            </p>
+                            
+                            <p style="color:#374151;font-size:17px;margin:0 0 25px;line-height:1.5;">
+                                Status pesanan Anda telah diperbarui:
+                            </p>
+                            
+                            <!-- Status Badge -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding:25px 0;">
+                                        <span style="display:inline-block;background-color:{$statusColor};color:#ffffff;padding:14px 28px;border-radius:50px;font-weight:bold;font-size:18px;font-family:'Segoe UI',Arial,sans-serif;">
+                                            {$statusLabel}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <!-- Order Details Box -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f9fafb;border-radius:12px;margin:20px 0;">
+                                <tr>
+                                    <td style="padding:20px;">
+                                        <h3 style="color:#374151;margin:0 0 15px;font-size:13px;text-transform:uppercase;font-family:'Segoe UI',Arial,sans-serif;letter-spacing:0.5px;">Detail Pesanan</h3>
+                                        
+                                        <!-- Detail Row 1 -->
+                                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-bottom:1px solid #e5e7eb;">
+                                            <tr>
+                                                <td style="padding:12px 0;color:#6b7280;font-size:15px;font-family:'Segoe UI',Arial,sans-serif;">No. Pesanan</td>
+                                                <td style="padding:12px 0;color:#111827;font-weight:bold;text-align:right;font-size:15px;font-family:'Segoe UI',Arial,sans-serif;">#{$transaction['id']}</td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <!-- Detail Row 2 -->
+                                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-bottom:1px solid #e5e7eb;">
+                                            <tr>
+                                                <td style="padding:12px 0;color:#6b7280;font-size:15px;font-family:'Segoe UI',Arial,sans-serif;">Layanan</td>
+                                                <td style="padding:12px 0;color:#111827;text-align:right;font-size:15px;font-family:'Segoe UI',Arial,sans-serif;">{$transaction['service_type']}</td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <!-- Detail Row 3 -->
+                                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                            <tr>
+                                                <td style="padding:12px 0;color:#6b7280;font-size:15px;font-family:'Segoe UI',Arial,sans-serif;">Total</td>
+                                                <td style="padding:12px 0;color:#111827;font-weight:bold;text-align:right;font-size:17px;font-family:'Segoe UI',Arial,sans-serif;">Rp {$formattedPrice}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <!-- CTA Button -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding:25px 0;">
+                                        <a href="#" style="display:inline-block;background-color:#9333ea;color:#ffffff;padding:16px 36px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:16px;font-family:'Segoe UI',Arial,sans-serif;">
+                                            Cek Status Pesanan
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color:#f9fafb;padding:25px 20px;text-align:center;border-top:1px solid #e5e7eb;">
+                            <p style="color:#6b7280;font-size:13px;margin:0;font-family:'Segoe UI',Arial,sans-serif;">
+                                © {$currentYear} D'four Laundry. All rights reserved.
+                            </p>
+                            <p style="color:#9ca3af;font-size:12px;margin:10px 0 0;font-family:'Segoe UI',Arial,sans-serif;">
+                                Email ini dikirim otomatis, mohon tidak membalas email ini.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
 HTML;
 }
 
 /**
- * Order Created Template
+ * Order Created Template (Mobile Responsive)
  */
 function getOrderCreatedEmailTemplate($transaction, $customer) {
-    return <<<HTML
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-</head>
-<body style="margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif;background:#f5f5f5;">
-    <div style="max-width:600px;margin:0 auto;padding:20px;">
-        <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
-            <!-- Header -->
-            <div style="background:linear-gradient(135deg,#22c55e,#16a34a);padding:30px;text-align:center;">
-                <h1 style="color:#fff;margin:0;font-size:24px;">✓ Pesanan Diterima!</h1>
-            </div>
-            
-            <!-- Content -->
-            <div style="padding:30px;">
-                <p style="color:#374151;font-size:16px;">
-                    Halo <strong>{$customer['name']}</strong>,
-                </p>
-                <p style="color:#374151;font-size:16px;">
-                    Terima kasih telah menggunakan layanan D'four Laundry. Pesanan Anda telah kami terima.
-                </p>
-                
-                <div style="background:#f0fdf4;border-left:4px solid #22c55e;padding:15px;margin:20px 0;">
-                    <strong style="color:#166534;">No. Pesanan: #{$transaction['id']}</strong>
-                </div>
-                
-                <p style="color:#6b7280;font-size:14px;">
-                    Kami akan segera memproses pesanan Anda. Anda akan menerima notifikasi email saat status berubah.
-                </p>
-            </div>
-            
-            <!-- Footer -->
-            <div style="background:#f9fafb;padding:20px;text-align:center;">
-                <p style="color:#6b7280;font-size:12px;margin:0;">D'four Laundry</p>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
-HTML;
-}
-
-/**
- * Ready for Pickup Template
- */
-function getReadyForPickupEmailTemplate($transaction, $customer) {
-    $formattedPrice = number_format($transaction['price'], 0, ',', '.');
+    $currentYear = date('Y');
     
     return <<<HTML
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Pesanan Diterima - D'four Laundry</title>
+    <!--[if mso]>
+    <style type="text/css">
+        body, table, td {font-family: Arial, sans-serif !important;}
+    </style>
+    <![endif]-->
 </head>
-<body style="margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif;background:#f5f5f5;">
-    <div style="max-width:600px;margin:0 auto;padding:20px;">
-        <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
-            <!-- Header -->
-            <div style="background:linear-gradient(135deg,#f59e0b,#d97706);padding:30px;text-align:center;">
-                <h1 style="color:#fff;margin:0;font-size:24px;">🎉 Pesanan Siap Diambil!</h1>
-            </div>
-            
-            <!-- Content -->
-            <div style="padding:30px;">
-                <p style="color:#374151;font-size:16px;">
-                    Halo <strong>{$customer['name']}</strong>,
-                </p>
-                <p style="color:#374151;font-size:16px;">
-                    Kabar baik! Pesanan laundry Anda sudah selesai dan siap untuk diambil.
-                </p>
-                
-                <div style="background:#fffbeb;border:2px dashed #f59e0b;border-radius:12px;padding:20px;margin:20px 0;text-align:center;">
-                    <p style="color:#92400e;font-size:14px;margin:0 0 10px;">No. Pesanan</p>
-                    <p style="color:#78350f;font-size:28px;font-weight:bold;margin:0;">#{$transaction['id']}</p>
-                </div>
-                
-                <p style="color:#374151;font-size:16px;">
-                    <strong>Total Pembayaran:</strong> Rp {$formattedPrice}
-                </p>
-                
-                <div style="background:#f9fafb;border-radius:8px;padding:15px;margin:20px 0;">
-                    <p style="color:#374151;font-size:14px;margin:0;">
-                        📍 <strong>Alamat Pickup:</strong><br>
-                        D'four Laundry<br>
-                        Jl. Contoh No. 123
-                    </p>
-                </div>
-                
-                <p style="color:#6b7280;font-size:14px;">
-                    Jam Operasional: 08.00 - 21.00 WIB
-                </p>
-            </div>
-            
-            <!-- Footer -->
-            <div style="background:#f9fafb;padding:20px;text-align:center;">
-                <p style="color:#6b7280;font-size:12px;margin:0;">D'four Laundry - Bersih dan Wangi!</p>
-            </div>
-        </div>
-    </div>
+<body style="margin:0;padding:0;background-color:#f5f5f5;-webkit-font-smoothing:antialiased;">
+    <!-- Wrapper Table -->
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f5f5f5;">
+        <tr>
+            <td align="center" style="padding:20px 10px;">
+                <!-- Main Container -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#22c55e,#16a34a);padding:30px 20px;text-align:center;">
+                            <h1 style="color:#ffffff;margin:0;font-size:28px;font-family:'Segoe UI',Arial,sans-serif;font-weight:bold;">✓ Pesanan Diterima!</h1>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding:30px 20px;font-family:'Segoe UI',Arial,sans-serif;">
+                            <p style="color:#374151;font-size:17px;margin:0 0 15px;line-height:1.5;">
+                                Halo <strong>{$customer['name']}</strong>,
+                            </p>
+                            <p style="color:#374151;font-size:17px;margin:0 0 25px;line-height:1.5;">
+                                Terima kasih telah menggunakan layanan D'four Laundry. Pesanan Anda telah kami terima.
+                            </p>
+                            
+                            <!-- Order Number Box -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f0fdf4;border-left:4px solid #22c55e;margin:20px 0;">
+                                <tr>
+                                    <td style="padding:18px;">
+                                        <strong style="color:#166534;font-size:18px;font-family:'Segoe UI',Arial,sans-serif;">No. Pesanan: #{$transaction['id']}</strong>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <p style="color:#6b7280;font-size:15px;margin:20px 0 0;line-height:1.6;">
+                                Kami akan segera memproses pesanan Anda. Anda akan menerima notifikasi email saat status berubah.
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color:#f9fafb;padding:25px 20px;text-align:center;border-top:1px solid #e5e7eb;">
+                            <p style="color:#6b7280;font-size:13px;margin:0;font-family:'Segoe UI',Arial,sans-serif;">
+                                © {$currentYear} D'four Laundry
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+HTML;
+}
+
+/**
+ * Ready for Pickup Template (Mobile Responsive)
+ */
+function getReadyForPickupEmailTemplate($transaction, $customer) {
+    $formattedPrice = number_format($transaction['price'], 0, ',', '.');
+    $currentYear = date('Y');
+    
+    return <<<HTML
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Pesanan Siap Diambil - D'four Laundry</title>
+    <!--[if mso]>
+    <style type="text/css">
+        body, table, td {font-family: Arial, sans-serif !important;}
+    </style>
+    <![endif]-->
+</head>
+<body style="margin:0;padding:0;background-color:#f5f5f5;-webkit-font-smoothing:antialiased;">
+    <!-- Wrapper Table -->
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f5f5f5;">
+        <tr>
+            <td align="center" style="padding:20px 10px;">
+                <!-- Main Container -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#f59e0b,#d97706);padding:30px 20px;text-align:center;">
+                            <h1 style="color:#ffffff;margin:0;font-size:26px;font-family:'Segoe UI',Arial,sans-serif;font-weight:bold;">🎉 Pesanan Siap Diambil!</h1>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding:30px 20px;font-family:'Segoe UI',Arial,sans-serif;">
+                            <p style="color:#374151;font-size:17px;margin:0 0 15px;line-height:1.5;">
+                                Halo <strong>{$customer['name']}</strong>,
+                            </p>
+                            <p style="color:#374151;font-size:17px;margin:0 0 25px;line-height:1.5;">
+                                Kabar baik! Pesanan laundry Anda sudah selesai dan siap untuk diambil.
+                            </p>
+                            
+                            <!-- Order Number Box -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#fffbeb;border:2px dashed #f59e0b;border-radius:12px;margin:20px 0;">
+                                <tr>
+                                    <td align="center" style="padding:25px 20px;">
+                                        <p style="color:#92400e;font-size:14px;margin:0 0 10px;font-family:'Segoe UI',Arial,sans-serif;">No. Pesanan</p>
+                                        <p style="color:#78350f;font-size:32px;font-weight:bold;margin:0;font-family:'Segoe UI',Arial,sans-serif;">#{$transaction['id']}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <p style="color:#374151;font-size:17px;margin:20px 0;line-height:1.5;">
+                                <strong>Total Pembayaran:</strong> Rp {$formattedPrice}
+                            </p>
+                            
+                            <!-- Pickup Address -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f9fafb;border-radius:8px;margin:20px 0;">
+                                <tr>
+                                    <td style="padding:18px;">
+                                        <p style="color:#374151;font-size:15px;margin:0;line-height:1.6;font-family:'Segoe UI',Arial,sans-serif;">
+                                            📍 <strong>Alamat Pickup:</strong><br>
+                                            D'four Laundry<br>
+                                            Jl. Contoh No. 123
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <p style="color:#6b7280;font-size:15px;margin:15px 0 0;line-height:1.5;">
+                                ⏰ Jam Operasional: 08.00 - 21.00 WIB
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color:#f9fafb;padding:25px 20px;text-align:center;border-top:1px solid #e5e7eb;">
+                            <p style="color:#6b7280;font-size:13px;margin:0;font-family:'Segoe UI',Arial,sans-serif;">
+                                © {$currentYear} D'four Laundry - Bersih dan Wangi!
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
 HTML;
