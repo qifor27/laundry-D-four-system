@@ -90,6 +90,149 @@
     @apply hover:bg-gray-50 transition-colors duration-150;
   }
 
+  /* =========================================
+     GLASSMORPHISM COMPONENTS
+     ========================================= */
+
+  /* Glass Card - Frosted glass effect */
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-xl rounded-3xl p-6;
+    @apply border border-white/50 shadow-xl;
+    @apply transition-all duration-300;
+  }
+
+  .glass-card:hover {
+    @apply shadow-2xl bg-white/80;
+  }
+
+  /* Bubble Decorations - Background blobs */
+  .bubble-decoration {
+    @apply fixed inset-0 overflow-hidden pointer-events-none z-0;
+  }
+
+  .bubble {
+    @apply absolute rounded-full blur-3xl opacity-60;
+  }
+
+  .bubble-pink {
+    @apply bg-pink-300;
+  }
+
+  .bubble-purple {
+    @apply bg-purple-300;
+  }
+
+  .bubble-blue {
+    @apply bg-blue-200;
+  }
+
+  /* Dark Purple Bubbles - For dark backgrounds */
+  .bubble-violet {
+    background: rgba(139, 92, 246, 0.15);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+  }
+
+  .bubble-indigo {
+    background: rgba(99, 102, 241, 0.12);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+  }
+
+  .bubble-fuchsia {
+    background: rgba(192, 132, 252, 0.1);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(192, 132, 252, 0.15);
+  }
+
+  /* Purple bubbles for light backgrounds - Glass Effect */
+  .bubble-purple-light {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(167, 139, 250, 0.15) 100%);
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(139, 92, 246, 0.3);
+    box-shadow:
+      0 8px 32px rgba(139, 92, 246, 0.2),
+      inset 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+
+  .bubble-indigo-light {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(129, 140, 248, 0.1) 100%);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(99, 102, 241, 0.25);
+    box-shadow:
+      0 8px 32px rgba(99, 102, 241, 0.15),
+      inset 0 0 20px rgba(255, 255, 255, 0.25);
+  }
+
+  .bubble-pink-light {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.2) 0%, rgba(244, 114, 182, 0.1) 100%);
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(236, 72, 153, 0.2);
+    box-shadow:
+      0 8px 32px rgba(236, 72, 153, 0.15),
+      inset 0 0 20px rgba(255, 255, 255, 0.25);
+  }
+
+  .dash-stat-card {
+    @apply relative overflow-hidden rounded-3xl p-6 text-white shadow-xl;
+    @apply transition-all duration-300;
+  }
+
+  .dash-stat-card:hover {
+    @apply transform scale-[1.02] shadow-2xl;
+  }
+
+  .dash-stat-card::after {
+    content: '';
+    @apply absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full;
+  }
+
+  /* Stat Card Variants - Dribbble Style (Exact colors) */
+  .dash-stat-pink {
+    background: linear-gradient(135deg, #f472b6 0%, #a855f7 100%) !important;
+    @apply shadow-pink-500/30;
+  }
+
+  .dash-stat-cyan {
+    background: linear-gradient(135deg, #22d3ee 0%, #818cf8 100%) !important;
+    @apply shadow-cyan-500/30;
+  }
+
+  .dash-stat-orange {
+    background: linear-gradient(135deg, #fb923c 0%, #f43f5e 100%) !important;
+    @apply shadow-orange-500/30;
+  }
+
+  .dash-stat-green {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%) !important;
+    @apply shadow-green-500/30;
+  }
+
+  .dash-stat-purple {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%) !important;
+    @apply shadow-purple-500/30;
+  }
+
+  .dash-stat-light {
+    @apply bg-white text-gray-800 border border-gray-100 shadow-lg;
+  }
+
+  .dash-stat-light::after {
+    @apply bg-gray-100;
+  }
+
+  /* Dashboard Transaction Item */
+  .dash-transaction-item {
+    @apply bg-white/60 backdrop-blur-sm border border-white/50 rounded-2xl p-4;
+    @apply hover:bg-white/80 hover:shadow-lg transition-all duration-300;
+  }
+
+  /* Dashboard Quick Link Card */
+  .dash-quick-link {
+    @apply glass-card flex items-center gap-4;
+    @apply hover:scale-[1.02] hover:shadow-2xl cursor-pointer;
+  }
+
   /* Page Backgrounds */
   .bg-auth {
     @apply min-h-screen bg-dark-50;

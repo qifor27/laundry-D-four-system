@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Landing Page - D'four Laundry
  * Halaman utama dengan info layanan dan lokasi
@@ -8,58 +9,79 @@ $pageTitle = "D'four Smart Laundry System";
 ?>
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="D'four Laundry - Layanan laundry profesional dengan harga terjangkau">
     <title><?= htmlspecialchars($pageTitle) ?></title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Tailwind CSS -->
     <link href="<?= baseUrl('assets/css/style.css') ?>" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-purple-50 via-purple-100/50 to-fuchsia-50 font-outfit min-h-screen relative overflow-x-hidden">
 
-    <!-- Bubble Decorations -->
-    <div class="bubble-decoration">
-        <div class="bubble bubble-pink w-96 h-96 -top-20 -left-20"></div>
-        <div class="bubble bubble-purple w-80 h-80 top-40 right-10"></div>
-        <div class="bubble bubble-blue w-72 h-72 bottom-20 left-1/4"></div>
-        <div class="bubble bubble-cyan w-64 h-64 bottom-10 right-1/3"></div>
+<body class="bg-gradient-to-br from-purple-50 via-white to-fuchsia-50 font-outfit min-h-screen relative overflow-x-hidden">
+
+    <!-- Real Bubble Images - Dribbble Style Arrangement with Blur -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <!-- Left side - Large blurred bubble -->
+        <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-72 h-72 opacity-40 blur-sm animate-float" style="top: 10%; left: -5%;">
+
+        <!-- Top left corner - Medium clear bubble -->
+        <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-40 h-40 opacity-60 animate-float" style="top: 5%; left: 15%; animation-delay: -4s;">
+
+        <!-- Bottom left - Small clear bubble -->
+        <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-20 h-20 opacity-80 animate-float" style="bottom: 25%; left: 8%; animation-delay: -8s;">
+
+        <!-- Bottom left - Medium blurred bubble -->
+        <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-48 h-48 opacity-35 blur-[2px] animate-float" style="bottom: 5%; left: 3%; animation-delay: -12s;">
+
+        <!-- Top right - Large purple-tinted area bubble -->
+        <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-80 h-80 opacity-30 blur-sm animate-float" style="top: -10%; right: -10%; animation-delay: -6s;">
+
+        <!-- Right side - Medium clear bubble -->
+        <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-32 h-32 opacity-65 animate-float" style="top: 40%; right: 5%; animation-delay: -10s;">
+
+        <!-- Bottom right - Small clear bubble -->
+        <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-16 h-16 opacity-85 animate-float" style="bottom: 15%; right: 10%; animation-delay: -3s;">
+
+        <!-- Bottom right corner - Large blurred bubble -->
+        <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-64 h-64 opacity-25 blur-md animate-float" style="bottom: -10%; right: -5%; animation-delay: -15s;">
+
+        <!-- Center scattered - Small bubbles -->
+        <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-12 h-12 opacity-70 animate-float" style="top: 55%; left: 25%; animation-delay: -7s;">
+        <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-10 h-10 opacity-75 animate-float" style="top: 75%; right: 35%; animation-delay: -9s;">
     </div>
 
-    <!-- Navigation -->
-    <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
-                        <span class="text-white font-bold text-xl">D</span>
-                    </div>
-                    <span class="text-xl font-bold text-gray-900">D'four<span class="text-primary-600">Laundry</span></span>
-                </div>
-                
-                <!-- Nav Links -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="text-gray-600 hover:text-primary-600 transition-colors">Home</a>
-                    <a href="#services" class="text-gray-600 hover:text-primary-600 transition-colors">Layanan</a>
-                    <a href="#location" class="text-gray-600 hover:text-primary-600 transition-colors">Lokasi</a>
-                </div>
-                
-                <!-- CTA Buttons -->
-                <div class="flex items-center space-x-3">
-                    <a href="<?= baseUrl('pages/auth/login.php') ?>" class="text-gray-600 hover:text-primary-600 font-medium transition-colors">
-                        Login
-                    </a>
-                    <a href="<?= baseUrl('pages/auth/register.php') ?>" class="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2 rounded-xl font-medium transition-all shadow-lg hover:shadow-xl">
-                        Daftar
-                    </a>
-                </div>
+    <!-- Navigation - Floating Pill Style -->
+    <nav class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white/95 backdrop-blur-lg shadow-xl rounded-full">
+        <div class="flex items-center h-14 px-4">
+            <!-- Logo -->
+            <div class="flex items-center space-x-2 mr-8">
+                <img src="<?= baseUrl('assets/images/logo.png') ?>" alt="D'four Laundry" class="w-9 h-9">
+                <span class="text-lg font-bold text-gray-900 hidden sm:block">D'four<span class="text-primary-600">Laundry</span></span>
+            </div>
+
+            <!-- Nav Links -->
+            <div class="hidden md:flex items-center space-x-6 mr-8">
+                <a href="#home" class="text-gray-600 hover:text-primary-600 transition-colors text-sm font-medium">Home</a>
+                <a href="#services" class="text-gray-600 hover:text-primary-600 transition-colors text-sm font-medium">Layanan</a>
+                <a href="#location" class="text-gray-600 hover:text-primary-600 transition-colors text-sm font-medium">Lokasi</a>
+            </div>
+
+            <!-- CTA Buttons -->
+            <div class="flex items-center space-x-3">
+                <a href="<?= baseUrl('pages/auth/login.php') ?>" class="text-gray-600 hover:text-primary-600 font-medium transition-colors text-sm">
+                    Login
+                </a>
+                <a href="<?= baseUrl('pages/auth/register.php') ?>" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-full font-medium transition-all shadow-md hover:shadow-lg text-sm">
+                    Daftar
+                </a>
             </div>
         </div>
     </nav>
@@ -93,7 +115,7 @@ $pageTitle = "D'four Smart Laundry System";
                 <p class="text-primary-600 font-medium mb-2">LAYANAN KAMI</p>
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Pilih Layanan Sesuai Kebutuhan</h2>
             </div>
-            
+
             <div class="grid md:grid-cols-3 gap-8">
                 <!-- Service 1 -->
                 <div class="machine-card text-center">
@@ -106,7 +128,7 @@ $pageTitle = "D'four Smart Laundry System";
                     <p class="text-gray-600 mb-4">Layanan cuci standar dengan hasil bersih dan wangi. Cocok untuk pakaian sehari-hari.</p>
                     <p class="text-2xl font-bold text-primary-600">Rp 7.000<span class="text-sm text-gray-500">/kg</span></p>
                 </div>
-                
+
                 <!-- Service 2 -->
                 <div class="machine-card text-center border-2 border-primary-200 bg-primary-50/50">
                     <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -121,7 +143,7 @@ $pageTitle = "D'four Smart Laundry System";
                     <p class="text-gray-600 mb-4">Paket lengkap cuci dan setrika. Pakaian siap pakai tanpa repot!</p>
                     <p class="text-2xl font-bold text-primary-600">Rp 10.000<span class="text-sm text-gray-500">/kg</span></p>
                 </div>
-                
+
                 <!-- Service 3 -->
                 <div class="machine-card text-center">
                     <div class="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
@@ -144,21 +166,21 @@ $pageTitle = "D'four Smart Laundry System";
                 <p class="text-primary-600 font-medium mb-2">LOKASI KAMI</p>
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Temukan Kami</h2>
             </div>
-            
+
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <!-- Map -->
                 <div class="machine-card p-0 overflow-hidden h-80 lg:h-96">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613!3d-6.194741299999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5390917b759%3A0x6b45e67356080477!2sMonumen%20Nasional!5e0!3m2!1sid!2sid!4v1640000000000!5m2!1sid!2sid" 
-                        width="100%" 
-                        height="100%" 
-                        style="border:0;" 
-                        allowfullscreen="" 
-                        loading="lazy" 
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613!3d-6.194741299999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5390917b759%3A0x6b45e67356080477!2sMonumen%20Nasional!5e0!3m2!1sid!2sid!4v1640000000000!5m2!1sid!2sid"
+                        width="100%"
+                        height="100%"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade">
                     </iframe>
                 </div>
-                
+
                 <!-- Contact Info -->
                 <div class="space-y-6">
                     <div class="flex items-start space-x-4">
@@ -173,7 +195,7 @@ $pageTitle = "D'four Smart Laundry System";
                             <p class="text-gray-600">Jl. Contoh No. 123, Kota Anda, Indonesia</p>
                         </div>
                     </div>
-                    
+
                     <div class="flex items-start space-x-4">
                         <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center flex-shrink-0">
                             <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -185,7 +207,7 @@ $pageTitle = "D'four Smart Laundry System";
                             <p class="text-gray-600">+62 812-3456-7890</p>
                         </div>
                     </div>
-                    
+
                     <div class="flex items-start space-x-4">
                         <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center flex-shrink-0">
                             <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,19 +225,26 @@ $pageTitle = "D'four Smart Laundry System";
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="relative z-10 bg-gray-900 text-white py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="flex items-center justify-center space-x-3 mb-4">
-                <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center">
-                    <span class="text-white font-bold text-xl">D</span>
-                </div>
+    <!-- Footer - Purple Gradient with Bubble Images -->
+    <footer class="relative z-10 overflow-hidden bg-gradient-to-b from-indigo-900 via-purple-900 to-indigo-900 text-white py-12">
+        <!-- Bubble Images in Footer -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-24 h-24 opacity-30 -bottom-6 left-10">
+            <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-16 h-16 opacity-25 top-4 right-16">
+            <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-32 h-32 opacity-20 -bottom-8 right-1/4">
+            <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-12 h-12 opacity-30 top-1/2 left-1/4">
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-3">
+                <img src="<?= baseUrl('assets/images/logo.png') ?>" alt="D'four Laundry" class="w-10 h-10">
                 <span class="text-xl font-bold">D'four Laundry</span>
             </div>
-            <p class="text-gray-400 mb-4">Layanan laundry terpercaya untuk keluarga Anda</p>
-            <p class="text-gray-500 text-sm">&copy; <?= date('Y') ?> D'four Laundry. All rights reserved.</p>
+            <p class="text-purple-200/80 text-sm mb-3">Layanan laundry terpercaya untuk keluarga Anda</p>
+            <p class="text-purple-300/50 text-xs">&copy; <?= date('Y') ?> D'four Laundry. All rights reserved.</p>
         </div>
     </footer>
 
 </body>
+
 </html>

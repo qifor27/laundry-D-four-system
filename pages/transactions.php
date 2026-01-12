@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Transactions Page
  * Mengelola transaksi laundry
@@ -41,12 +42,12 @@ include __DIR__ . '/../includes/header-admin.php';
             Transaksi Baru
         </button>
     </div>
-    
+
     <!-- Filter & Search -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <input type="text" id="search-input" placeholder="Cari transaksi..." 
-               class="form-input" onkeyup="filterTable('search-input', 'transactions-table')">
-        
+        <input type="text" id="search-input" placeholder="Cari transaksi..."
+            class="form-input" onkeyup="filterTable('search-input', 'transactions-table')">
+
         <select id="status-filter" class="form-input" onchange="filterByStatus()">
             <option value="">Semua Status</option>
             <option value="pending">Menunggu</option>
@@ -57,9 +58,9 @@ include __DIR__ . '/../includes/header-admin.php';
             <option value="picked_up">Sudah Diambil</option>
         </select>
     </div>
-    
+
     <!-- Transactions Table -->
-    <div class="card">
+    <div class="glass-card">
         <?php if (empty($transactions)): ?>
             <div class="text-center py-12">
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,40 +88,40 @@ include __DIR__ . '/../includes/header-admin.php';
                     </thead>
                     <tbody>
                         <?php foreach ($transactions as $trx): ?>
-                        <tr data-status="<?= $trx['status'] ?>">
-                            <td class="font-mono text-sm">#<?= $trx['id'] ?></td>
-                            <td>
-                                <div class="font-medium text-gray-900"><?= htmlspecialchars($trx['customer_name']) ?></div>
-                                <div class="text-sm text-gray-500"><?= htmlspecialchars($trx['phone']) ?></div>
-                            </td>
-                            <td><?= htmlspecialchars($trx['service_type']) ?></td>
-                            <td>
-                                <?php if ($trx['weight'] > 0): ?>
-                                    <?= $trx['weight'] ?> kg
-                                <?php else: ?>
-                                    <?= $trx['quantity'] ?> pcs
-                                <?php endif; ?>
-                            </td>
-                            <td class="font-semibold text-gray-900"><?= formatRupiah($trx['price']) ?></td>
-                            <td>
-                                <select onchange="updateStatus(<?= $trx['id'] ?>, this.value)" 
+                            <tr data-status="<?= $trx['status'] ?>">
+                                <td class="font-mono text-sm">#<?= $trx['id'] ?></td>
+                                <td>
+                                    <div class="font-medium text-gray-900"><?= htmlspecialchars($trx['customer_name']) ?></div>
+                                    <div class="text-sm text-gray-500"><?= htmlspecialchars($trx['phone']) ?></div>
+                                </td>
+                                <td><?= htmlspecialchars($trx['service_type']) ?></td>
+                                <td>
+                                    <?php if ($trx['weight'] > 0): ?>
+                                        <?= $trx['weight'] ?> kg
+                                    <?php else: ?>
+                                        <?= $trx['quantity'] ?> pcs
+                                    <?php endif; ?>
+                                </td>
+                                <td class="font-semibold text-gray-900"><?= formatRupiah($trx['price']) ?></td>
+                                <td>
+                                    <select onchange="updateStatus(<?= $trx['id'] ?>, this.value)"
                                         class="badge <?= getStatusBadge($trx['status']) ?> border-0 cursor-pointer">
-                                    <option value="pending" <?= $trx['status'] == 'pending' ? 'selected' : '' ?>>Menunggu</option>
-                                    <option value="washing" <?= $trx['status'] == 'washing' ? 'selected' : '' ?>>Dicuci</option>
-                                    <option value="drying" <?= $trx['status'] == 'drying' ? 'selected' : '' ?>>Dikeringkan</option>
-                                    <option value="ironing" <?= $trx['status'] == 'ironing' ? 'selected' : '' ?>>Disetrika</option>
-                                    <option value="done" <?= $trx['status'] == 'done' ? 'selected' : '' ?>>Selesai</option>
-                                    <option value="picked_up" <?= $trx['status'] == 'picked_up' ? 'selected' : '' ?>>Diambil</option>
-                                </select>
-                            </td>
-                            <td class="text-sm text-gray-600"><?= formatDate($trx['created_at']) ?></td>
-                            <td>
-                                <button onclick="viewDetails(<?= $trx['id'] ?>)" 
+                                        <option value="pending" <?= $trx['status'] == 'pending' ? 'selected' : '' ?>>Menunggu</option>
+                                        <option value="washing" <?= $trx['status'] == 'washing' ? 'selected' : '' ?>>Dicuci</option>
+                                        <option value="drying" <?= $trx['status'] == 'drying' ? 'selected' : '' ?>>Dikeringkan</option>
+                                        <option value="ironing" <?= $trx['status'] == 'ironing' ? 'selected' : '' ?>>Disetrika</option>
+                                        <option value="done" <?= $trx['status'] == 'done' ? 'selected' : '' ?>>Selesai</option>
+                                        <option value="picked_up" <?= $trx['status'] == 'picked_up' ? 'selected' : '' ?>>Diambil</option>
+                                    </select>
+                                </td>
+                                <td class="text-sm text-gray-600"><?= formatDate($trx['created_at']) ?></td>
+                                <td>
+                                    <button onclick="viewDetails(<?= $trx['id'] ?>)"
                                         class="text-primary-600 hover:text-primary-800 font-medium text-sm">
-                                    Detail
-                                </button>
-                            </td>
-                        </tr>
+                                        Detail
+                                    </button>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -154,52 +155,52 @@ include __DIR__ . '/../includes/header-admin.php';
                         Belum terdaftar? <a href="customers.php" class="text-primary-600">Tambah pelanggan baru</a>
                     </p>
                 </div>
-                
+
                 <!-- Service Type -->
                 <div class="md:col-span-2">
                     <label class="form-label">Jenis Layanan</label>
                     <select name="service_type" id="service-select" required class="form-input" onchange="updatePricing()">
                         <option value="">Pilih Layanan</option>
                         <?php foreach ($serviceTypes as $service): ?>
-                            <option value="<?= htmlspecialchars($service['name']) ?>" 
-                                    data-unit="<?= $service['unit'] ?>" 
-                                    data-price="<?= $service['price_per_unit'] ?>">
-                                <?= htmlspecialchars($service['name']) ?> 
+                            <option value="<?= htmlspecialchars($service['name']) ?>"
+                                data-unit="<?= $service['unit'] ?>"
+                                data-price="<?= $service['price_per_unit'] ?>">
+                                <?= htmlspecialchars($service['name']) ?>
                                 (<?= formatRupiah($service['price_per_unit']) ?>/<?= $service['unit'] ?>)
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
-                
+
                 <!-- Weight/Quantity -->
                 <div id="weight-field">
                     <label class="form-label">Berat (kg)</label>
-                    <input type="number" name="weight" step="0.5" min="0" class="form-input" 
-                           oninput="calculateTotal()" placeholder="0">
+                    <input type="number" name="weight" step="0.5" min="0" class="form-input"
+                        oninput="calculateTotal()" placeholder="0">
                 </div>
-                
+
                 <div id="quantity-field" class="hidden">
                     <label class="form-label">Jumlah (pcs)</label>
-                    <input type="number" name="quantity" min="1" class="form-input" 
-                           oninput="calculateTotal()" placeholder="0">
+                    <input type="number" name="quantity" min="1" class="form-input"
+                        oninput="calculateTotal()" placeholder="0">
                 </div>
-                
+
                 <!-- Price -->
                 <div>
                     <label class="form-label">Total Harga</label>
-                    <input type="number" name="price" id="price-input" required class="form-input" 
-                           placeholder="0" min="0">
+                    <input type="number" name="price" id="price-input" required class="form-input"
+                        placeholder="0" min="0">
                     <p class="text-sm text-primary-600 mt-1" id="price-preview"></p>
                 </div>
-                
+
                 <!-- Notes -->
                 <div class="md:col-span-2">
                     <label class="form-label">Catatan (Opsional)</label>
-                    <textarea name="notes" rows="2" class="form-input" 
-                              placeholder="Tambahkan catatan khusus..."></textarea>
+                    <textarea name="notes" rows="2" class="form-input"
+                        placeholder="Tambahkan catatan khusus..."></textarea>
                 </div>
             </div>
-            
+
             <div class="flex justify-end space-x-3 mt-6">
                 <button type="button" onclick="closeModal('add-transaction-modal')" class="btn-secondary">
                     Batal
@@ -213,124 +214,124 @@ include __DIR__ . '/../includes/header-admin.php';
 </div>
 
 <script>
-// Update pricing based on service selection
-function updatePricing() {
-    const select = document.getElementById('service-select');
-    const selectedOption = select.options[select.selectedIndex];
-    const unit = selectedOption.dataset.unit;
-    
-    // Show/hide weight or quantity field
-    if (unit === 'kg') {
-        document.getElementById('weight-field').classList.remove('hidden');
-        document.getElementById('quantity-field').classList.add('hidden');
-        document.querySelector('[name="weight"]').required = true;
-        document.querySelector('[name="quantity"]').required = false;
-    } else {
-        document.getElementById('weight-field').classList.add('hidden');
-        document.getElementById('quantity-field').classList.remove('hidden');
-        document.querySelector('[name="weight"]').required = false;
-        document.querySelector('[name="quantity"]').required = true;
-    }
-    
-    calculateTotal();
-}
+    // Update pricing based on service selection
+    function updatePricing() {
+        const select = document.getElementById('service-select');
+        const selectedOption = select.options[select.selectedIndex];
+        const unit = selectedOption.dataset.unit;
 
-// Calculate total price
-function calculateTotal() {
-    const select = document.getElementById('service-select');
-    const selectedOption = select.options[select.selectedIndex];
-    const pricePerUnit = parseFloat(selectedOption.dataset.price) || 0;
-    const unit = selectedOption.dataset.unit;
-    
-    let quantity = 0;
-    if (unit === 'kg') {
-        quantity = parseFloat(document.querySelector('[name="weight"]').value) || 0;
-    } else {
-        quantity = parseInt(document.querySelector('[name="quantity"]').value) || 0;
-    }
-    
-    const total = pricePerUnit * quantity;
-    document.getElementById('price-input').value = total;
-    document.getElementById('price-preview').textContent = formatRupiah(total);
-}
-
-// Format currency
-function formatRupiah(amount) {
-    return 'Rp ' + new Intl.NumberFormat('id-ID').format(amount);
-}
-
-// Update transaction status
-async function updateStatus(id, status) {
-    try {
-        const formData = new FormData();
-        formData.append('action', 'update_status');
-        formData.append('id', id);
-        formData.append('status', status);
-        
-        const response = await fetch('../api/transactions-api.php', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            showNotification('Status berhasil diupdate!', 'success');
-            setTimeout(() => location.reload(), 1000);
+        // Show/hide weight or quantity field
+        if (unit === 'kg') {
+            document.getElementById('weight-field').classList.remove('hidden');
+            document.getElementById('quantity-field').classList.add('hidden');
+            document.querySelector('[name="weight"]').required = true;
+            document.querySelector('[name="quantity"]').required = false;
         } else {
-            showNotification('Gagal update status', 'error');
+            document.getElementById('weight-field').classList.add('hidden');
+            document.getElementById('quantity-field').classList.remove('hidden');
+            document.querySelector('[name="weight"]').required = false;
+            document.querySelector('[name="quantity"]').required = true;
         }
-    } catch (error) {
-        console.error('Error:', error);
-        showNotification('Terjadi kesalahan', 'error');
-    }
-}
 
-// Filter by status
-function filterByStatus() {
-    const filter = document.getElementById('status-filter').value.toLowerCase();
-    const rows = document.querySelectorAll('#transactions-table tbody tr');
-    
-    rows.forEach(row => {
-        const status = row.dataset.status;
-        if (filter === '' || status === filter) {
-            row.style.display = '';
+        calculateTotal();
+    }
+
+    // Calculate total price
+    function calculateTotal() {
+        const select = document.getElementById('service-select');
+        const selectedOption = select.options[select.selectedIndex];
+        const pricePerUnit = parseFloat(selectedOption.dataset.price) || 0;
+        const unit = selectedOption.dataset.unit;
+
+        let quantity = 0;
+        if (unit === 'kg') {
+            quantity = parseFloat(document.querySelector('[name="weight"]').value) || 0;
         } else {
-            row.style.display = 'none';
+            quantity = parseInt(document.querySelector('[name="quantity"]').value) || 0;
+        }
+
+        const total = pricePerUnit * quantity;
+        document.getElementById('price-input').value = total;
+        document.getElementById('price-preview').textContent = formatRupiah(total);
+    }
+
+    // Format currency
+    function formatRupiah(amount) {
+        return 'Rp ' + new Intl.NumberFormat('id-ID').format(amount);
+    }
+
+    // Update transaction status
+    async function updateStatus(id, status) {
+        try {
+            const formData = new FormData();
+            formData.append('action', 'update_status');
+            formData.append('id', id);
+            formData.append('status', status);
+
+            const response = await fetch('../api/transactions-api.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showNotification('Status berhasil diupdate!', 'success');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                showNotification('Gagal update status', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Terjadi kesalahan', 'error');
+        }
+    }
+
+    // Filter by status
+    function filterByStatus() {
+        const filter = document.getElementById('status-filter').value.toLowerCase();
+        const rows = document.querySelectorAll('#transactions-table tbody tr');
+
+        rows.forEach(row => {
+            const status = row.dataset.status;
+            if (filter === '' || status === filter) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Handle form submission
+    document.getElementById('transaction-form')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        formData.append('action', 'create');
+
+        try {
+            const response = await fetch('../api/transactions-api.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showNotification('Transaksi berhasil dibuat!', 'success');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                showNotification(result.message || 'Gagal membuat transaksi', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Terjadi kesalahan', 'error');
         }
     });
-}
 
-// Handle form submission
-document.getElementById('transaction-form')?.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    formData.append('action', 'create');
-    
-    try {
-        const response = await fetch('../api/transactions-api.php', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            showNotification('Transaksi berhasil dibuat!', 'success');
-            setTimeout(() => location.reload(), 1000);
-        } else {
-            showNotification(result.message || 'Gagal membuat transaksi', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        showNotification('Terjadi kesalahan', 'error');
+    function viewDetails(id) {
+        window.location.href = `transaction-detail.php?id=${id}`;
     }
-});
-
-function viewDetails(id) {
-    window.location.href = `transaction-detail.php?id=${id}`;
-}
 </script>
 
 <?php include __DIR__ . '/../includes/footer-admin.php'; ?>

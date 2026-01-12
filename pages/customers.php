@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Customers Page
  * CRUD untuk manajemen pelanggan
@@ -16,12 +17,12 @@ $db = Database::getInstance()->getConnection();
 // Handle POST requests (Create/Update/Delete)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
-    
+
     if ($action === 'create') {
         $name = sanitize($_POST['name']);
         $phone = sanitize($_POST['phone']);
         $address = sanitize($_POST['address'] ?? '');
-        
+
         try {
             $stmt = $db->prepare("INSERT INTO customers (name, phone, address) VALUES (?, ?, ?)");
             $stmt->execute([$name, $phone, $address]);
@@ -31,13 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         redirect('customers.php');
     }
-    
+
     if ($action === 'update') {
         $id = $_POST['id'];
         $name = sanitize($_POST['name']);
         $phone = sanitize($_POST['phone']);
         $address = sanitize($_POST['address'] ?? '');
-        
+
         try {
             $stmt = $db->prepare("UPDATE customers SET name = ?, phone = ?, address = ? WHERE id = ?");
             $stmt->execute([$name, $phone, $address, $id]);
@@ -47,10 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         redirect('customers.php');
     }
-    
+
     if ($action === 'delete') {
         $id = $_POST['id'];
-        
+
         try {
             $stmt = $db->prepare("DELETE FROM customers WHERE id = ?");
             $stmt->execute([$id]);
@@ -86,15 +87,15 @@ include __DIR__ . '/../includes/header-admin.php';
             Tambah Pelanggan
         </button>
     </div>
-    
+
     <!-- Search Bar -->
     <div class="mb-6">
-        <input type="text" id="search-input" placeholder="Cari pelanggan..." 
-               class="form-input max-w-md" onkeyup="filterTable('search-input', 'customers-table')">
+        <input type="text" id="search-input" placeholder="Cari pelanggan..."
+            class="form-input max-w-md" onkeyup="filterTable('search-input', 'customers-table')">
     </div>
-    
+
     <!-- Customers Table -->
-    <div class="card">
+    <div class="glass-card">
         <?php if (empty($customers)): ?>
             <div class="text-center py-12">
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,38 +122,38 @@ include __DIR__ . '/../includes/header-admin.php';
                     </thead>
                     <tbody>
                         <?php foreach ($customers as $customer): ?>
-                        <tr>
-                            <td class="font-mono">#<?= $customer['id'] ?></td>
-                            <td class="font-medium text-gray-900"><?= htmlspecialchars($customer['name']) ?></td>
-                            <td><?= htmlspecialchars($customer['phone']) ?></td>
-                            <td class="text-sm text-gray-600"><?= htmlspecialchars($customer['address']) ?: '-' ?></td>
-                            <td class="text-sm text-gray-600"><?= formatDate($customer['created_at'], false) ?></td>
-                            <td>
-                                <?php if ($customer['is_registered']): ?>
-                                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Terdaftar</span>
-                                <?php else: ?>
-                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Belum Daftar</span>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <div class="flex space-x-2">
-                                    <button onclick='editCustomer(<?= json_encode($customer) ?>)' 
-                                            class="text-primary-600 hover:text-primary-800 font-medium text-sm">
-                                        Edit
-                                    </button>
-                                    <button onclick="deleteCustomer(<?= $customer['id'] ?>)" 
-                                            class="text-red-600 hover:text-red-800 font-medium text-sm">
-                                        Hapus
-                                    </button>
-                                    <?php if (!$customer['is_registered']): ?>
-                                    <button onclick="inviteCustomer('<?= htmlspecialchars($customer['phone']) ?>')" 
-                                            class="text-blue-600 hover:text-blue-800 font-medium text-sm">
-                                        Undang
-                                    </button>
+                            <tr>
+                                <td class="font-mono">#<?= $customer['id'] ?></td>
+                                <td class="font-medium text-gray-900"><?= htmlspecialchars($customer['name']) ?></td>
+                                <td><?= htmlspecialchars($customer['phone']) ?></td>
+                                <td class="text-sm text-gray-600"><?= htmlspecialchars($customer['address']) ?: '-' ?></td>
+                                <td class="text-sm text-gray-600"><?= formatDate($customer['created_at'], false) ?></td>
+                                <td>
+                                    <?php if ($customer['is_registered']): ?>
+                                        <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Terdaftar</span>
+                                    <?php else: ?>
+                                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Belum Daftar</span>
                                     <?php endif; ?>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                                <td>
+                                    <div class="flex space-x-2">
+                                        <button onclick='editCustomer(<?= json_encode($customer) ?>)'
+                                            class="text-primary-600 hover:text-primary-800 font-medium text-sm">
+                                            Edit
+                                        </button>
+                                        <button onclick="deleteCustomer(<?= $customer['id'] ?>)"
+                                            class="text-red-600 hover:text-red-800 font-medium text-sm">
+                                            Hapus
+                                        </button>
+                                        <?php if (!$customer['is_registered']): ?>
+                                            <button onclick="inviteCustomer('<?= htmlspecialchars($customer['phone']) ?>')"
+                                                class="text-blue-600 hover:text-blue-800 font-medium text-sm">
+                                                Undang
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -171,23 +172,23 @@ include __DIR__ . '/../includes/header-admin.php';
         <h2 class="text-2xl font-bold text-gray-900 mb-6">Tambah Pelanggan Baru</h2>
         <form method="POST" action="">
             <input type="hidden" name="action" value="create">
-            
+
             <div class="mb-4">
                 <label class="form-label">Nama Lengkap</label>
                 <input type="text" name="name" required class="form-input" placeholder="Masukkan nama lengkap">
             </div>
-            
+
             <div class="mb-4">
                 <label class="form-label">No. Telepon</label>
-                <input type="tel" name="phone" required class="form-input" placeholder="08123456789" 
-                       oninput="formatPhoneNumber(this)">
+                <input type="tel" name="phone" required class="form-input" placeholder="08123456789"
+                    oninput="formatPhoneNumber(this)">
             </div>
-            
+
             <div class="mb-6">
                 <label class="form-label">Alamat</label>
                 <textarea name="address" rows="3" class="form-input" placeholder="Masukkan alamat (opsional)"></textarea>
             </div>
-            
+
             <div class="flex justify-end space-x-3">
                 <button type="button" onclick="closeModal('add-customer-modal')" class="btn-secondary">
                     Batal
@@ -208,22 +209,22 @@ include __DIR__ . '/../includes/header-admin.php';
         <form method="POST" action="" id="edit-form">
             <input type="hidden" name="action" value="update">
             <input type="hidden" name="id" id="edit-id">
-            
+
             <div class="mb-4">
                 <label class="form-label">Nama Lengkap</label>
                 <input type="text" name="name" id="edit-name" required class="form-input">
             </div>
-            
+
             <div class="mb-4">
                 <label class="form-label">No. Telepon</label>
                 <input type="tel" name="phone" id="edit-phone" required class="form-input">
             </div>
-            
+
             <div class="mb-6">
                 <label class="form-label">Alamat</label>
                 <textarea name="address" id="edit-address" rows="3" class="form-input"></textarea>
             </div>
-            
+
             <div class="flex justify-end space-x-3">
                 <button type="button" onclick="closeModal('edit-customer-modal')" class="btn-secondary">
                     Batal
@@ -237,39 +238,39 @@ include __DIR__ . '/../includes/header-admin.php';
 </div>
 
 <script>
-function editCustomer(customer) {
-    document.getElementById('edit-id').value = customer.id;
-    document.getElementById('edit-name').value = customer.name;
-    document.getElementById('edit-phone').value = customer.phone;
-    document.getElementById('edit-address').value = customer.address || '';
-    openModal('edit-customer-modal');
-}
+    function editCustomer(customer) {
+        document.getElementById('edit-id').value = customer.id;
+        document.getElementById('edit-name').value = customer.name;
+        document.getElementById('edit-phone').value = customer.phone;
+        document.getElementById('edit-address').value = customer.address || '';
+        openModal('edit-customer-modal');
+    }
 
-function deleteCustomer(id) {
-    if (confirm('Yakin ingin menghapus pelanggan ini?')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.innerHTML = `
+    function deleteCustomer(id) {
+        if (confirm('Yakin ingin menghapus pelanggan ini?')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.innerHTML = `
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="id" value="${id}">
         `;
-        document.body.appendChild(form);
-        form.submit();
+            document.body.appendChild(form);
+            form.submit();
+        }
     }
-}
 
-function inviteCustomer(phone) {
-    const registerUrl = `${window.location.origin}/laundry-D-four/pages/auth/register.php?phone=${phone}`;
-    
-    // Copy ke clipboard
-    navigator.clipboard.writeText(registerUrl).then(() => {
-        alert('Link registrasi sudah dicopy!\n\nKirim ke customer via WhatsApp.');
-    }).catch(() => {
-        // Fallback: buka WhatsApp langsung
-        const waUrl = `https://wa.me/62${phone.substring(1)}?text=Silakan daftar di D'four Laundry: ${encodeURIComponent(registerUrl)}`;
-        window.open(waUrl, '_blank');
-    });
-}
+    function inviteCustomer(phone) {
+        const registerUrl = `${window.location.origin}/laundry-D-four/pages/auth/register.php?phone=${phone}`;
+
+        // Copy ke clipboard
+        navigator.clipboard.writeText(registerUrl).then(() => {
+            alert('Link registrasi sudah dicopy!\n\nKirim ke customer via WhatsApp.');
+        }).catch(() => {
+            // Fallback: buka WhatsApp langsung
+            const waUrl = `https://wa.me/62${phone.substring(1)}?text=Silakan daftar di D'four Laundry: ${encodeURIComponent(registerUrl)}`;
+            window.open(waUrl, '_blank');
+        });
+    }
 </script>
 
 <?php include __DIR__ . '/../includes/footer-admin.php'; ?>

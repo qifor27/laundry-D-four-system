@@ -1,38 +1,38 @@
 <?php
- 
- require_once __DIR__ . '/../../includes/functions.php';
- require_once __DIR__ . '/../../includes/auth.php';
 
- // step 1: cek apakah user sudah login
+require_once __DIR__ . '/../../includes/functions.php';
+require_once __DIR__ . '/../../includes/auth.php';
 
- if (!isLoggedIn()) {
-    header('Location: '. baseUrl() . '/pages/auth/login.php');
+// step 1: cek apakah user sudah login
+
+if (!isLoggedIn()) {
+    header('Location: ' . baseUrl() . '/pages/auth/login.php');
     exit;
- }
+}
 
- // ambil data user dari session
- $userData = getUserData();
+// ambil data user dari session
+$userData = getUserData();
 
- // step 2: cek apakah phone sudah ada 
- // jika phone sudah ada, redirect ke dashboard sesuai role
- if (!empty($_SESSION['user_phone'])) {
+// step 2: cek apakah phone sudah ada 
+// jika phone sudah ada, redirect ke dashboard sesuai role
+if (!empty($_SESSION['user_phone'])) {
     $role = $userData['role'] ?? 'user';
-    if(in_array($role, ['superadmin', 'admin', 'cashier'])) {
+    if (in_array($role, ['superadmin', 'admin', 'cashier'])) {
         header('Location: ' . baseUrl() . '/pages/dashboard.php');
     } else {
         header('Location: ' . baseUrl() . '/pages/customer-dashboard.php');
     }
     exit;
- }
+}
 
- // cek dari database untuk memastikan 
- require_once __DIR__ . '/../../config/database_mysql.php';
- $db = Database::getInstance()->getConnection();
- $stmt = $db->prepare("SELECT phone FROM users WHERE id = ?");
- $stmt->execute([$userData['id']]);
- $userFromDb = $stmt->fetch(PDO::FETCH_ASSOC);
+// cek dari database untuk memastikan 
+require_once __DIR__ . '/../../config/database_mysql.php';
+$db = Database::getInstance()->getConnection();
+$stmt = $db->prepare("SELECT phone FROM users WHERE id = ?");
+$stmt->execute([$userData['id']]);
+$userFromDb = $stmt->fetch(PDO::FETCH_ASSOC);
 
- if (!empty($userFromDb['phone'])) {
+if (!empty($userFromDb['phone'])) {
     // update session dan redirect
     $_SESSION['user_phone'] = $userFromDb['phone'];
     $role = $userData['role'] ?? 'user';
@@ -42,15 +42,16 @@
         header('Location: ' . baseUrl() . '/pages/customer-dashboard.php');
     }
     exit;
- }
+}
 
- // set page title
- $pageTitle = "Lengkapi Profil - D'four Laundry";
- ?>
+// set page title
+$pageTitle = "Lengkapi Profil - D'four Laundry";
+?>
 
- <!DOCTYPE html>
- <html lang="en">
- <head>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle) ?></title>
@@ -59,7 +60,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Tailwind CSS -->
     <link href="<?= baseUrl() ?>/assets/css/style.css" rel="stylesheet">
 
@@ -178,10 +179,10 @@
             line-height: 1.6;
         }
     </style>
- </head>
+</head>
 
- <body class="bg-gradient-to-br from-purple-50 via-purple-100/50 to-fuchsia-50 font-outfit">
-    
+<body class="bg-gradient-to-br from-purple-50 via-purple-100/50 to-fuchsia-50 font-outfit">
+
     <!-- Bubble Decorations - Element dekoratif background -->
     <div class="bubble-decoration">
         <div class="bubble bubble-pink w-96 h-96 -top-20 -left-20"></div>
@@ -195,9 +196,7 @@
             <!-- Logo -->
             <div class="text-center mb-6">
                 <a href="<?= baseUrl() ?>" class="inline-flex items-center space-x-3">
-                    <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
-                        <span class="text-white font-bold text-xl">D</span>
-                    </div>
+                    <img src="<?= baseUrl() ?>/assets/images/logo.png" alt="D'four Laundry" class="w-12 h-12">
                     <span class="text-2xl font-bold text-gray-900">D'four<span class="text-primary-600">Laundry</span></span>
                 </a>
             </div>
@@ -205,9 +204,9 @@
             <!-- User Avatar & Welcome -->
             <div class="text-center mb-6">
                 <?php if (!empty($userData['picture'])): ?>
-                    <img src="<?= htmlspecialchars($userData['picture']) ?>" 
-                         alt="Profile" 
-                         class="user-avatar mx-auto mb-4">
+                    <img src="<?= htmlspecialchars($userData['picture']) ?>"
+                        alt="Profile"
+                        class="user-avatar mx-auto mb-4">
                 <?php else: ?>
                     <!-- Default avatar jika tidak ada picture -->
                     <div class="w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
@@ -216,7 +215,7 @@
                         </span>
                     </div>
                 <?php endif; ?>
-                
+
                 <h1 class="text-xl font-bold text-gray-900 mb-1">
                     Halo, <?= htmlspecialchars($userData['name'] ?? 'User') ?>! 👋
                 </h1>
@@ -227,7 +226,7 @@
             <div class="info-box">
                 <p>
                     <strong>📱 Mengapa perlu nomor HP?</strong><br>
-                    Nomor HP digunakan untuk menghubungkan akun Anda dengan 
+                    Nomor HP digunakan untuk menghubungkan akun Anda dengan
                     data transaksi laundry dan notifikasi status pesanan.
                 </p>
             </div>
@@ -235,16 +234,16 @@
             <!-- Alerts -->
             <div id="alertError" class="alert alert-error">
                 <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span id="alertErrorText"></span>
             </div>
 
             <div id="alertSuccess" class="alert alert-success">
                 <svg class="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span id="alertSuccessText"></span>
             </div>
@@ -255,14 +254,14 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         Nomor HP <span class="text-red-500">*</span>
                     </label>
-                    <input type="tel" 
-                           name="phone" 
-                           id="phone" 
-                           required
-                           class="form-input"
-                           placeholder="Contoh: 081234567890"
-                           pattern="^08[0-9]{8,12}$"
-                           maxlength="14">
+                    <input type="tel"
+                        name="phone"
+                        id="phone"
+                        required
+                        class="form-input"
+                        placeholder="Contoh: 081234567890"
+                        pattern="^08[0-9]{8,12}$"
+                        maxlength="14">
                     <p class="text-xs text-gray-500 mt-2">
                         Format: 08xxxxxxxxxx (10-14 digit)
                     </p>
@@ -272,10 +271,10 @@
                     <span id="submitText">Simpan & Lanjutkan</span>
                     <span id="submitLoading" class="hidden">
                         <svg class="animate-spin h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" 
-                                    stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" 
-                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            <circle class="opacity-25" cx="12" cy="12" r="10"
+                                stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                         Menyimpan...
                     </span>
@@ -285,8 +284,8 @@
             <!-- Logout Link -->
             <div class="text-center mt-6 pt-6 border-t border-gray-200">
                 <p class="text-gray-500 text-sm mb-2">Bukan <?= htmlspecialchars($userData['name'] ?? 'Anda') ?>?</p>
-                <a href="<?= baseUrl() ?>/api/logout.php" 
-                   class="text-red-500 hover:text-red-600 text-sm font-medium">
+                <a href="<?= baseUrl() ?>/api/logout.php"
+                    class="text-red-500 hover:text-red-600 text-sm font-medium">
                     Logout dari akun ini
                 </a>
             </div>
@@ -311,7 +310,7 @@
 
             // scroll ke alert
             el.scrollIntoView({
-                behavior: 'smooth', 
+                behavior: 'smooth',
                 block: 'center'
             });
         }
@@ -343,9 +342,9 @@
             const btn = document.getElementById('submitBtn');
             const btnText = document.getElementById('submitText');
             const btnLoading = document.getElementById('submitLoading');
-            
+
             btn.disabled = isLoading;
-            
+
             if (isLoading) {
                 btnText.classList.add('hidden');
                 btnLoading.classList.remove('hidden');
@@ -369,31 +368,31 @@
         // ============================================
         // Event Listener - Form Submit
         // ============================================
-        
+
         document.getElementById('completeProfileForm').addEventListener('submit', async (e) => {
             // Cegah form submit default (reload page)
             e.preventDefault();
-            
+
             // Sembunyikan alert sebelumnya
             hideAlerts();
-            
+
             // Ambil nilai input
             const phone = document.getElementById('phone').value.trim();
-            
+
             // Validasi client-side
             if (!phone) {
                 showError('Nomor HP wajib diisi');
                 return;
             }
-            
+
             if (!validatePhone(phone)) {
                 showError('Format nomor HP tidak valid. Gunakan format 08xxxxxxxxxx');
                 return;
             }
-            
+
             // Set loading state
             setLoading(true);
-            
+
             try {
                 // Kirim request ke API
                 const response = await fetch(API_URL, {
@@ -401,16 +400,18 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ phone: phone })
+                    body: JSON.stringify({
+                        phone: phone
+                    })
                 });
-                
+
                 // Parse response JSON
                 const data = await response.json();
-                
+
                 if (data.success) {
                     // Sukses - tampilkan pesan dan redirect
                     showSuccess(data.message || 'Profil berhasil dilengkapi!');
-                    
+
                     // Redirect setelah 1.5 detik
                     setTimeout(() => {
                         window.location.href = data.redirect || '<?= baseUrl() ?>/pages/customer-dashboard.php';
@@ -431,11 +432,11 @@
         // ============================================
         // Auto-format input phone
         // ============================================
-        
+
         document.getElementById('phone').addEventListener('input', function(e) {
             // Hapus karakter non-angka
             let value = this.value.replace(/\D/g, '');
-            
+
             // Pastikan dimulai dengan 08
             if (value.length >= 2 && !value.startsWith('08')) {
                 // Jika user mulai dengan 8, tambahkan 0 di depan
@@ -443,14 +444,15 @@
                     value = '0' + value;
                 }
             }
-            
+
             // Batasi maksimal 14 karakter
             if (value.length > 14) {
                 value = value.substring(0, 14);
             }
-            
+
             this.value = value;
         });
     </script>
- </body>
- </html>
+</body>
+
+</html>

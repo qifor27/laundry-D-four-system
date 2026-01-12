@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Dashboard Page
  * Menampilkan statistik dan transaksi terbaru
@@ -55,11 +56,11 @@ include __DIR__ . '/../includes/header-admin.php';
 
 <!-- Dashboard Content -->
 <div>
-    
+
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Today's Sales -->
-        <div class="card-gradient animate-fade-in group hover:scale-105 transition-transform duration-200">
+        <div class="dash-stat-card dash-stat-pink group hover:scale-105 transition-transform duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium opacity-90">Penjualan Hari Ini</p>
@@ -72,9 +73,9 @@ include __DIR__ . '/../includes/header-admin.php';
                 </div>
             </div>
         </div>
-        
+
         <!-- Active Jobs -->
-        <div class="bg-gradient-to-br from-secondary-500 to-secondary-600 rounded-2xl p-6 text-white shadow-xl group hover:scale-105 transition-transform duration-200">
+        <div class="dash-stat-card dash-stat-cyan group hover:scale-105 transition-transform duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium opacity-90">Pesanan Aktif</p>
@@ -88,9 +89,9 @@ include __DIR__ . '/../includes/header-admin.php';
                 </div>
             </div>
         </div>
-        
+
         <!-- Total Customers -->
-        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-xl group hover:scale-105 transition-transform duration-200">
+        <div class="dash-stat-card dash-stat-light group hover:scale-105 transition-transform duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium opacity-90">Total Pelanggan</p>
@@ -104,9 +105,9 @@ include __DIR__ . '/../includes/header-admin.php';
                 </div>
             </div>
         </div>
-        
+
         <!-- Month Revenue -->
-        <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white shadow-xl group hover:scale-105 transition-transform duration-200">
+        <div class="dash-stat-card dash-stat-orange group hover:scale-105 transition-transform duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium opacity-90">Pendapatan Bulan Ini</p>
@@ -121,16 +122,16 @@ include __DIR__ . '/../includes/header-admin.php';
             </div>
         </div>
     </div>
-    
+
     <!-- Recent Transactions -->
-    <div class="card">
+    <div class="glass-card">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold text-gray-900">Transaksi Terbaru</h2>
             <a href="<?= baseUrl('pages/transactions.php') ?>" class="text-primary-600 hover:text-primary-700 font-medium text-sm">
                 Lihat Semua →
             </a>
         </div>
-        
+
         <?php if (empty($recentTransactions)): ?>
             <div class="text-center py-12">
                 <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,21 +154,21 @@ include __DIR__ . '/../includes/header-admin.php';
                     </thead>
                     <tbody>
                         <?php foreach ($recentTransactions as $trx): ?>
-                        <tr>
-                            <td class="font-mono text-sm">#<?= $trx['id'] ?></td>
-                            <td>
-                                <div class="font-medium text-gray-900"><?= htmlspecialchars($trx['customer_name']) ?></div>
-                                <div class="text-sm text-gray-500"><?= htmlspecialchars($trx['phone']) ?></div>
-                            </td>
-                            <td><?= htmlspecialchars($trx['service_type']) ?></td>
-                            <td class="font-semibold text-gray-900"><?= formatRupiah($trx['price']) ?></td>
-                            <td>
-                                <span class="badge <?= getStatusBadge($trx['status']) ?>">
-                                    <?= getStatusLabel($trx['status']) ?>
-                                </span>
-                            </td>
-                            <td class="text-sm text-gray-600"><?= formatDate($trx['created_at']) ?></td>
-                        </tr>
+                            <tr>
+                                <td class="font-mono text-sm">#<?= $trx['id'] ?></td>
+                                <td>
+                                    <div class="font-medium text-gray-900"><?= htmlspecialchars($trx['customer_name']) ?></div>
+                                    <div class="text-sm text-gray-500"><?= htmlspecialchars($trx['phone']) ?></div>
+                                </td>
+                                <td><?= htmlspecialchars($trx['service_type']) ?></td>
+                                <td class="font-semibold text-gray-900"><?= formatRupiah($trx['price']) ?></td>
+                                <td>
+                                    <span class="badge <?= getStatusBadge($trx['status']) ?>">
+                                        <?= getStatusLabel($trx['status']) ?>
+                                    </span>
+                                </td>
+                                <td class="text-sm text-gray-600"><?= formatDate($trx['created_at']) ?></td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>

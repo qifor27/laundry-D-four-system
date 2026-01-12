@@ -47,9 +47,7 @@ $isGoogleConfigured = isGoogleOAuthConfigured();
             <div class="relative z-10">
                 <!-- Logo -->
                 <div class="flex items-center gap-3 mb-12">
-                    <div class="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                        <span class="text-white font-bold text-2xl">D</span>
-                    </div>
+                    <img src="<?= baseUrl('assets/images/logo.png') ?>" alt="D'four Laundry" class="w-14 h-14">
                     <span class="text-2xl font-bold text-white">D'four<span class="text-purple-300">Laundry</span></span>
                 </div>
 
@@ -88,9 +86,7 @@ $isGoogleConfigured = isGoogleOAuthConfigured();
             <div class="auth-form-inner">
                 <!-- Mobile Logo -->
                 <div class="md:hidden flex items-center gap-3 mb-8">
-                    <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
-                        <span class="text-white font-bold text-xl">D</span>
-                    </div>
+                    <img src="<?= baseUrl('assets/images/logo.png') ?>" alt="D'four Laundry" class="w-12 h-12">
                     <span class="text-xl font-bold text-gray-900">D'four<span class="text-primary-600">Laundry</span></span>
                 </div>
 

@@ -1,0 +1,430 @@
+================================================================================
+USE CASE DESCRIPTION
+D'FOUR SMART LAUNDRY SYSTEM
+================================================================================
+
+Dokumen ini berisi deskripsi detail setiap use case berdasarkan template standar.
+
+================================================================================
+UC-01: LOGIN
+================================================================================
+
+Use Case       : Login
+Actors         : Karyawan, Pelanggan
+Description    : Proses autentikasi pengguna untuk masuk ke dalam sistem 
+                 menggunakan email dan password atau akun Google.
+
+Pre-conditions : 
+  - Pengguna sudah memiliki akun terdaftar di sistem
+  - Pengguna mengakses halaman login
+
+Post-conditions:
+  - Session pengguna aktif
+  - Pengguna diarahkan ke dashboard sesuai role (admin/user)
+
+Normal Flow:
+  1. Pengguna membuka halaman login
+  2. Sistem menampilkan form login (email dan password)
+  3. Pengguna memasukkan email dan password
+  4. Pengguna mengklik tombol "Login"
+  5. Sistem memvalidasi kredensial dengan database
+  6. Sistem membuat session untuk pengguna
+  7. Sistem mengarahkan ke dashboard sesuai role:
+     - Jika Karyawan → Dashboard Admin
+     - Jika Pelanggan → Customer Dashboard
+
+Alternate Flow:
+  3a. Login dengan Google:
+      3a.1. Pengguna mengklik tombol "Login dengan Google"
+      3a.2. Sistem mengarahkan ke halaman OAuth Google
+      3a.3. Pengguna memilih akun Google
+      3a.4. Google mengirim data user ke sistem
+      3a.5. Sistem memverifikasi dan membuat session
+      3a.6. Lanjut ke langkah 7
+
+Exception Flow:
+  5a. Email atau password salah:
+      5a.1. Sistem menampilkan pesan "Email atau password salah"
+      5a.2. Pengguna kembali ke langkah 3
+  
+  5b. Akun tidak aktif:
+      5b.1. Sistem menampilkan pesan "Akun Anda tidak aktif"
+      5b.2. Use case berakhir
+
+
+================================================================================
+UC-02: REGISTER (MENDAFTAR AKUN)
+================================================================================
+
+Use Case       : Register
+Actors         : Pelanggan
+Description    : Proses pendaftaran akun baru untuk pelanggan agar dapat 
+                 mengakses fitur portal pelanggan.
+
+Pre-conditions : 
+  - Pengguna belum memiliki akun
+  - Pengguna mengakses halaman registrasi
+
+Post-conditions:
+  - Akun baru tersimpan di database
+  - Jika nomor HP cocok dengan data customer, akun otomatis ter-link
+  - Pengguna dapat login ke sistem
+
+Normal Flow:
+  1. Pengguna membuka halaman registrasi
+  2. Sistem menampilkan form registrasi
+  3. Pengguna mengisi data:
+     - Nama lengkap
+     - Email
+     - Nomor HP
+     - Password
+     - Konfirmasi password
+  4. Pengguna mengklik tombol "Daftar"
+  5. Sistem memvalidasi data inputan
+  6. Sistem meng-hash password
+  7. Sistem menyimpan data ke tabel 'users'
+  8. Sistem mengecek apakah nomor HP ada di tabel 'customers'
+  9. Jika cocok, sistem meng-link user_id ke customer
+  10. Sistem menampilkan pesan "Registrasi berhasil"
+  11. Sistem mengarahkan ke halaman login
+
+Alternate Flow:
+  3a. Registrasi dengan Google:
+      3a.1. Pengguna mengklik "Daftar dengan Google"
+      3a.2. Sistem mengarahkan ke OAuth Google
+      3a.3. Google mengirim data user
+      3a.4. Sistem menyimpan data dan membuat akun
+      3a.5. Lanjut ke langkah 10
+
+Exception Flow:
+  5a. Email sudah terdaftar:
+      5a.1. Sistem menampilkan "Email sudah digunakan"
+      5a.2. Pengguna kembali ke langkah 3
+  
+  5b. Password tidak cocok:
+      5b.1. Sistem menampilkan "Password tidak sama"
+      5b.2. Pengguna kembali ke langkah 3
+  
+  5c. Format nomor HP tidak valid:
+      5c.1. Sistem menampilkan "Format nomor HP tidak valid"
+      5c.2. Pengguna kembali ke langkah 3
+
+
+================================================================================
+UC-03: MENGELOLA DATA PELANGGAN
+================================================================================
+
+Use Case       : Mengelola Data Pelanggan
+Actors         : Karyawan
+Description    : Proses pengelolaan data pelanggan laundry termasuk menambah, 
+                 mengubah, mencari, dan menghapus data pelanggan.
+
+Pre-conditions : 
+  - Karyawan sudah login ke sistem
+  - Karyawan berada di halaman Kelola Pelanggan
+
+Post-conditions:
+  - Data pelanggan tersimpan/terupdate/terhapus sesuai aksi
+  - Perubahan tercatat di database
+
+Normal Flow (Menambah Pelanggan):
+  1. Karyawan mengklik tombol "Tambah Pelanggan"
+  2. Sistem menampilkan form input pelanggan
+  3. Karyawan mengisi data:
+     - Nama pelanggan
+     - Nomor HP
+     - Alamat (opsional)
+  4. Karyawan mengklik tombol "Simpan"
+  5. Sistem memvalidasi data
+  6. Sistem mengecek apakah nomor HP sudah ada user terdaftar
+  7. Sistem menyimpan data ke tabel 'customers'
+  8. Sistem menampilkan pesan "Pelanggan berhasil ditambahkan"
+  9. Sistem me-refresh daftar pelanggan
+
+Alternate Flow (Mengubah Data Pelanggan):
+  1a.1. Karyawan mengklik tombol "Edit" pada baris pelanggan
+  1a.2. Sistem menampilkan form edit dengan data terisi
+  1a.3. Karyawan mengubah data yang diperlukan
+  1a.4. Karyawan mengklik "Simpan"
+  1a.5. Sistem memvalidasi dan menyimpan perubahan
+  1a.6. Sistem menampilkan "Data berhasil diupdate"
+
+Alternate Flow (Mencari Pelanggan):
+  1b.1. Karyawan mengetik nama/nomor HP di kolom pencarian
+  1b.2. Sistem memfilter daftar pelanggan sesuai kata kunci
+  1b.3. Sistem menampilkan hasil pencarian
+
+Alternate Flow (Menghapus Pelanggan):
+  1c.1. Karyawan mengklik tombol "Hapus" pada baris pelanggan
+  1c.2. Sistem menampilkan dialog konfirmasi
+  1c.3. Karyawan mengklik "Ya, Hapus"
+  1c.4. Sistem menghapus data dari database
+  1c.5. Sistem menampilkan "Pelanggan berhasil dihapus"
+
+Exception Flow:
+  5a. Nomor HP sudah terdaftar:
+      5a.1. Sistem menampilkan "Nomor HP sudah ada"
+      5a.2. Karyawan kembali ke langkah 3
+
+  1c.4a. Pelanggan memiliki transaksi:
+      1c.4a.1. Sistem menampilkan "Tidak dapat menghapus pelanggan 
+               yang memiliki transaksi"
+      1c.4a.2. Use case berakhir
+
+
+================================================================================
+UC-04: MENGELOLA DATA TRANSAKSI
+================================================================================
+
+Use Case       : Mengelola Data Transaksi
+Actors         : Karyawan
+Description    : Proses pengelolaan transaksi laundry termasuk mencatat 
+                 transaksi baru, mengubah status, dan menghapus transaksi.
+
+Pre-conditions : 
+  - Karyawan sudah login ke sistem
+  - Karyawan berada di halaman Transaksi
+  - Data pelanggan sudah tersedia
+
+Post-conditions:
+  - Transaksi tersimpan/terupdate/terhapus di database
+  - Status cucian terupdate sesuai progress
+
+Normal Flow (Mencatat Transaksi Baru):
+  1. Karyawan mengklik tombol "Transaksi Baru"
+  2. Sistem menampilkan form transaksi
+  3. Karyawan memilih pelanggan dari dropdown
+  4. Karyawan memilih jenis layanan (Cuci Setrika, Cuci Kering, dll)
+  5. Karyawan memasukkan berat/jumlah cucian
+  6. Sistem menghitung harga otomatis berdasarkan berat × harga layanan
+  7. Karyawan menambahkan catatan (opsional)
+  8. Karyawan mengklik "Simpan Transaksi"
+  9. Sistem menyimpan transaksi dengan status 'pending'
+  10. Sistem menampilkan "Transaksi berhasil dicatat"
+  11. Sistem me-refresh daftar transaksi
+
+Alternate Flow (Mengubah Status Transaksi):
+  1a.1. Karyawan melihat daftar transaksi
+  1a.2. Karyawan mengklik dropdown status pada baris transaksi
+  1a.3. Karyawan memilih status baru:
+        - pending → washing (Mulai dicuci)
+        - washing → drying (Dikeringkan)
+        - drying → ironing (Disetrika)
+        - ironing → done (Selesai)
+        - done → picked_up (Diambil)
+  1a.4. Sistem mengupdate status di database
+  1a.5. Sistem menampilkan notifikasi status terupdate
+
+Alternate Flow (Menghapus Transaksi):
+  1b.1. Karyawan mengklik tombol "Hapus" pada transaksi
+  1b.2. Sistem menampilkan dialog konfirmasi
+  1b.3. Karyawan mengklik "Ya, Hapus"
+  1b.4. Sistem menghapus transaksi dari database
+  1b.5. Sistem menampilkan "Transaksi berhasil dihapus"
+
+Exception Flow:
+  3a. Pelanggan belum ada:
+      3a.1. Karyawan mengklik "Tambah Pelanggan Baru"
+      3a.2. Sistem membuka form tambah pelanggan
+      3a.3. Lanjut ke UC-03
+
+  5a. Berat/jumlah tidak valid:
+      5a.1. Sistem menampilkan "Masukkan berat/jumlah yang valid"
+      5a.2. Karyawan kembali ke langkah 5
+
+
+================================================================================
+UC-05: CEK STATUS ORDER
+================================================================================
+
+Use Case       : Cek Status Order
+Actors         : Pelanggan
+Description    : Pelanggan melihat status pengerjaan cucian mereka melalui 
+                 portal pelanggan.
+
+Pre-conditions : 
+  - Pelanggan sudah login ke sistem
+  - Pelanggan memiliki transaksi laundry
+
+Post-conditions:
+  - Pelanggan dapat melihat status terkini cucian
+  - Pelanggan mengetahui progress pengerjaan
+
+Normal Flow:
+  1. Pelanggan membuka halaman Cek Status Order
+  2. Sistem mengambil nomor HP dari session pengguna
+  3. Sistem mencari transaksi berdasarkan nomor HP
+  4. Sistem menampilkan daftar transaksi dengan informasi:
+     - ID Transaksi
+     - Jenis layanan
+     - Status (dengan progress bar visual)
+     - Tanggal masuk
+     - Total harga
+  5. Pelanggan dapat melihat detail setiap transaksi
+  6. Pelanggan dapat memantau status:
+     - Pending (Diterima)
+     - Washing (Sedang dicuci)
+     - Drying (Dikeringkan)
+     - Ironing (Disetrika)
+     - Done (Selesai, siap diambil)
+     - Picked Up (Sudah diambil)
+
+Alternate Flow:
+  4a. Tidak ada transaksi:
+      4a.1. Sistem menampilkan pesan "Belum ada transaksi"
+      4a.2. Sistem menampilkan informasi kontak laundry
+
+Exception Flow:
+  (Tidak ada exception flow untuk use case ini)
+
+
+================================================================================
+UC-06: MENCETAK/MENGUNDUH NOTA
+================================================================================
+
+Use Case       : Mencetak/Mengunduh Nota
+Actors         : Karyawan, Pelanggan
+Description    : Proses mencetak atau mengunduh nota/struk transaksi laundry.
+
+Pre-conditions : 
+  - Pengguna sudah login
+  - Transaksi sudah tercatat di sistem
+
+Post-conditions:
+  - Nota berhasil dicetak atau diunduh
+  - Pelanggan memiliki bukti transaksi
+
+Normal Flow (Karyawan Mencetak Nota):
+  1. Karyawan membuka halaman Transaksi
+  2. Karyawan mencari transaksi yang ingin di-cetak
+  3. Karyawan mengklik tombol "Cetak Nota"
+  4. Sistem menampilkan preview nota dengan informasi:
+     - Logo dan nama laundry
+     - Nomor transaksi
+     - Tanggal transaksi
+     - Nama pelanggan
+     - Detail layanan dan harga
+     - Total pembayaran
+     - Status pembayaran
+  5. Karyawan mengklik "Print"
+  6. Browser membuka dialog print
+  7. Karyawan memilih printer dan mencetak
+
+Alternate Flow (Pelanggan Mengunduh Nota):
+  1a.1. Pelanggan membuka Customer Dashboard
+  1a.2. Pelanggan mencari transaksi di riwayat
+  1a.3. Pelanggan mengklik tombol "Unduh Nota"
+  1a.4. Sistem men-generate file PDF
+  1a.5. Browser mengunduh file nota
+
+Exception Flow:
+  4a. Transaksi tidak ditemukan:
+      4a.1. Sistem menampilkan "Transaksi tidak ditemukan"
+      4a.2. Use case berakhir
+
+
+================================================================================
+UC-07: MENGELOLA LAPORAN BULANAN
+================================================================================
+
+Use Case       : Mengelola Laporan Bulanan
+Actors         : Karyawan
+Description    : Proses pembuatan dan pengelolaan laporan pendapatan dan 
+                 transaksi laundry secara bulanan.
+
+Pre-conditions : 
+  - Karyawan sudah login ke sistem
+  - Karyawan mengakses halaman Laporan
+  - Terdapat data transaksi di sistem
+
+Post-conditions:
+  - Laporan berhasil ditampilkan/diexport
+  - Karyawan memiliki data rekapitulasi
+
+Normal Flow:
+  1. Karyawan membuka halaman Laporan
+  2. Sistem menampilkan filter periode (bulan dan tahun)
+  3. Karyawan memilih bulan dan tahun yang diinginkan
+  4. Karyawan mengklik "Tampilkan Laporan"
+  5. Sistem mengambil data dari database sesuai periode
+  6. Sistem menampilkan ringkasan:
+     - Total transaksi
+     - Total pendapatan
+     - Rata-rata per transaksi
+     - Transaksi per status
+     - Layanan terpopuler
+  7. Sistem menampilkan grafik/chart visualisasi
+  8. Karyawan dapat melihat detail per hari
+
+Alternate Flow (Export Laporan):
+  7a.1. Karyawan mengklik tombol "Export Excel"
+  7a.2. Sistem men-generate file Excel
+  7a.3. Browser mengunduh file laporan
+
+  7b.1. Karyawan mengklik tombol "Export PDF"
+  7b.2. Sistem men-generate file PDF
+  7b.3. Browser mengunduh file laporan
+
+Exception Flow:
+  5a. Tidak ada data di periode tersebut:
+      5a.1. Sistem menampilkan "Tidak ada transaksi di periode ini"
+      5a.2. Sistem menampilkan laporan kosong
+
+
+================================================================================
+UC-08: MENGIRIM NOTIFIKASI WAKTU PENJEMPUTAN
+================================================================================
+
+Use Case       : Mengirim Notifikasi Waktu Penjemputan
+Actors         : Karyawan
+Description    : Proses mengirim notifikasi kepada pelanggan bahwa cucian 
+                 sudah selesai dan siap untuk diambil.
+
+Pre-conditions : 
+  - Karyawan sudah login ke sistem
+  - Status transaksi sudah 'done' (selesai)
+  - Data kontak pelanggan tersedia
+
+Post-conditions:
+  - Pelanggan menerima notifikasi
+  - Notifikasi tercatat di sistem
+
+Normal Flow:
+  1. Karyawan membuka halaman Transaksi
+  2. Karyawan melihat transaksi dengan status 'done'
+  3. Karyawan mengklik tombol "Kirim Notifikasi"
+  4. Sistem menampilkan preview pesan notifikasi
+  5. Karyawan dapat mengedit pesan (opsional)
+  6. Karyawan mengklik "Kirim"
+  7. Sistem mengirim notifikasi (Email/WhatsApp)
+  8. Sistem menampilkan "Notifikasi berhasil dikirim"
+  9. Sistem mencatat waktu pengiriman notifikasi
+
+Alternate Flow (Notifikasi Otomatis):
+  2a.1. Sistem secara otomatis mendeteksi status berubah menjadi 'done'
+  2a.2. Sistem mengirim notifikasi otomatis ke pelanggan
+  2a.3. Lanjut ke langkah 9
+
+Exception Flow:
+  7a. Gagal mengirim (email/WA tidak valid):
+      7a.1. Sistem menampilkan "Gagal mengirim notifikasi"
+      7a.2. Sistem mencatat error
+      7a.3. Karyawan dapat mencoba lagi
+
+
+================================================================================
+RINGKASAN USE CASE
+================================================================================
+
+| Kode   | Use Case                              | Aktor                  |
+|--------|---------------------------------------|------------------------|
+| UC-01  | Login                                 | Karyawan, Pelanggan    |
+| UC-02  | Register (Mendaftar Akun)             | Pelanggan              |
+| UC-03  | Mengelola Data Pelanggan              | Karyawan               |
+| UC-04  | Mengelola Data Transaksi              | Karyawan               |
+| UC-05  | Cek Status Order                      | Pelanggan              |
+| UC-06  | Mencetak/Mengunduh Nota               | Karyawan, Pelanggan    |
+| UC-07  | Mengelola Laporan Bulanan             | Karyawan               |
+| UC-08  | Mengirim Notifikasi Waktu Penjemputan | Karyawan               |
+
+================================================================================

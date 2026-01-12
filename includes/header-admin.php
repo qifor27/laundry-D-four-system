@@ -35,16 +35,23 @@ $userInitial = strtoupper(substr($userName, 0, 1));
     <link rel="icon" type="image/x-icon" href="<?= baseUrl('assets/images/favicon.ico') ?>">
 </head>
 
-<body class="bg-gray-50 font-outfit">
+<body class="bg-gradient-to-br from-purple-50 via-purple-100/50 to-fuchsia-50 font-outfit">
 
-    <div class="flex h-screen overflow-hidden">
+    <!-- Bubble Decorations -->
+    <div class="bubble-decoration">
+        <div class="bubble bubble-pink w-96 h-96 -top-20 -left-20"></div>
+        <div class="bubble bubble-purple w-80 h-80 top-40 right-10"></div>
+        <div class="bubble bubble-blue w-72 h-72 bottom-20 left-1/4"></div>
+    </div>
+
+    <div class="flex h-screen overflow-hidden relative z-10">
         <!-- Sidebar -->
         <?php include __DIR__ . '/sidebar-admin.php'; ?>
 
         <!-- Main Content Area -->
         <div class="flex-1 flex flex-col overflow-hidden">
             <!-- Top Bar -->
-            <header class="bg-white shadow-sm z-10 no-print">
+            <header class="bg-white/80 backdrop-blur-md shadow-sm z-10 no-print">
                 <div class="px-6 sm:px-8 lg:px-10 py-8">
                     <div class="flex items-center justify-between">
                         <!-- Page Title -->

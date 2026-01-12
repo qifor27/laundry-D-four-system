@@ -1,0 +1,372 @@
+================================================================================
+BAB 4 – IMPLEMENTASI
+D'FOUR SMART LAUNDRY SYSTEM
+================================================================================
+
+4.1 Lingkungan Implementasi
+--------------------------------------------------------------------------------
+
+A. Perangkat Keras (Hardware)
+   - Komputer/Laptop dengan RAM minimal 4GB
+   - Processor Intel Core i3 atau setara
+   - Penyimpanan minimal 500MB untuk aplikasi
+
+B. Perangkat Lunak (Software)
+   - Sistem Operasi    : Windows 10/11
+   - Web Server        : Apache (XAMPP 8.x)
+   - Database          : MySQL 5.7 / MariaDB 10.x
+   - Bahasa Pemrograman: PHP 7.4+
+   - Frontend          : HTML5, CSS3 (Tailwind CSS), JavaScript
+   - Browser           : Google Chrome / Mozilla Firefox (versi terbaru)
+   - Tools Development : Visual Studio Code, Git
+
+C. Arsitektur Implementasi
+   Sistem diimplementasikan menggunakan arsitektur client-server berbasis web.
+   Client mengakses sistem melalui web browser, server memproses request dan
+   berkomunikasi dengan database MySQL untuk penyimpanan data.
+
+
+================================================================================
+4.2 Implementasi Modul
+================================================================================
+
+--------------------------------------------------------------------------------
+4.2.1 Implementasi Modul Autentikasi (Login & Register)
+--------------------------------------------------------------------------------
+
+Nama Modul    : Modul Autentikasi
+File Utama    : pages/auth/login.php, pages/auth/register.php
+API           : api/auth/register.php, api/google-auth.php
+
+FUNGSI UTAMA:
+Modul ini berfungsi untuk mengelola proses autentikasi pengguna, meliputi:
+- Login menggunakan email dan password
+- Login menggunakan akun Google (OAuth 2.0)
+- Registrasi akun baru untuk pelanggan
+- Manajemen session pengguna
+
+CARA KERJA:
+1. Pengguna mengakses halaman login atau register
+2. Untuk login email:
+   - Pengguna memasukkan email dan password
+   - Sistem memvalidasi kredensial dengan data di tabel 'users'
+   - Password diverifikasi menggunakan fungsi password_verify()
+   - Jika valid, session dibuat dengan data user (id, name, email, role)
+   - Pengguna diarahkan ke dashboard sesuai role (admin/user)
+3. Untuk login Google:
+   - Pengguna mengklik tombol "Login dengan Google"
+   - Sistem mengarahkan ke halaman OAuth Google
+   - Setelah autentikasi, Google mengirim data user ke callback URL
+   - Sistem menyimpan/update data user dan membuat session
+4. Untuk registrasi:
+   - Pelanggan mengisi form (nama, email, password, nomor HP)
+   - Sistem memvalidasi data dan menyimpan ke database
+   - Sistem otomatis menghubungkan akun dengan data customer
+     berdasarkan kecocokan nomor HP
+
+KETERKAITAN DENGAN KEBUTUHAN FUNGSIONAL:
+- FR-01: Pelanggan dapat mendaftarkan akun baru
+- FR-02: Pengguna dapat melakukan login ke sistem
+- FR-03: Karyawan dapat mengakses halaman admin setelah login
+- FR-04: Pelanggan dapat login menggunakan akun Google
+
+TAMPILAN ANTARMUKA:
+[Sertakan screenshot halaman login.php]
+[Sertakan screenshot halaman register.php]
+
+POTONGAN KODE PENTING:
+
+// Validasi login (login.php)
+$stmt = $db->prepare("SELECT * FROM users WHERE email = ?");
+$stmt->execute([$email]);
+$user = $stmt->fetch();
+
+if ($user && password_verify($password, $user['password_hash'])) {
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['user_name'] = $user['name'];
+    $_SESSION['user_role'] = $user['role'];
+    // Redirect ke dashboard
+}
+
+
+--------------------------------------------------------------------------------
+4.2.2 Implementasi Modul Kelola Pelanggan
+--------------------------------------------------------------------------------
+
+Nama Modul    : Modul Kelola Pelanggan
+File Utama    : pages/customers.php
+API           : api/customers-api.php
+
+FUNGSI UTAMA:
+Modul ini berfungsi untuk mengelola data pelanggan laundry, meliputi:
+- Menampilkan daftar pelanggan
+- Menambah data pelanggan baru
+- Mengubah data pelanggan
+- Menghapus data pelanggan
+- Mencari pelanggan berdasarkan nama atau nomor HP
+- Melihat status registrasi pelanggan (Terdaftar/Belum Daftar)
+
+CARA KERJA:
+1. Halaman menampilkan tabel daftar pelanggan dari database
+2. Untuk menambah pelanggan:
+   - Karyawan mengklik tombol "Tambah Pelanggan"
+   - Form modal muncul untuk input data (nama, HP, alamat)
+   - Data dikirim via AJAX ke API customers-api.php?action=create
+   - API memvalidasi dan menyimpan data ke tabel 'customers'
+   - Jika nomor HP sudah terdaftar sebagai user, otomatis di-link
+3. Untuk mengubah data:
+   - Karyawan mengklik tombol edit pada baris pelanggan
+   - Form modal muncul dengan data pelanggan terisi
+   - Data dikirim via AJAX ke API customers-api.php?action=update
+4. Untuk menghapus:
+   - Karyawan mengklik tombol hapus
+   - Konfirmasi muncul, jika ya maka data dihapus
+   - Pelanggan yang memiliki transaksi tidak dapat dihapus
+
+KETERKAITAN DENGAN KEBUTUHAN FUNGSIONAL:
+- FR-05: Karyawan dapat menambah data pelanggan baru
+- FR-06: Karyawan dapat mengubah data pelanggan
+- FR-07: Karyawan dapat menghapus data pelanggan
+- FR-08: Karyawan dapat mencari data pelanggan
+
+TAMPILAN ANTARMUKA:
+[Sertakan screenshot halaman customers.php]
+[Sertakan screenshot form tambah pelanggan]
+[Sertakan screenshot form edit pelanggan]
+
+POTONGAN KODE PENTING:
+
+// Menambah pelanggan baru (customers-api.php)
+case 'create':
+    $name = sanitize($_POST['name']);
+    $phone = sanitize($_POST['phone']);
+    $address = sanitize($_POST['address']);
+    
+    // Cek apakah phone sudah terdaftar sebagai user
+    $stmt = $db->prepare("SELECT id FROM users WHERE phone = ?");
+    $stmt->execute([$phone]);
+    $user = $stmt->fetch();
+    $userId = $user ? $user['id'] : null;
+    
+    $stmt = $db->prepare("INSERT INTO customers (user_id, name, phone, address) 
+                          VALUES (?, ?, ?, ?)");
+    $stmt->execute([$userId, $name, $phone, $address]);
+    break;
+
+
+--------------------------------------------------------------------------------
+4.2.3 Implementasi Modul Kelola Transaksi
+--------------------------------------------------------------------------------
+
+Nama Modul    : Modul Kelola Transaksi
+File Utama    : pages/transactions.php
+API           : api/transactions-api.php
+
+FUNGSI UTAMA:
+Modul ini berfungsi untuk mengelola transaksi laundry, meliputi:
+- Menampilkan daftar transaksi
+- Membuat transaksi baru
+- Mengubah status pengerjaan cucian
+- Melihat detail transaksi
+- Menghapus transaksi
+- Filter transaksi berdasarkan status
+
+CARA KERJA:
+1. Halaman menampilkan tabel daftar transaksi dengan informasi:
+   - ID Transaksi, Nama Pelanggan, Jenis Layanan
+   - Berat/Qty, Harga, Status, Tanggal
+2. Untuk membuat transaksi baru:
+   - Karyawan memilih pelanggan dari dropdown
+   - Memilih jenis layanan (Cuci Setrika, Cuci Kering, dll)
+   - Memasukkan berat/jumlah dan harga dihitung otomatis
+   - Data dikirim ke API transactions-api.php?action=create
+   - Status awal transaksi adalah 'pending'
+3. Untuk mengubah status:
+   - Karyawan memilih status baru dari dropdown
+   - Status berubah sesuai alur: pending → washing → drying → 
+     ironing → done → picked_up
+   - Perubahan status diupdate ke database
+
+ALUR STATUS TRANSAKSI:
+pending (Diterima) → washing (Dicuci) → drying (Dikeringkan) → 
+ironing (Disetrika) → done (Selesai) → picked_up (Diambil)
+                                    ↘ cancelled (Dibatalkan)
+
+KETERKAITAN DENGAN KEBUTUHAN FUNGSIONAL:
+- FR-09: Karyawan dapat menambah transaksi baru
+- FR-10: Karyawan dapat mengubah status pengerjaan cucian
+- FR-11: Karyawan dapat melihat detail transaksi
+- FR-12: Karyawan dapat menghapus transaksi
+
+TAMPILAN ANTARMUKA:
+[Sertakan screenshot halaman transactions.php]
+[Sertakan screenshot form tambah transaksi]
+[Sertakan screenshot dropdown status]
+
+POTONGAN KODE PENTING:
+
+// Update status transaksi (transactions-api.php)
+case 'update_status':
+    $id = $_POST['id'];
+    $status = $_POST['status'];
+    
+    $allowedStatuses = ['pending', 'washing', 'drying', 'ironing', 
+                        'done', 'picked_up', 'cancelled'];
+    
+    if (!in_array($status, $allowedStatuses)) {
+        throw new Exception('Status tidak valid');
+    }
+    
+    $stmt = $db->prepare("UPDATE transactions 
+                          SET status = ?, updated_at = CURRENT_TIMESTAMP 
+                          WHERE id = ?");
+    $stmt->execute([$status, $id]);
+    break;
+
+
+--------------------------------------------------------------------------------
+4.2.4 Implementasi Modul Cek Status Order (Portal Pelanggan)
+--------------------------------------------------------------------------------
+
+Nama Modul    : Modul Cek Status Order
+File Utama    : pages/check-order.php
+
+FUNGSI UTAMA:
+Modul ini berfungsi untuk memberikan akses kepada pelanggan dalam
+melihat status pengerjaan cucian mereka secara mandiri.
+
+CARA KERJA:
+1. Pelanggan yang sudah login dapat mengakses halaman cek order
+2. Sistem menampilkan daftar transaksi berdasarkan nomor HP pelanggan
+3. Setiap transaksi menampilkan:
+   - ID dan jenis layanan
+   - Status pengerjaan dengan progress bar visual
+   - Tanggal masuk dan estimasi selesai
+   - Total harga
+4. Status ditampilkan dengan warna berbeda:
+   - Pending: Kuning
+   - Washing/Drying/Ironing: Biru
+   - Done: Hijau
+   - Picked Up: Abu-abu
+   - Cancelled: Merah
+
+KETERKAITAN DENGAN KEBUTUHAN FUNGSIONAL:
+- FR-13: Pelanggan dapat melihat status cucian mereka
+- FR-14: Pelanggan dapat melihat riwayat transaksi
+
+TAMPILAN ANTARMUKA:
+[Sertakan screenshot halaman check-order.php]
+[Sertakan screenshot progress bar status]
+
+POTONGAN KODE PENTING:
+
+// Mengambil transaksi pelanggan (check-order.php)
+$phone = getUserData()['phone'];
+$stmt = $db->prepare("
+    SELECT t.*, c.name as customer_name
+    FROM transactions t
+    JOIN customers c ON t.customer_id = c.id
+    WHERE c.phone LIKE ?
+    ORDER BY t.created_at DESC
+");
+$stmt->execute(["%{$phone}%"]);
+$orders = $stmt->fetchAll();
+
+
+--------------------------------------------------------------------------------
+4.2.5 Implementasi Modul Dashboard Admin
+--------------------------------------------------------------------------------
+
+Nama Modul    : Modul Dashboard Admin
+File Utama    : pages/dashboard.php
+
+FUNGSI UTAMA:
+Modul ini berfungsi sebagai halaman utama untuk karyawan/admin,
+menampilkan ringkasan statistik dan informasi operasional laundry.
+
+CARA KERJA:
+1. Saat halaman diakses, sistem mengambil data statistik:
+   - Total pelanggan terdaftar
+   - Total transaksi hari ini
+   - Total pendapatan hari ini/bulan ini
+   - Transaksi yang sedang dikerjakan
+2. Data ditampilkan dalam bentuk kartu statistik
+3. Terdapat quick links ke halaman pelanggan dan transaksi
+4. Menampilkan daftar transaksi terbaru
+
+KETERKAITAN DENGAN KEBUTUHAN FUNGSIONAL:
+- FR-15: Karyawan dapat melihat ringkasan statistik laundry
+- FR-16: Karyawan dapat mengakses menu pengelolaan dari dashboard
+
+TAMPILAN ANTARMUKA:
+[Sertakan screenshot halaman dashboard.php]
+
+POTONGAN KODE PENTING:
+
+// Statistik dashboard (dashboard.php)
+// Total pelanggan
+$stmt = $db->query("SELECT COUNT(*) as total FROM customers");
+$totalCustomers = $stmt->fetch()['total'];
+
+// Total transaksi hari ini
+$stmt = $db->query("SELECT COUNT(*) as total FROM transactions 
+                    WHERE DATE(created_at) = CURDATE()");
+$todayTransactions = $stmt->fetch()['total'];
+
+// Pendapatan hari ini
+$stmt = $db->query("SELECT COALESCE(SUM(price), 0) as total 
+                    FROM transactions 
+                    WHERE DATE(created_at) = CURDATE()");
+$todayRevenue = $stmt->fetch()['total'];
+
+
+--------------------------------------------------------------------------------
+4.2.6 Implementasi Modul Dashboard Pelanggan
+--------------------------------------------------------------------------------
+
+Nama Modul    : Modul Dashboard Pelanggan
+File Utama    : pages/customer-dashboard.php
+
+FUNGSI UTAMA:
+Modul ini berfungsi sebagai halaman utama untuk pelanggan yang sudah
+login, menampilkan informasi personal dan riwayat transaksi.
+
+CARA KERJA:
+1. Setelah login, pelanggan diarahkan ke customer dashboard
+2. Halaman menampilkan:
+   - Pesan selamat datang dengan nama pelanggan
+   - Ringkasan jumlah transaksi
+   - Status cucian yang sedang dikerjakan
+   - Riwayat transaksi terakhir
+3. Pelanggan dapat langsung melihat status cucian tanpa perlu
+   memasukkan nomor HP lagi (otomatis dari data akun)
+
+KETERKAITAN DENGAN KEBUTUHAN FUNGSIONAL:
+- FR-17: Pelanggan dapat melihat dashboard personal
+- FR-18: Pelanggan dapat melihat riwayat transaksi
+
+TAMPILAN ANTARMUKA:
+[Sertakan screenshot halaman customer-dashboard.php]
+
+
+================================================================================
+CATATAN IMPLEMENTASI
+================================================================================
+
+1. Semua modul menggunakan arsitektur yang konsisten:
+   - Frontend: HTML + Tailwind CSS untuk tampilan
+   - Backend: PHP untuk logika server
+   - Database: MySQL dengan PDO untuk keamanan
+   - AJAX: Untuk request tanpa reload halaman
+
+2. Keamanan yang diimplementasikan:
+   - Password di-hash menggunakan bcrypt
+   - Input disanitasi untuk mencegah SQL Injection
+   - Session management untuk autentikasi
+   - Validasi input di sisi server
+
+3. Responsive Design:
+   - Semua halaman dapat diakses dari desktop dan mobile
+   - Menggunakan Tailwind CSS untuk responsive layout
+
+================================================================================
