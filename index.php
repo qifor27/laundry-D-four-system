@@ -101,8 +101,8 @@ $pageTitle = "D'four Smart Laundry System";
                 <a href="#services" class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-2xl font-semibold transition-all shadow-xl hover:shadow-2xl">
                     Lihat Layanan
                 </a>
-                <a href="<?= baseUrl('pages/check-order.php') ?>" class="bg-white hover:bg-gray-50 text-gray-700 px-8 py-4 rounded-2xl font-semibold transition-all shadow-lg border border-gray-200">
-                    Cek Status Order
+                <a href="<?= baseUrl('pages/auth/login.php') ?>" class="bg-white hover:bg-gray-50 text-gray-700 px-8 py-4 rounded-2xl font-semibold transition-all shadow-lg border border-gray-200">
+                    Login Pelanggan
                 </a>
             </div>
         </div>

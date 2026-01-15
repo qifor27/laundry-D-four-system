@@ -63,11 +63,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get all customers with registration status
+// Get all customers with registration status and user name
 $customers = $db->query("
     SELECT c.*, 
            u.email as user_email,
-           CASE WHEN c.user_id IS NOT NULL THEN 1 ELSE 0 END as is_registered
+           u.name as user_name,
+           CASE WHEN c.user_id IS NOT NULL THEN 1 ELSE 0 END as is_registered,
+           CASE WHEN c.user_id IS NOT NULL AND c.name != u.name THEN 1 ELSE 0 END as name_mismatch
     FROM customers c
     LEFT JOIN users u ON c.user_id = u.id
     ORDER BY c.created_at DESC
@@ -124,7 +126,15 @@ include __DIR__ . '/../includes/header-admin.php';
                         <?php foreach ($customers as $customer): ?>
                             <tr>
                                 <td class="font-mono">#<?= $customer['id'] ?></td>
-                                <td class="font-medium text-gray-900"><?= htmlspecialchars($customer['name']) ?></td>
+                                <td class="font-medium text-gray-900">
+                                    <?= htmlspecialchars($customer['name']) ?>
+                                    <?php if ($customer['name_mismatch']): ?>
+                                        <span class="ml-1 px-1.5 py-0.5 bg-amber-100 text-amber-800 rounded text-xs cursor-help"
+                                            title="Nama user: <?= htmlspecialchars($customer['user_name']) ?>">
+                                            ⚠️ Beda nama
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
                                 <td><?= htmlspecialchars($customer['phone']) ?></td>
                                 <td class="text-sm text-gray-600"><?= htmlspecialchars($customer['address']) ?: '-' ?></td>
                                 <td class="text-sm text-gray-600"><?= formatDate($customer['created_at'], false) ?></td>

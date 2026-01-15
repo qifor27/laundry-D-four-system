@@ -1,5 +1,5 @@
     </main>
-    
+
     <!-- Footer -->
     <footer class="bg-white border-t border-gray-200 mt-auto py-8 no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,7 +16,7 @@
                         Sistem manajemen laundry modern untuk memudahkan pengelolaan bisnis laundry Anda.
                     </p>
                 </div>
-                
+
                 <!-- Quick Links -->
                 <div>
                     <h4 class="font-semibold text-gray-800 mb-4">Quick Links</h4>
@@ -37,13 +37,13 @@
                             </a>
                         </li>
                         <li>
-                            <a href="<?= baseUrl('pages/check-order.php') ?>" class="text-gray-600 hover:text-primary-600 transition-colors duration-200 text-sm">
-                                Cek Order
+                            <a href="<?= baseUrl('pages/reports.php') ?>" class="text-gray-600 hover:text-primary-600 transition-colors duration-200 text-sm">
+                                Laporan
                             </a>
                         </li>
                     </ul>
                 </div>
-                
+
                 <!-- Contact Info -->
                 <div>
                     <h4 class="font-semibold text-gray-800 mb-4">Kontak</h4>
@@ -70,7 +70,7 @@
                     </ul>
                 </div>
             </div>
-            
+
             <!-- Copyright -->
             <div class="mt-8 pt-6 border-t border-gray-200">
                 <p class="text-center text-gray-600 text-sm">
@@ -79,8 +79,9 @@
             </div>
         </div>
     </footer>
-    
+
     <!-- JavaScript -->
     <script src="<?= baseUrl('assets/js/main.js') ?>"></script>
-</body>
-</html>
+    </body>
+
+    </html>

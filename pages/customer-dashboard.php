@@ -106,9 +106,9 @@ foreach ($transactions as $trx) {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                         </svg>
                     </a>
-                    <a href="<?= baseUrl('pages/check-order.php') ?>" class="w-12 h-12 flex items-center justify-center rounded-2xl text-white/60 hover:bg-white/10 hover:text-white transition-all" title="Cek Order">
+                    <a href="#riwayat-pesanan" class="w-12 h-12 flex items-center justify-center rounded-2xl text-white/60 hover:bg-white/10 hover:text-white transition-all" title="Riwayat Pesanan">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                         </svg>
                     </a>
                     <a href="<?= baseUrl() ?>" class="w-12 h-12 flex items-center justify-center rounded-2xl text-white/60 hover:bg-white/10 hover:text-white transition-all" title="Beranda">
@@ -210,12 +210,12 @@ foreach ($transactions as $trx) {
                 </div>
 
                 <!-- Recent Orders -->
-                <div class="glass-card">
+                <div id="riwayat-pesanan" class="glass-card">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-gray-900">Riwayat Pesanan</h2>
-                        <a href="<?= baseUrl('pages/check-order.php') ?>" class="text-primary-600 hover:text-primary-700 font-medium text-sm">
-                            Cek dengan Nomor HP →
-                        </a>
+                        <span class="text-gray-500 font-medium text-sm">
+                            10 pesanan terakhir
+                        </span>
                     </div>
 
                     <?php if (empty($transactions)): ?>
@@ -279,15 +279,15 @@ foreach ($transactions as $trx) {
 
                 <!-- Quick Links -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-                    <a href="<?= baseUrl('pages/check-order.php') ?>" class="dash-quick-link">
-                        <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
-                            <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    <a href="https://wa.me/6281234567890" target="_blank" class="dash-quick-link">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                             </svg>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-gray-900">Cek Order</h3>
-                            <p class="text-sm text-gray-500">Cari dengan nomor telepon</p>
+                            <h3 class="font-semibold text-gray-900">Hubungi Kami</h3>
+                            <p class="text-sm text-gray-500">Chat via WhatsApp</p>
                         </div>
                     </a>
 

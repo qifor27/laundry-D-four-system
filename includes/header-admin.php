@@ -63,7 +63,7 @@ $userInitial = strtoupper(substr($userName, 0, 1));
                         <!-- User Info & Actions -->
                         <div class="flex items-center space-x-6">
                             <!-- Back to Public Site -->
-                            <a href="<?= baseUrl('pages/check-order.php') ?>"
+                            <a href="<?= baseUrl() ?>"
                                 class="hidden sm:flex items-center text-sm text-gray-600 hover:text-primary-600 transition-colors duration-200">
                                 <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -108,13 +108,6 @@ $userInitial = strtoupper(substr($userName, 0, 1));
 
                                     <!-- Menu Items -->
                                     <div class="py-1">
-                                        <a href="<?= baseUrl('pages/check-order.php') ?>"
-                                            class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                                            <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                            </svg>
-                                            Cek Order
-                                        </a>
                                         <a href="<?= baseUrl() ?>"
                                             class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                             <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

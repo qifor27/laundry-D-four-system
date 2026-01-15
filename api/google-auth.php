@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Google Authentication API
  * 
@@ -25,33 +26,33 @@ require_once __DIR__ . '/../includes/auth.php';
 try {
     // Get JSON input
     $input = json_decode(file_get_contents('php://input'), true);
-    
+
     if (!$input || !isset($input['credential'])) {
         throw new Exception('Missing credential token');
     }
-    
+
     $idToken = $input['credential'];
-    
+
     // Check if Google OAuth is configured
     if (!isGoogleOAuthConfigured()) {
         throw new Exception('Google OAuth is not configured. Please update config/google-oauth.php');
     }
-    
+
     // Verify token with Google
     $userInfo = verifyGoogleToken($idToken);
-    
+
     if (!$userInfo) {
         throw new Exception('Invalid token or token verification failed');
     }
-    
+
     // Check if email is verified
     if (!$userInfo['email_verified']) {
         throw new Exception('Email not verified with Google');
     }
-    
+
     // Get database connection
     $db = Database::getInstance()->getConnection();
-    
+
     // Check if user exists by google_id or email
     $stmt = $db->prepare("
         SELECT * FROM users 
@@ -63,13 +64,13 @@ try {
         ':email' => $userInfo['email']
     ]);
     $existingUser = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     if ($existingUser) {
         // Check if user is active
         if (!$existingUser['is_active']) {
             throw new Exception('Akun Anda telah dinonaktifkan. Hubungi administrator.');
         }
-        
+
         // Update existing user
         $stmt = $db->prepare("
             UPDATE users SET 
@@ -85,14 +86,13 @@ try {
             ':picture' => $userInfo['picture'],
             ':id' => $existingUser['id']
         ]);
-        
+
         // Merge updated data
         $userData = array_merge($existingUser, [
             'google_id' => $userInfo['google_id'],
             'name' => $userInfo['name'],
             'profile_picture' => $userInfo['picture']
         ]);
-        
     } else {
         // Create new user
         $stmt = $db->prepare("
@@ -106,7 +106,7 @@ try {
             ':picture' => $userInfo['picture'],
             ':role' => DEFAULT_USER_ROLE
         ]);
-        
+
         $userData = [
             'id' => $db->lastInsertId(),
             'google_id' => $userInfo['google_id'],
@@ -116,36 +116,51 @@ try {
             'role' => DEFAULT_USER_ROLE
         ];
     }
-    
+
     // Create authenticated session
     loginUser($userData);
-    if (empty($userData['phone'])){
-    // Redirect ke halaman complete profilr
-    echo json_encode([
-        'success' => true,
-        'needs_phone' => true,
-        'redirect' => getBaseUrl(). '/pages/auth/complete-profile.php'
-    ]);
-    exit;
-}
-    
+
+    // Sync customer name if user has phone
+    $userPhone = $userData['phone'] ?? $existingUser['phone'] ?? null;
+    if (!empty($userPhone)) {
+        $stmt = $db->prepare("SELECT id, name FROM customers WHERE phone = ?");
+        $stmt->execute([$userPhone]);
+        $customer = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($customer && $customer['name'] !== $userData['name']) {
+            // Update customer name to match user name
+            $stmt = $db->prepare("UPDATE customers SET name = ? WHERE id = ?");
+            $stmt->execute([$userData['name'], $customer['id']]);
+        }
+    }
+
+    if (empty($userData['phone'])) {
+        // Redirect ke halaman complete profilr
+        echo json_encode([
+            'success' => true,
+            'needs_phone' => true,
+            'redirect' => getBaseUrl() . '/pages/auth/complete-profile.php'
+        ]);
+        exit;
+    }
+
     // Determine redirect URL based on role
     $role = $userData['role'] ?? 'user';
     $baseUrl = getBaseUrl();
-    
+
     // Admin roles go to admin dashboard, users go to customer area
     if (in_array($role, ['superadmin', 'admin', 'cashier'])) {
         $redirectUrl = $baseUrl . '/pages/dashboard.php';
     } else {
         $redirectUrl = $baseUrl . '/pages/customer-dashboard.php';
     }
-    
+
     // Check if there's a stored redirect URL (e.g., from trying to access a protected page)
     $storedRedirect = getRedirectAfterLogin();
     if ($storedRedirect && $storedRedirect !== $baseUrl . '/pages/dashboard.php') {
         $redirectUrl = $storedRedirect;
     }
-    
+
     // Success response
     echo json_encode([
         'success' => true,
@@ -159,8 +174,6 @@ try {
         ],
         'redirect' => $redirectUrl
     ]);
-    
-    
 } catch (Exception $e) {
     http_response_code(400);
     echo json_encode([
@@ -168,5 +181,3 @@ try {
         'error' => $e->getMessage()
     ]);
 }
-
-?>
