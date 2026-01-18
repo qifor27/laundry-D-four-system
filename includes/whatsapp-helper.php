@@ -1,12 +1,17 @@
 <?php
+
 /**
  * WhatsApp Helper Functions (Manual - Click to Chat)
  * 
  * Gratis 100% - Menggunakan WhatsApp Web Click-to-Chat
- * TERINTEGRASI dengan Payment Methods (data bank dari database)
+ * TERINTEGRASI dengan Payment Methods (data bank dari database + QRIS)
  */
 
 require_once __DIR__ . '/../config/database_mysql.php';
+// Include payment info for QRIS data
+if (file_exists(__DIR__ . '/../config/payment-info.php')) {
+    require_once __DIR__ . '/../config/payment-info.php';
+}
 
 // ================================================
 // CONFIGURATION
@@ -23,7 +28,8 @@ define('WA_BUSINESS_HOURS', "08.00 - 21.00 WIB");
 /**
  * Generate WhatsApp Click-to-Chat URL
  */
-function generateWhatsAppURL($phone, $message) {
+function generateWhatsAppURL($phone, $message)
+{
     $phone = formatPhoneNumber($phone);
     $encodedMessage = urlencode($message);
     return "https://wa.me/{$phone}?text={$encodedMessage}";
@@ -32,17 +38,18 @@ function generateWhatsAppURL($phone, $message) {
 /**
  * Format phone number to international format (tanpa +)
  */
-function formatPhoneNumber($phone) {
+function formatPhoneNumber($phone)
+{
     $phone = preg_replace('/[^0-9]/', '', $phone);
-    
+
     if (substr($phone, 0, 1) === '0') {
         $phone = '62' . substr($phone, 1);
     }
-    
+
     if (substr($phone, 0, 2) !== '62') {
         $phone = '62' . $phone;
     }
-    
+
     return $phone;
 }
 
@@ -54,7 +61,8 @@ function formatPhoneNumber($phone) {
  * Get bank list from database for WhatsApp message
  * Returns formatted string with all active bank accounts
  */
-function getBankListForWA() {
+function getBankListForWA()
+{
     try {
         $db = Database::getInstance()->getConnection();
         $stmt = $db->query("
@@ -64,11 +72,11 @@ function getBankListForWA() {
             ORDER BY name
         ");
         $banks = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         if (empty($banks)) {
             return "   (Belum ada rekening terdaftar)";
         }
-        
+
         $text = "";
         foreach ($banks as $bank) {
             $text .= "\n   🏦 {$bank['bank_name']} - {$bank['account_number']}";
@@ -80,6 +88,18 @@ function getBankListForWA() {
     }
 }
 
+/**
+ * Get QRIS info for WhatsApp message
+ * Returns formatted string with QRIS payment info
+ */
+function getQrisInfoForWA()
+{
+    if (defined('QRIS_MERCHANT_NAME') && defined('QRIS_NMID')) {
+        return "\n   📱 QRIS: " . QRIS_MERCHANT_NAME . "\n      NMID: " . QRIS_NMID;
+    }
+    return "";
+}
+
 // ================================================
 // MESSAGE GENERATORS
 // ================================================
@@ -87,9 +107,10 @@ function getBankListForWA() {
 /**
  * Generate Order Created Message
  */
-function getOrderCreatedMessage($transaction, $customer) {
+function getOrderCreatedMessage($transaction, $customer)
+{
     $price = number_format($transaction['price'], 0, ',', '.');
-    
+
     return "*" . WA_BUSINESS_NAME . "*
 
 Halo {$customer['name']}! 👋
@@ -107,7 +128,8 @@ Terima kasih! 🙏";
 /**
  * Generate Status Update Message
  */
-function getStatusUpdateMessage($transaction, $customer, $status) {
+function getStatusUpdateMessage($transaction, $customer, $status)
+{
     $statusLabels = [
         'pending' => 'Menunggu Proses',
         'washing' => 'Sedang Dicuci',
@@ -116,9 +138,9 @@ function getStatusUpdateMessage($transaction, $customer, $status) {
         'done' => 'Selesai',
         'picked_up' => 'Sudah Diambil'
     ];
-    
+
     $statusLabel = $statusLabels[$status] ?? $status;
-    
+
     return "*" . WA_BUSINESS_NAME . "*
 
 Halo {$customer['name']}!
@@ -133,10 +155,12 @@ Terima kasih telah menunggu! 🙏";
 /**
  * Generate Ready for Pickup Message (dengan opsi pembayaran DINAMIS)
  */
-function getReadyForPickupMessage($transaction, $customer) {
+function getReadyForPickupMessage($transaction, $customer)
+{
     $price = number_format($transaction['price'], 0, ',', '.');
     $bankList = getBankListForWA();
-    
+    $qrisInfo = getQrisInfoForWA();
+
     return "*" . WA_BUSINESS_NAME . "*
 
 Halo {$customer['name']}! 🎉
@@ -147,7 +171,8 @@ Kabar baik! Pesanan Anda sudah selesai:
 
 💳 *Opsi Pembayaran:*
 1️⃣ Bayar di tempat (Cash)
-2️⃣ Transfer Bank:{$bankList}
+2️⃣ Scan QRIS:{$qrisInfo}
+3️⃣ Transfer Bank:{$bankList}
 
 📍 Lokasi: " . WA_BUSINESS_ADDRESS . "
 🕐 Jam: " . WA_BUSINESS_HOURS . "
@@ -158,10 +183,12 @@ Ditunggu kedatangannya! 😊";
 /**
  * Generate Payment Reminder Message (DINAMIS)
  */
-function getPaymentReminderMessage($transaction, $customer) {
+function getPaymentReminderMessage($transaction, $customer)
+{
     $price = number_format($transaction['price'], 0, ',', '.');
     $bankList = getBankListForWA();
-    
+    $qrisInfo = getQrisInfoForWA();
+
     return "*" . WA_BUSINESS_NAME . "*
 
 Halo {$customer['name']}! 👋
@@ -172,7 +199,8 @@ Kami ingin mengingatkan bahwa pesanan Anda belum dibayar:
 
 💳 *Opsi Pembayaran:*
 1️⃣ Bayar di tempat saat ambil
-2️⃣ Transfer Bank:{$bankList}
+2️⃣ Scan QRIS:{$qrisInfo}
+3️⃣ Transfer Bank:{$bankList}
 
 Jika sudah transfer, mohon konfirmasi ke admin.
 
@@ -183,25 +211,29 @@ Terima kasih! 🙏";
 // URL GENERATORS (untuk tombol)
 // ================================================
 
-function getOrderCreatedWAUrl($transaction, $customer) {
+function getOrderCreatedWAUrl($transaction, $customer)
+{
     if (empty($customer['phone'])) return null;
     $message = getOrderCreatedMessage($transaction, $customer);
     return generateWhatsAppURL($customer['phone'], $message);
 }
 
-function getStatusUpdateWAUrl($transaction, $customer, $status) {
+function getStatusUpdateWAUrl($transaction, $customer, $status)
+{
     if (empty($customer['phone'])) return null;
     $message = getStatusUpdateMessage($transaction, $customer, $status);
     return generateWhatsAppURL($customer['phone'], $message);
 }
 
-function getReadyForPickupWAUrl($transaction, $customer) {
+function getReadyForPickupWAUrl($transaction, $customer)
+{
     if (empty($customer['phone'])) return null;
     $message = getReadyForPickupMessage($transaction, $customer);
     return generateWhatsAppURL($customer['phone'], $message);
 }
 
-function getPaymentReminderWAUrl($transaction, $customer) {
+function getPaymentReminderWAUrl($transaction, $customer)
+{
     if (empty($customer['phone'])) return null;
     $message = getPaymentReminderMessage($transaction, $customer);
     return generateWhatsAppURL($customer['phone'], $message);
@@ -210,7 +242,8 @@ function getPaymentReminderWAUrl($transaction, $customer) {
 /**
  * Get all WhatsApp URLs for a transaction
  */
-function getAllWhatsAppUrls($transaction, $customer) {
+function getAllWhatsAppUrls($transaction, $customer)
+{
     return [
         'order_created' => getOrderCreatedWAUrl($transaction, $customer),
         'status_update' => getStatusUpdateWAUrl($transaction, $customer, $transaction['status'] ?? 'pending'),
@@ -218,4 +251,107 @@ function getAllWhatsAppUrls($transaction, $customer) {
         'payment_reminder' => getPaymentReminderWAUrl($transaction, $customer)
     ];
 }
-?>
+
+// ================================================
+// VA PAYMENT REMINDER MESSAGES
+// ================================================
+
+/**
+ * Generate VA Payment Reminder Message (untuk Midtrans VA)
+ */
+function getVAPaymentReminderMessage($transaction, $customer, $vaNumber = null, $hoursRemaining = null)
+{
+    $price = number_format($transaction['price'], 0, ',', '.');
+    $urgency = '';
+
+    if ($hoursRemaining !== null) {
+        if ($hoursRemaining <= 3) {
+            $urgency = "⚠️ *SEGERA!* Sisa waktu: {$hoursRemaining} jam\n\n";
+        } elseif ($hoursRemaining <= 12) {
+            $urgency = "⏰ Sisa waktu: {$hoursRemaining} jam\n\n";
+        }
+    }
+
+    $vaInfo = '';
+    if ($vaNumber) {
+        $vaInfo = "\n🏧 *Virtual Account:* {$vaNumber}";
+    }
+
+    return "*" . WA_BUSINESS_NAME . "*
+
+Halo {$customer['name']}! 👋
+
+{$urgency}Kami ingin mengingatkan pembayaran Anda yang masih pending:
+📦 No. Pesanan: #{$transaction['id']}
+💰 Total: Rp {$price}{$vaInfo}
+
+💳 *Cara Pembayaran:*
+1️⃣ Buka aplikasi m-banking/ATM
+2️⃣ Pilih Transfer Virtual Account
+3️⃣ Masukkan nomor VA di atas
+4️⃣ Pastikan nominal sesuai
+
+Jika sudah transfer, pembayaran akan dikonfirmasi otomatis.
+
+Butuh bantuan? Balas pesan ini.
+
+Terima kasih! 🙏";
+}
+
+/**
+ * Generate Payment Expired Message
+ */
+function getPaymentExpiredMessage($transaction, $customer)
+{
+    $price = number_format($transaction['price'], 0, ',', '.');
+    $bankList = getBankListForWA();
+
+    return "*" . WA_BUSINESS_NAME . "*
+
+Halo {$customer['name']}! 
+
+Mohon maaf, pembayaran untuk pesanan berikut sudah expired:
+📦 No. Pesanan: #{$transaction['id']}
+💰 Total: Rp {$price}
+
+❌ Virtual Account sudah tidak aktif.
+
+Jika masih ingin melanjutkan pesanan, silakan:
+1️⃣ Hubungi kami untuk aktivasi ulang
+2️⃣ Atau bayar langsung:{$bankList}
+
+Terima kasih! 🙏";
+}
+
+/**
+ * Generate Admin Notification for Pending Payment
+ */
+function getAdminPendingPaymentMessage($transaction, $customer, $hoursWaiting)
+{
+    $price = number_format($transaction['price'], 0, ',', '.');
+
+    return "*🔔 REMINDER: Pembayaran Pending*
+
+Pelanggan: {$customer['name']}
+HP: {$customer['phone']}
+No. Pesanan: #{$transaction['id']}
+Total: Rp {$price}
+Menunggu: {$hoursWaiting} jam
+
+Tindakan: Hubungi pelanggan untuk follow-up pembayaran.";
+}
+
+// URL Generators for new messages
+function getVAPaymentReminderWAUrl($transaction, $customer, $vaNumber = null, $hoursRemaining = null)
+{
+    if (empty($customer['phone'])) return null;
+    $message = getVAPaymentReminderMessage($transaction, $customer, $vaNumber, $hoursRemaining);
+    return generateWhatsAppURL($customer['phone'], $message);
+}
+
+function getPaymentExpiredWAUrl($transaction, $customer)
+{
+    if (empty($customer['phone'])) return null;
+    $message = getPaymentExpiredMessage($transaction, $customer);
+    return generateWhatsAppURL($customer['phone'], $message);
+}

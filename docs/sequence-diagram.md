@@ -1,7 +1,7 @@
 # 📊 Sequence Diagram - D'four Smart Laundry System
 
-**Versi**: 1.2  
-**Tanggal**: 2026-01-11  
+**Versi**: 1.3  
+**Tanggal**: 2026-01-16  
 **Status**: Berdasarkan fitur yang sudah ada dan sedang dikembangkan
 
 ---
@@ -13,12 +13,17 @@
 | 1 | Login (Email) | ✅ Implemented | ✅ |
 | 2 | Login (Google OAuth) | ✅ Implemented | ✅ |
 | 3 | Register Pelanggan | ✅ Implemented | ✅ |
-| 4 | Mengelola Data Pelanggan | ✅ Implemented | ✅ |
-| 5 | Mencatat Transaksi Baru | ✅ Implemented | ✅ |
-| 6 | Update Status Transaksi | ✅ Implemented | ✅ |
-| 7 | Cek Status Order (Pelanggan) | ✅ Implemented | ✅ |
-| 8 | Mencetak Nota | 🚧 TODO | ✅ |
-| 9 | Laporan Bulanan | 🚧 TODO | ✅ |
+| 4 | **Tambah Data Pelanggan** | ✅ Implemented | ✅ |
+| 5 | **Lihat Data Pelanggan** | ✅ Implemented | ✅ |
+| 6 | **Edit Data Pelanggan** | ✅ Implemented | ✅ |
+| 7 | **Hapus Data Pelanggan** | ✅ Implemented | ✅ |
+| 8 | Mencatat Transaksi Baru | ✅ Implemented | ✅ |
+| 9 | Update Status Transaksi | ✅ Implemented | ✅ |
+| 10 | Cek Status Order (Pelanggan) | ✅ Implemented | ✅ |
+| 11 | Mencetak Nota | ✅ Implemented | ✅ |
+| 12 | Laporan Bulanan | 🚧 TODO | ✅ |
+| 13 | **Pembayaran Online (Midtrans)** | ✅ Implemented | 🚧 |
+| 14 | **Pembayaran Manual (QRIS/Transfer)** | ✅ Implemented | 🚧 |
 
 ---
 
@@ -75,18 +80,63 @@
 
 ---
 
-## 4️⃣ Sequence Diagram: Mengelola Data Pelanggan (CRUD)
+## 4️⃣ Sequence Diagram: Tambah Data Pelanggan
 
-![Sequence Diagram CRUD Pelanggan](images/sequence_crud_pelanggan_1768093977584.png)
+![Sequence Diagram Tambah Pelanggan](images/sequence_tambah_pelanggan.png)
 
 ### Deskripsi Alur:
-**Tambah:** Klik tambah → isi form → POST create → INSERT database
-**Update:** Klik edit → GET data → ubah → PUT update → UPDATE database
-**Hapus:** Klik hapus → cek transaksi → jika tidak ada → DELETE
+1. Karyawan klik tombol "Tambah Pelanggan"
+2. Modal form ditampilkan
+3. Karyawan mengisi data dan klik "Simpan"
+4. API memvalidasi input
+5. API mengecek duplikasi nomor HP
+6. Jika valid dan unik, data disimpan ke database
+7. UI menampilkan notifikasi dan refresh tabel
 
 ---
 
-## 5️⃣ Sequence Diagram: Mencatat Transaksi Baru
+## 5️⃣ Sequence Diagram: Lihat Data Pelanggan
+
+![Sequence Diagram Lihat Pelanggan](images/sequence_lihat_pelanggan.png)
+
+### Deskripsi Alur:
+1. Karyawan mengakses halaman pelanggan
+2. Sistem memuat daftar pelanggan dari database
+3. Karyawan dapat mencari pelanggan dengan keyword
+4. Karyawan dapat melihat detail pelanggan + riwayat transaksi
+
+---
+
+## 6️⃣ Sequence Diagram: Edit Data Pelanggan
+
+![Sequence Diagram Edit Pelanggan](images/sequence_edit_pelanggan.png)
+
+### Deskripsi Alur:
+1. Karyawan klik tombol "Edit" pada pelanggan
+2. API mengambil data pelanggan
+3. Form ditampilkan dengan data terisi
+4. Karyawan mengubah data dan klik "Simpan"
+5. API memvalidasi, cek keunikan HP jika berubah
+6. Data di-update ke database
+7. UI menampilkan notifikasi dan refresh tabel
+
+---
+
+## 7️⃣ Sequence Diagram: Hapus Data Pelanggan
+
+![Sequence Diagram Hapus Pelanggan](images/sequence_hapus_pelanggan.png)
+
+### Deskripsi Alur:
+1. Karyawan klik tombol "Hapus" pada pelanggan
+2. Dialog konfirmasi ditampilkan
+3. Jika dikonfirmasi, API mengecek transaksi terkait
+4. Jika ada transaksi, penghapusan ditolak
+5. Jika tidak ada transaksi, data dihapus
+6. UI menampilkan notifikasi dan refresh tabel
+
+---
+
+## 8️⃣ Sequence Diagram: Mencatat Transaksi Baru
 
 ![Sequence Diagram Transaksi Baru](images/sequence_transaksi_baru_1768094006272.png)
 
@@ -100,7 +150,7 @@
 
 ---
 
-## 6️⃣ Sequence Diagram: Update Status Transaksi
+## 9️⃣ Sequence Diagram: Update Status Transaksi
 
 ![Sequence Diagram Update Status](images/sequence_update_status_1768094028743.png)
 
@@ -117,7 +167,7 @@ pending → washing → drying → ironing → done → picked_up
 
 ---
 
-## 7️⃣ Sequence Diagram: Cek Status Order (Pelanggan)
+## 🔟 Sequence Diagram: Cek Status Order (Pelanggan)
 
 ![Sequence Diagram Cek Status](images/sequence_cek_status_1768094076592.png)
 
@@ -130,7 +180,7 @@ pending → washing → drying → ironing → done → picked_up
 
 ---
 
-## 8️⃣ Sequence Diagram: Mencetak Nota (TODO)
+## 1️⃣1️⃣ Sequence Diagram: Mencetak Nota (TODO)
 
 ![Sequence Diagram Cetak Nota](images/sequence_cetak_nota_1768094100382.png)
 
@@ -143,7 +193,7 @@ pending → washing → drying → ironing → done → picked_up
 
 ---
 
-## 9️⃣ Sequence Diagram: Laporan Bulanan (TODO)
+## 1️⃣2️⃣ Sequence Diagram: Laporan Bulanan (TODO)
 
 ![Sequence Diagram Laporan Bulanan](images/sequence_laporan_1768094120850.png)
 
@@ -154,6 +204,96 @@ pending → washing → drying → ironing → done → picked_up
 4. Render charts (Line, Pie, Bar)
 5. Tampilkan dashboard laporan
 6. Optional: export ke Excel/PDF
+
+---
+
+## 1️⃣3️⃣ Sequence Diagram: Pembayaran Online (Midtrans)
+
+### Deskripsi Alur:
+
+```mermaid
+sequenceDiagram
+    participant P as Pelanggan
+    participant UI as <<boundary>><br/>Payment Page
+    participant API as <<control>><br/>create-snap.php
+    participant MT as <<external>><br/>Midtrans API
+    participant DB as <<entity>><br/>Database
+    participant WH as <<control>><br/>notification.php
+
+    P->>UI: Buka halaman pembayaran
+    UI->>DB: Query transaksi unpaid
+    DB-->>UI: Daftar transaksi
+    UI-->>P: Tampilkan transaksi
+    
+    P->>UI: Klik "Bayar Sekarang"
+    UI->>API: POST /api/payment/create-snap.php
+    API->>DB: Get transaction details
+    DB-->>API: Transaction data
+    API->>MT: POST /snap/v1/transactions
+    MT-->>API: snap_token
+    API-->>UI: { success: true, snap_token }
+    
+    UI->>P: Tampilkan popup Midtrans
+    P->>MT: Pilih metode & bayar
+    MT-->>P: Status pembayaran
+    
+    Note over MT,WH: Webhook Callback (Async)
+    MT->>WH: POST notification
+    WH->>WH: Verify signature
+    WH->>DB: UPDATE payment_status
+    DB-->>WH: Success
+    WH-->>MT: HTTP 200 OK
+```
+
+### Komponen:
+| Stereotype | Nama | File |
+|------------|------|------|
+| <<boundary>> | Payment Page | `pages/payment.php` |
+| <<control>> | create-snap.php | `api/payment/create-snap.php` |
+| <<control>> | notification.php | `api/payment/notification.php` |
+| <<external>> | Midtrans API | `https://api.sandbox.midtrans.com` |
+| <<entity>> | Database | `transactions`, `payments` table |
+
+---
+
+## 1️⃣4️⃣ Sequence Diagram: Pembayaran Manual (QRIS/Transfer)
+
+### Deskripsi Alur:
+
+```mermaid
+sequenceDiagram
+    participant P as Pelanggan
+    participant UI as <<boundary>><br/>Payment Page
+    participant WA as <<external>><br/>WhatsApp
+    participant AD as Admin
+    participant DB as <<entity>><br/>Database
+
+    P->>UI: Buka halaman pembayaran
+    UI-->>P: Tampilkan QRIS & info rekening bank
+    
+    alt Bayar via QRIS
+        P->>P: Scan QRIS dengan aplikasi e-wallet
+        P->>P: Input nominal & bayar
+    else Bayar via Transfer Bank
+        P->>P: Transfer ke rekening BNI
+    end
+    
+    P->>UI: Klik "Konfirmasi via WhatsApp"
+    UI->>WA: Open WhatsApp link dengan pesan template
+    P->>AD: Kirim bukti transfer
+    
+    AD->>DB: UPDATE payment_status = 'paid'
+    DB-->>AD: Success
+    AD-->>P: Konfirmasi pembayaran diterima
+```
+
+### Info Pembayaran Manual:
+| Metode | Detail |
+|--------|--------|
+| QRIS | Gambar QRIS statis di `assets/images/qris.jpg` |
+| Bank Transfer | BNI - 2019082060 a.n. MUHAMMAD ROFIQUL ISLAM |
+| WhatsApp | 62895337252897 |
+| Konfigurasi | `config/payment-info.php` |
 
 ---
 

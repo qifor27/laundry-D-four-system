@@ -10,6 +10,7 @@ requireLogin(); // Redirect to login if not authenticated
 
 require_once __DIR__ . '/../config/database_mysql.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/payment-helper.php';
 
 $pageTitle = "Transaksi - D'four Laundry";
 $db = Database::getInstance()->getConnection();
@@ -82,6 +83,7 @@ include __DIR__ . '/../includes/header-admin.php';
                             <th>Qty/Berat</th>
                             <th>Total</th>
                             <th>Status</th>
+                            <th>Bayar</th>
                             <th>Tanggal</th>
                             <th>Aksi</th>
                         </tr>
@@ -113,6 +115,11 @@ include __DIR__ . '/../includes/header-admin.php';
                                         <option value="done" <?= $trx['status'] == 'done' ? 'selected' : '' ?>>Selesai</option>
                                         <option value="picked_up" <?= $trx['status'] == 'picked_up' ? 'selected' : '' ?>>Diambil</option>
                                     </select>
+                                </td>
+                                <td>
+                                    <span class="badge <?= getPaymentStatusBadge($trx['payment_status'] ?? 'unpaid') ?>">
+                                        <?= getPaymentStatusLabel($trx['payment_status'] ?? 'unpaid') ?>
+                                    </span>
                                 </td>
                                 <td class="text-sm text-gray-600"><?= formatDate($trx['created_at']) ?></td>
                                 <td>

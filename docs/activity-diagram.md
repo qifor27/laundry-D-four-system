@@ -1,7 +1,7 @@
 # 📊 Activity Diagram - D'four Smart Laundry System
 
-**Versi**: 1.1  
-**Tanggal**: 2026-01-11  
+**Versi**: 1.2  
+**Tanggal**: 2026-01-16  
 **Status**: Berdasarkan fitur yang sudah ada dan sedang dikembangkan
 
 ---
@@ -12,13 +12,17 @@
 |---|---------|--------|--------|
 | 1 | Login (Email & Google OAuth) | ✅ Implemented | ✅ |
 | 2 | Register Pelanggan | ✅ Implemented | ✅ |
-| 3 | Mengelola Data Pelanggan | ✅ Implemented | ✅ |
-| 4 | Mencatat Transaksi Baru | ✅ Implemented | ✅ |
-| 5 | Update Status Transaksi | ✅ Implemented | ✅ |
-| 6 | Cek Status Order (Pelanggan) | ✅ Implemented | ✅ |
-| 7 | Mencetak Nota | 🚧 TODO | ✅ |
-| 8 | Laporan Bulanan | 🚧 TODO | ✅ |
-| 9 | Alur Transaksi Lengkap | ✅ Overview | ✅ |
+| 3 | **Tambah Data Pelanggan** | ✅ Implemented | ✅ |
+| 4 | **Lihat Data Pelanggan** | ✅ Implemented | ✅ |
+| 5 | **Edit Data Pelanggan** | ✅ Implemented | ✅ |
+| 6 | **Hapus Data Pelanggan** | ✅ Implemented | ✅ |
+| 7 | Mencatat Transaksi Baru | ✅ Implemented | ✅ |
+| 8 | Update Status Transaksi | ✅ Implemented | ✅ |
+| 9 | Cek Status Order (Pelanggan) | ✅ Implemented | ✅ |
+| 10 | Mencetak Nota | ✅ Implemented | ✅ |
+| 11 | Laporan Bulanan | 🚧 TODO | ✅ |
+| 12 | Alur Transaksi Lengkap | ✅ Overview | ✅ |
+| 13 | **Pembayaran (Midtrans/Manual)** | ✅ Implemented | 🚧 |
 
 ---
 
@@ -62,26 +66,65 @@
 
 ---
 
-## 3️⃣ Activity Diagram: Mengelola Data Pelanggan (CRUD)
+## 3️⃣ Activity Diagram: Tambah Data Pelanggan
 
-![Activity Diagram Kelola Pelanggan](images/activity_kelola_pelanggan_1768075912475.png)
+![Activity Diagram Tambah Pelanggan](images/activity_tambah_pelanggan.png)
 
 ### Deskripsi Alur:
-**Tambah Pelanggan:**
-1. Karyawan klik tambah → isi form → simpan
-2. Sistem validasi dan simpan ke database
-
-**Edit Pelanggan:**
-1. Karyawan klik edit → ubah data → simpan
-2. Sistem update database
-
-**Hapus Pelanggan:**
-1. Karyawan klik hapus → konfirmasi
-2. Sistem cek transaksi, jika ada maka tolak, jika tidak maka hapus
+1. Karyawan membuka halaman pelanggan
+2. Klik tombol "Tambah Pelanggan"
+3. Mengisi form data pelanggan (nama, alamat, nomor HP)
+4. Sistem memvalidasi input (required fields, format HP)
+5. Sistem mengecek apakah nomor HP sudah terdaftar
+6. Jika valid dan unik, data disimpan ke database
+7. Tampilkan notifikasi sukses dan refresh daftar
 
 ---
 
-## 4️⃣ Activity Diagram: Mencatat Transaksi Baru
+## 4️⃣ Activity Diagram: Lihat Data Pelanggan
+
+![Activity Diagram Lihat Pelanggan](images/activity_lihat_pelanggan.png)
+
+### Deskripsi Alur:
+1. Karyawan membuka halaman pelanggan
+2. Sistem menampilkan daftar semua pelanggan
+3. Karyawan dapat mencari pelanggan dengan keyword
+4. Karyawan dapat melihat detail pelanggan
+5. Detail pelanggan menampilkan info lengkap + riwayat transaksi
+
+---
+
+## 5️⃣ Activity Diagram: Edit Data Pelanggan
+
+![Activity Diagram Edit Pelanggan](images/activity_edit_pelanggan.png)
+
+### Deskripsi Alur:
+1. Karyawan mencari pelanggan yang akan diedit
+2. Klik tombol edit, form terisi dengan data existing
+3. Karyawan mengubah data yang diperlukan
+4. Sistem memvalidasi perubahan
+5. Jika nomor HP berubah, sistem mengecek keunikan
+6. Data di-update ke database
+7. Tampilkan notifikasi sukses dan refresh daftar
+
+---
+
+## 6️⃣ Activity Diagram: Hapus Data Pelanggan
+
+![Activity Diagram Hapus Pelanggan](images/activity_hapus_pelanggan.png)
+
+### Deskripsi Alur:
+1. Karyawan mencari pelanggan yang akan dihapus
+2. Klik tombol hapus
+3. Sistem mengecek apakah pelanggan memiliki transaksi aktif
+4. Jika ada transaksi, penghapusan ditolak
+5. Jika tidak ada transaksi, tampilkan konfirmasi
+6. Jika dikonfirmasi, data dihapus dari database
+7. Tampilkan notifikasi sukses dan refresh daftar
+
+---
+
+## 7️⃣ Activity Diagram: Mencatat Transaksi Baru
 
 ![Activity Diagram Transaksi Baru](images/activity_transaksi_1768075823181.png)
 
@@ -95,7 +138,7 @@
 
 ---
 
-## 5️⃣ Activity Diagram: Update Status Transaksi
+## 8️⃣ Activity Diagram: Update Status Transaksi
 
 ![Activity Diagram Update Status](images/activity_update_status_1768075867223.png)
 
@@ -113,7 +156,7 @@ pending → washing → drying → ironing → done → picked_up
 
 ---
 
-## 6️⃣ Activity Diagram: Cek Status Order (Pelanggan)
+## 9️⃣ Activity Diagram: Cek Status Order (Pelanggan)
 
 ![Activity Diagram Cek Status](images/activity_cek_status_1768075890585.png)
 
@@ -126,7 +169,7 @@ pending → washing → drying → ironing → done → picked_up
 
 ---
 
-## 7️⃣ Activity Diagram: Mencetak Nota (TODO)
+## 🔟 Activity Diagram: Mencetak Nota (TODO)
 
 ![Activity Diagram Cetak Nota](images/activity_cetak_nota_1768092344263.png)
 
@@ -157,7 +200,7 @@ pending → washing → drying → ironing → done → picked_up
 
 ---
 
-## 8️⃣ Activity Diagram: Laporan Bulanan (TODO)
+## 1️⃣1️⃣ Activity Diagram: Laporan Bulanan (TODO)
 
 ![Activity Diagram Laporan Bulanan](images/activity_laporan_bulanan_1768092367974.png)
 
@@ -179,7 +222,87 @@ pending → washing → drying → ironing → done → picked_up
 
 ---
 
-## 9️⃣ Activity Diagram: Alur Transaksi Lengkap
+## 1️⃣3️⃣ Activity Diagram: Pembayaran (Midtrans/Manual)
+
+### Deskripsi Alur Pembayaran:
+
+**Swimlane: Pelanggan | Sistem | Midtrans API**
+
+```mermaid
+flowchart TD
+    subgraph Pelanggan
+        A([Start]) --> B[Buka Halaman Pembayaran]
+        B --> C{Pilih Metode Pembayaran}
+    end
+    
+    subgraph "Metode Online"
+        C -->|Midtrans| D[Klik Bayar Sekarang]
+        D --> E[Sistem Request Snap Token]
+        E --> F[Popup Midtrans Muncul]
+        F --> G{Pilih Metode di Midtrans}
+        G -->|QRIS| H1[Scan QR Code]
+        G -->|Virtual Account| H2[Transfer ke VA]
+        G -->|E-Wallet| H3[Buka Aplikasi E-Wallet]
+        G -->|Kartu Kredit| H4[Input Data Kartu]
+        H1 --> I[Midtrans Proses Pembayaran]
+        H2 --> I
+        H3 --> I
+        H4 --> I
+        I --> J{Status Pembayaran}
+        J -->|Success| K[Update Status: Paid]
+        J -->|Pending| L[Update Status: Pending]
+        J -->|Failed| M[Tampilkan Error]
+    end
+    
+    subgraph "Metode Manual"
+        C -->|QRIS Manual| N[Scan QRIS Toko]
+        C -->|Transfer Bank| O[Transfer ke Rekening BNI]
+        N --> P[Klik Konfirmasi via WhatsApp]
+        O --> P
+        P --> Q[Kirim Bukti Transfer]
+        Q --> R[Admin Verifikasi Manual]
+        R --> K
+    end
+    
+    K --> S([End: Pembayaran Berhasil])
+    L --> T([End: Menunggu Konfirmasi])
+    M --> B
+```
+
+### Alur Detail:
+
+**1. Pembayaran Online (Midtrans):**
+1. Pelanggan login dan buka halaman `/pages/payment.php`
+2. Pilih transaksi yang belum dibayar
+3. Klik "Bayar Sekarang"
+4. Sistem request Snap Token ke Midtrans API
+5. Popup Midtrans muncul dengan opsi pembayaran
+6. Pelanggan pilih metode (QRIS, VA, E-Wallet, Kartu)
+7. Ikuti instruksi pembayaran
+8. Midtrans callback status ke `api/payment/notification.php`
+9. Sistem update status transaksi
+
+**2. Pembayaran Manual (QRIS/Transfer):**
+1. Pelanggan lihat QRIS atau info rekening bank
+2. Scan QRIS atau transfer ke rekening
+3. Klik "Konfirmasi via WhatsApp"
+4. Kirim bukti transfer ke admin
+5. Admin verifikasi dan update status manual
+
+### File Terkait:
+| Komponen | File |
+|----------|------|
+| Halaman Pembayaran | `pages/payment.php` |
+| Invoice/Nota | `pages/invoice.php`, `includes/invoice-template.php` |
+| Create Snap Token | `api/payment/create-snap.php` |
+| Webhook Handler | `api/payment/notification.php` |
+| Cek Status | `api/payment/check-status.php` |
+| Konfigurasi Midtrans | `config/midtrans.php` |
+| Info Pembayaran Manual | `config/payment-info.php` |
+
+---
+
+## 1️⃣2️⃣ Activity Diagram: Alur Transaksi Lengkap
 
 ![Activity Diagram Alur Transaksi Lengkap](images/activity_alur_transaksi_1768075967435.png)
 

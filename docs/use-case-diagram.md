@@ -1,7 +1,7 @@
 # 📊 Use Case Diagram - D'four Smart Laundry System
 
-**Versi**: 1.1  
-**Tanggal**: 2026-01-08  
+**Versi**: 1.2  
+**Tanggal**: 2026-01-16  
 **Status**: Sesuai dengan fitur yang ada dan yang sedang dikembangkan
 
 ---
@@ -53,6 +53,15 @@ flowchart TB
         UC_DASHBOARD_CUSTOMER["Customer Dashboard"]
     end
 
+    subgraph PaymentSystem["💰 Sistem Pembayaran"]
+        UC_BAYAR["Melakukan Pembayaran"]
+        UC_BAYAR_ONLINE["Bayar Online (Midtrans)"]
+        UC_BAYAR_QRIS["Bayar via QRIS"]
+        UC_BAYAR_TRANSFER["Bayar via Transfer Bank"]
+        UC_KONFIRMASI_WA["Konfirmasi via WhatsApp"]
+        UC_LIHAT_INVOICE["Melihat Invoice/Nota"]
+    end
+
     subgraph Reports["📊 Laporan (TODO)"]
         UC_LAPORAN_BULANAN["Mengelola Laporan Bulanan"]
         UC_EXPORT_REPORT["Export Laporan"]
@@ -63,7 +72,7 @@ flowchart TB
         UC_NOTIF_SELESAI["Notifikasi Order Selesai"]
     end
 
-    subgraph PrintSystem["🖨️ Cetak (TODO)"]
+    subgraph PrintSystem["🖨️ Cetak"]
         UC_UNDUH_NOTA["Mengunduh/Cetak Nota"]
     end
 
@@ -83,6 +92,14 @@ flowchart TB
     PL --> UC_CEK_STATUS
     PL --> UC_RIWAYAT
     PL --> UC_DASHBOARD_CUSTOMER
+    PL --> UC_BAYAR
+    PL --> UC_LIHAT_INVOICE
+
+    %% Payment include relationships
+    UC_BAYAR -.->|include| UC_BAYAR_ONLINE
+    UC_BAYAR -.->|include| UC_BAYAR_QRIS
+    UC_BAYAR -.->|include| UC_BAYAR_TRANSFER
+    UC_BAYAR -.->|extend| UC_KONFIRMASI_WA
 
     %% Include relationships
     UC_KELOLA_PELANGGAN -.->|include| UC_INPUT_PELANGGAN
@@ -123,6 +140,12 @@ flowchart TB
 | Melihat Detail Transaksi | `pages/transactions.php` | `api/transactions-api.php?action=get_by_id` | ✅ |
 | Cek Status Order | `pages/check-order.php` | - | ✅ |
 | Customer Dashboard | `pages/customer-dashboard.php` | - | ✅ |
+| **Melakukan Pembayaran** | `pages/payment.php` | `api/payment/*` | ✅ |
+| Bayar Online (Midtrans) | `pages/payment.php` | `api/payment/create-snap.php` | ✅ |
+| Bayar via QRIS | `pages/payment.php` | - (Manual) | ✅ |
+| Bayar via Transfer Bank | `pages/payment.php` | - (Manual) | ✅ |
+| Konfirmasi via WhatsApp | `pages/payment.php` | WhatsApp Link | ✅ |
+| Melihat Invoice/Nota | `pages/invoice.php` | - | ✅ |
 
 ### Fitur dalam Pengembangan (TODO)
 
@@ -188,10 +211,30 @@ stateDiagram-v2
 - **Deskripsi**: Generate dan lihat laporan transaksi per bulan
 - **Extend**: Export ke Excel/PDF
 
-### UC-07: Mengunduh Nota (TODO)
-- **Aktor**: Admin/Karyawan
-- **Deskripsi**: Cetak/download nota transaksi
-- **Format**: PDF, thermal printer friendly
+### UC-07: Mengunduh Nota
+- **Aktor**: Admin/Karyawan, Pelanggan
+- **Deskripsi**: Cetak/download nota transaksi digital
+- **File**: `pages/invoice.php`, `includes/invoice-template.php`
+- **Format**: HTML printable
+
+### UC-08: Melakukan Pembayaran
+- **Aktor**: Pelanggan
+- **Deskripsi**: Membayar tagihan transaksi laundry
+- **File**: `pages/payment.php`
+- **Precondition**: Pelanggan sudah login, ada transaksi dengan status unpaid
+- **Postcondition**: Status pembayaran diupdate (pending/paid)
+- **Include**:
+  - Bayar Online (Midtrans) - QRIS, VA, E-Wallet, Kartu Kredit
+  - Bayar via QRIS Manual
+  - Bayar via Transfer Bank
+- **Extend**: Konfirmasi via WhatsApp (setelah transfer manual)
+
+### UC-09: Melihat Invoice
+- **Aktor**: Pelanggan
+- **Deskripsi**: Melihat nota digital transaksi
+- **File**: `pages/invoice.php`
+- **Precondition**: Transaksi valid
+- **Postcondition**: Menampilkan nota dengan detail layanan dan harga
 
 ---
 

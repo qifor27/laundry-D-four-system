@@ -1,7 +1,7 @@
 # 📊 Class Diagram - D'four Smart Laundry System
 
-**Versi**: 1.0  
-**Tanggal**: 2026-01-11  
+**Versi**: 1.1  
+**Tanggal**: 2026-01-16  
 **Status**: Berdasarkan database schema dan implementasi codebase
 
 ---
@@ -15,6 +15,8 @@
 | 3 | Transaction | Data transaksi laundry | ✅ |
 | 4 | ServiceType | Jenis layanan dan harga | ✅ |
 | 5 | PasswordReset | Token reset password | ✅ |
+| 6 | **PaymentMethod** | Metode pembayaran | ✅ |
+| 7 | **Payment** | Data pembayaran transaksi | ✅ |
 
 ---
 
@@ -149,6 +151,57 @@ Entity **ServiceType** menyimpan jenis layanan dan harga.
 
 ---
 
+## 6️⃣ Class Diagram: PaymentMethod Entity
+
+### Deskripsi:
+Entity **PaymentMethod** menyimpan daftar metode pembayaran yang tersedia.
+
+### Atribut:
+| Nama | Tipe | Constraint | Deskripsi |
+|------|------|------------|-----------|
+| id | int | PK | ID unik |
+| name | string | unique | Nama metode (Tunai, Transfer, Midtrans) |
+| is_active | boolean | default true | Status aktif |
+| created_at | datetime | - | Waktu dibuat |
+
+### Metode Pembayaran Default:
+| ID | Nama | Status |
+|----|------|--------|
+| 1 | Tunai | Aktif |
+| 2 | Transfer Bank | Aktif |
+| 3 | Midtrans | Aktif |
+| 4 | QRIS | Aktif |
+
+---
+
+## 7️⃣ Class Diagram: Payment Entity
+
+### Deskripsi:
+Entity **Payment** menyimpan data pembayaran untuk setiap transaksi.
+
+### Atribut:
+| Nama | Tipe | Constraint | Deskripsi |
+|------|------|------------|-----------|
+| id | int | PK | ID unik |
+| transaction_id | int | FK | Link ke transactions |
+| payment_method_id | int | FK | Link ke payment_methods |
+| amount | decimal | - | Jumlah pembayaran |
+| payment_date | datetime | - | Tanggal pembayaran |
+| reference_number | string | null | Nomor referensi (Midtrans order_id) |
+| notes | text | null | Catatan pembayaran |
+| created_at | datetime | - | Waktu dibuat |
+
+### Alur Pembayaran:
+```
+Unpaid (Saat transaksi dibuat)
+    ↓
+Pending (Setelah inisiasi pembayaran)
+    ↓
+Paid (Setelah konfirmasi/callback Midtrans)
+```
+
+---
+
 ## 📐 ERD (Entity Relationship Diagram)
 
 ```mermaid
@@ -203,9 +256,29 @@ erDiagram
         datetime expires_at
     }
     
+    PAYMENT_METHOD {
+        int id PK
+        string name UK
+        boolean is_active
+        datetime created_at
+    }
+    
+    PAYMENT {
+        int id PK
+        int transaction_id FK
+        int payment_method_id FK
+        decimal amount
+        datetime payment_date
+        string reference_number
+        text notes
+        datetime created_at
+    }
+    
     USER ||--o| CUSTOMER : "linked via phone"
     CUSTOMER ||--o{ TRANSACTION : "has many"
     SERVICE_TYPE ||--o{ TRANSACTION : "referenced by"
+    TRANSACTION ||--o{ PAYMENT : "has many"
+    PAYMENT_METHOD ||--o{ PAYMENT : "used by"
 ```
 
 ---

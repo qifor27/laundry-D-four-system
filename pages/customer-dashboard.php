@@ -106,6 +106,12 @@ foreach ($transactions as $trx) {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                         </svg>
                     </a>
+                    <!-- PEMBAYARAN - Link Mencolok -->
+                    <a href="<?= baseUrl('pages/payment.php') ?>" class="w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-pink-500 text-white shadow-lg hover:scale-110 transition-transform animate-pulse" title="Pembayaran">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                        </svg>
+                    </a>
                     <a href="#riwayat-pesanan" class="w-12 h-12 flex items-center justify-center rounded-2xl text-white/60 hover:bg-white/10 hover:text-white transition-all" title="Riwayat Pesanan">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
@@ -249,9 +255,23 @@ foreach ($transactions as $trx) {
                                             </p>
                                         </div>
                                         <div class="text-right">
-                                            <p class="font-bold text-gray-900"><?= formatRupiah($trx['price']) ?></p>
-                                            <?php if ($trx['notes']): ?>
-                                                <p class="text-xs text-gray-400 mt-1 max-w-[150px] truncate"><?= htmlspecialchars($trx['notes']) ?></p>
+                                            <p class="font-bold text-gray-900 text-lg"><?= formatRupiah($trx['price']) ?></p>
+                                            <?php if ($trx['payment_status'] === 'unpaid'): ?>
+                                                <a href="<?= baseUrl('pages/payment.php?id=' . $trx['id']) ?>"
+                                                    class="inline-flex items-center gap-2 mt-3 px-5 py-2.5 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 text-white text-sm font-bold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 animate-pulse">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                                                    </svg>
+                                                    BAYAR SEKARANG
+                                                </a>
+                                            <?php elseif ($trx['payment_status'] === 'pending'): ?>
+                                                <span class="inline-flex items-center gap-1 mt-3 px-4 py-2 bg-amber-100 text-amber-800 text-sm font-semibold rounded-xl">
+                                                    ⏳ Menunggu Konfirmasi
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="inline-flex items-center gap-1 mt-3 px-4 py-2 bg-green-100 text-green-800 text-sm font-semibold rounded-xl">
+                                                    ✅ Lunas
+                                                </span>
                                             <?php endif; ?>
                                         </div>
                                     </div>

@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Dokumentasi Pengujian - D'four Smart Laundry System</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12pt;
+            margin: 2cm;
+            line-height: 1.5;
+        }
+        h1 {
+            text-align: center;
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+        h3 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 11pt;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+        }
+        .screenshot-placeholder {
+            border: 2px dashed #999;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            margin: 10px 0;
+            min-height: 150px;
+        }
+        .pass { color: green; font-weight: bold; }
+        .fail { color: red; font-weight: bold; }
+        .info-table td:first-child { width: 200px; font-weight: bold; }
+        .center { text-align: center; }
+        .page-break { page-break-before: always; }
+    </style>
+</head>
+<body>
+
+<h1>DOKUMENTASI PENGUJIAN<br>D'FOUR SMART LAUNDRY SYSTEM</h1>
+
+<table class="info-table">
+    <tr><td>Nama Proyek</td><td>D'four Smart Laundry System</td></tr>
+    <tr><td>Versi</td><td>1.0</td></tr>
+    <tr><td>Tanggal Pengujian</td><td>16 Januari 2026</td></tr>
+    <tr><td>Penguji</td><td>[Nama Penguji]</td></tr>
+    <tr><td>Environment</td><td>Windows 10, XAMPP, PHP 8.2, MySQL</td></tr>
+    <tr><td>Browser</td><td>Google Chrome / Microsoft Edge</td></tr>
+</table>
+
+<h2>DAFTAR ISI</h2>
+<ol>
+    <li>Pengujian Modul Autentikasi</li>
+    <li>Pengujian Modul Dashboard</li>
+    <li>Pengujian Modul Pelanggan (Customer)</li>
+    <li>Pengujian Modul Transaksi</li>
+    <li>Pengujian Modul Pembayaran</li>
+    <li>Pengujian Modul Payment Reminders</li>
+    <li>Pengujian Modul Laporan</li>
+    <li>Pengujian Integrasi WhatsApp</li>
+    <li>Kesimpulan</li>
+</ol>
+
+<div class="page-break"></div>
+
+<!-- ============================================ -->
+<h2>1. PENGUJIAN MODUL AUTENTIKASI</h2>
+<!-- ============================================ -->
+
+<h3>1.1 Login Admin</h3>
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Login dengan kredensial valid</td>
+        <td>Email: admin@dfour.com<br>Password: admin123</td>
+        <td>
+            1. Buka halaman login<br>
+            2. Masukkan email<br>
+            3. Masukkan password<br>
+            4. Klik tombol Login
+        </td>
+        <td>Redirect ke halaman Dashboard</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Login dengan password salah</td>
+        <td>Email: admin@dfour.com<br>Password: wrongpass</td>
+        <td>
+            1. Buka halaman login<br>
+            2. Masukkan email<br>
+            3. Masukkan password salah<br>
+            4. Klik tombol Login
+        </td>
+        <td>Muncul pesan error "Email atau password salah"</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>Login dengan email tidak terdaftar</td>
+        <td>Email: notexist@test.com<br>Password: test123</td>
+        <td>
+            1. Buka halaman login<br>
+            2. Masukkan email tidak terdaftar<br>
+            3. Masukkan password<br>
+            4. Klik tombol Login
+        </td>
+        <td>Muncul pesan error</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<p><strong>Screenshot Login:</strong></p>
+<div class="screenshot-placeholder">[Tambahkan Screenshot Halaman Login di sini]</div>
+
+<h3>1.2 Registrasi Pelanggan</h3>
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Registrasi dengan data valid</td>
+        <td>Nama: Test User<br>Email: test@gmail.com<br>Phone: 081234567890<br>Password: password123</td>
+        <td>
+            1. Buka halaman register<br>
+            2. Isi semua field<br>
+            3. Klik tombol Daftar
+        </td>
+        <td>Akun berhasil dibuat, redirect ke login</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Registrasi dengan email sudah terdaftar</td>
+        <td>Email yang sudah ada di database</td>
+        <td>
+            1. Buka halaman register<br>
+            2. Isi dengan email yang sudah terdaftar<br>
+            3. Klik tombol Daftar
+        </td>
+        <td>Muncul pesan error "Email sudah terdaftar"</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<p><strong>Screenshot Registrasi:</strong></p>
+<div class="screenshot-placeholder">[Tambahkan Screenshot Halaman Register di sini]</div>
+
+<h3>1.3 Logout</h3>
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Logout dari sistem</td>
+        <td>-</td>
+        <td>
+            1. Login ke sistem<br>
+            2. Klik tombol Logout di sidebar
+        </td>
+        <td>Session dihapus, redirect ke halaman login</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<div class="page-break"></div>
+
+<!-- ============================================ -->
+<h2>2. PENGUJIAN MODUL DASHBOARD</h2>
+<!-- ============================================ -->
+
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Menampilkan statistik dashboard</td>
+        <td>-</td>
+        <td>
+            1. Login sebagai admin<br>
+            2. Buka halaman Dashboard
+        </td>
+        <td>Tampil statistik: Total Pelanggan, Total Transaksi, Pendapatan, dll</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Menampilkan transaksi terbaru</td>
+        <td>-</td>
+        <td>
+            1. Login sebagai admin<br>
+            2. Lihat bagian "Transaksi Terbaru"
+        </td>
+        <td>Tampil daftar transaksi terbaru dengan status</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<p><strong>Screenshot Dashboard:</strong></p>
+<div class="screenshot-placeholder">[Tambahkan Screenshot Dashboard di sini]</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================ -->
+<h2>3. PENGUJIAN MODUL PELANGGAN (CRUD)</h2>
+<!-- ============================================ -->
+
+<h3>3.1 Tambah Pelanggan (Create)</h3>
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Tambah pelanggan dengan data valid</td>
+        <td>Nama: Budi Santoso<br>Phone: 081111111111<br>Alamat: Jl. Test No. 1</td>
+        <td>
+            1. Buka halaman Pelanggan<br>
+            2. Klik "Tambah Pelanggan"<br>
+            3. Isi semua field<br>
+            4. Klik Simpan
+        </td>
+        <td>Pelanggan baru tersimpan di database dan muncul di tabel</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Tambah pelanggan dengan nomor HP duplikat</td>
+        <td>Phone yang sudah ada</td>
+        <td>
+            1. Klik "Tambah Pelanggan"<br>
+            2. Isi dengan no HP yang sudah ada<br>
+            3. Klik Simpan
+        </td>
+        <td>Muncul pesan error "Nomor HP sudah terdaftar"</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<p><strong>Screenshot Tambah Pelanggan:</strong></p>
+<div class="screenshot-placeholder">[Tambahkan Screenshot Form Tambah Pelanggan di sini]</div>
+
+<h3>3.2 Lihat Data Pelanggan (Read)</h3>
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Menampilkan daftar pelanggan</td>
+        <td>-</td>
+        <td>1. Buka halaman Pelanggan</td>
+        <td>Tampil tabel berisi semua data pelanggan</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Mencari pelanggan</td>
+        <td>Keyword: "Budi"</td>
+        <td>
+            1. Buka halaman Pelanggan<br>
+            2. Ketik "Budi" di kotak pencarian
+        </td>
+        <td>Tabel terfilter, hanya tampil pelanggan dengan nama mengandung "Budi"</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<p><strong>Screenshot Daftar Pelanggan:</strong></p>
+<div class="screenshot-placeholder">[Tambahkan Screenshot Daftar Pelanggan di sini]</div>
+
+<h3>3.3 Edit Pelanggan (Update)</h3>
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Edit data pelanggan</td>
+        <td>Nama baru: Budi Santoso Update</td>
+        <td>
+            1. Klik tombol "Edit" pada data pelanggan<br>
+            2. Ubah nama<br>
+            3. Klik Update
+        </td>
+        <td>Data pelanggan berhasil diupdate</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<p><strong>Screenshot Edit Pelanggan:</strong></p>
+<div class="screenshot-placeholder">[Tambahkan Screenshot Form Edit Pelanggan di sini]</div>
+
+<h3>3.4 Hapus Pelanggan (Delete)</h3>
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Hapus pelanggan tanpa transaksi</td>
+        <td>Pelanggan ID: [test]</td>
+        <td>
+            1. Klik tombol "Hapus"<br>
+            2. Konfirmasi hapus
+        </td>
+        <td>Pelanggan terhapus dari database</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Hapus pelanggan dengan transaksi aktif</td>
+        <td>Pelanggan yang punya transaksi</td>
+        <td>
+            1. Klik tombol "Hapus"<br>
+            2. Konfirmasi hapus
+        </td>
+        <td>Muncul pesan error atau transaksi ikut terhapus (cascade)</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<div class="page-break"></div>
+
+<!-- ============================================ -->
+<h2>4. PENGUJIAN MODUL TRANSAKSI</h2>
+<!-- ============================================ -->
+
+<h3>4.1 Tambah Transaksi</h3>
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Buat transaksi baru</td>
+        <td>Pelanggan: [pilih]<br>Layanan: Cuci Kering<br>Berat: 3 kg</td>
+        <td>
+            1. Buka halaman Transaksi<br>
+            2. Klik "Tambah Transaksi"<br>
+            3. Pilih pelanggan<br>
+            4. Pilih layanan<br>
+            5. Isi berat/qty<br>
+            6. Klik Simpan
+        </td>
+        <td>Transaksi tersimpan dengan harga otomatis terhitung</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<p><strong>Screenshot Tambah Transaksi:</strong></p>
+<div class="screenshot-placeholder">[Tambahkan Screenshot Form Transaksi di sini]</div>
+
+<h3>4.2 Update Status Transaksi</h3>
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Ubah status ke "Sedang Dicuci"</td>
+        <td>Status: washing</td>
+        <td>
+            1. Buka detail transaksi<br>
+            2. Klik tombol update status<br>
+            3. Pilih "Sedang Dicuci"
+        </td>
+        <td>Status berubah ke "Sedang Dicuci"</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Ubah status ke "Selesai"</td>
+        <td>Status: done</td>
+        <td>Klik update status → Selesai</td>
+        <td>Status berubah ke "Selesai"</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<p><strong>Screenshot Update Status:</strong></p>
+<div class="screenshot-placeholder">[Tambahkan Screenshot Update Status di sini]</div>
+
+<h3>4.3 Detail Transaksi</h3>
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Lihat detail transaksi</td>
+        <td>Transaksi ID: [any]</td>
+        <td>Klik transaksi di tabel</td>
+        <td>Tampil halaman detail dengan info lengkap, status pembayaran, dan tombol aksi</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<p><strong>Screenshot Detail Transaksi:</strong></p>
+<div class="screenshot-placeholder">[Tambahkan Screenshot Detail Transaksi di sini]</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================ -->
+<h2>5. PENGUJIAN MODUL PEMBAYARAN</h2>
+<!-- ============================================ -->
+
+<h3>5.1 Pembayaran Cash</h3>
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Konfirmasi pembayaran cash</td>
+        <td>Metode: Cash</td>
+        <td>
+            1. Buka detail transaksi<br>
+            2. Pilih metode "Cash"<br>
+            3. Klik "Konfirmasi Pembayaran"
+        </td>
+        <td>Status pembayaran berubah ke "Lunas"</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<h3>5.2 Pembayaran via Midtrans</h3>
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Buka halaman pembayaran Midtrans</td>
+        <td>-</td>
+        <td>
+            1. Login sebagai pelanggan<br>
+            2. Buka transaksi<br>
+            3. Klik "Bayar Online"
+        </td>
+        <td>Muncul popup Midtrans Snap</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Test pembayaran dengan kartu test</td>
+        <td>Card: 4811 1111 1111 1114<br>CVV: 123<br>Exp: Any future</td>
+        <td>
+            1. Pilih Credit Card<br>
+            2. Masukkan kartu test<br>
+            3. Klik Bayar
+        </td>
+        <td>Pembayaran berhasil, status = Paid</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<p><strong>Screenshot Pembayaran Midtrans:</strong></p>
+<div class="screenshot-placeholder">[Tambahkan Screenshot Midtrans Snap di sini]</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================ -->
+<h2>6. PENGUJIAN MODUL PAYMENT REMINDERS</h2>
+<!-- ============================================ -->
+
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Akses halaman Payment Reminders</td>
+        <td>-</td>
+        <td>
+            1. Login sebagai admin<br>
+            2. Klik icon bell di sidebar
+        </td>
+        <td>Tampil halaman dengan stats dan tabel pembayaran pending</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Generate Reminders</td>
+        <td>-</td>
+        <td>Klik tombol "Generate Reminders"</td>
+        <td>Muncul alert dengan jumlah reminder yang di-generate</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>Kirim reminder WA</td>
+        <td>Pembayaran pending</td>
+        <td>Klik tombol "Kirim WA"</td>
+        <td>Buka WhatsApp Web dengan pesan reminder terisi otomatis</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<p><strong>Screenshot Payment Reminders:</strong></p>
+<div class="screenshot-placeholder">[Tambahkan Screenshot Halaman Payment Reminders di sini]</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================ -->
+<h2>7. PENGUJIAN MODUL LAPORAN</h2>
+<!-- ============================================ -->
+
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Lihat laporan harian</td>
+        <td>Tanggal: Hari ini</td>
+        <td>
+            1. Buka halaman Laporan<br>
+            2. Pilih filter tanggal
+        </td>
+        <td>Tampil laporan transaksi dan pendapatan</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Export laporan</td>
+        <td>-</td>
+        <td>Klik tombol Export</td>
+        <td>File laporan terdownload</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<p><strong>Screenshot Laporan:</strong></p>
+<div class="screenshot-placeholder">[Tambahkan Screenshot Halaman Laporan di sini]</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================ -->
+<h2>8. PENGUJIAN INTEGRASI WHATSAPP</h2>
+<!-- ============================================ -->
+
+<table>
+    <tr>
+        <th style="width:5%">No</th>
+        <th style="width:15%">Nama Pengujian</th>
+        <th style="width:20%">Input</th>
+        <th style="width:20%">Langkah Pengujian</th>
+        <th style="width:15%">Expected Result</th>
+        <th style="width:15%">Actual Result</th>
+        <th style="width:10%">Status</th>
+    </tr>
+    <tr>
+        <td class="center">1</td>
+        <td>Notifikasi Pesanan Diterima</td>
+        <td>Transaksi baru</td>
+        <td>
+            1. Buka detail transaksi<br>
+            2. Klik "Pesanan Diterima"
+        </td>
+        <td>Buka WA dengan pesan konfirmasi pesanan</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">2</td>
+        <td>Notifikasi Update Status</td>
+        <td>-</td>
+        <td>Klik "Update Status"</td>
+        <td>Buka WA dengan pesan update status</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">3</td>
+        <td>Notifikasi Siap Diambil</td>
+        <td>-</td>
+        <td>Klik "Siap Diambil"</td>
+        <td>Buka WA dengan pesan siap diambil + info pembayaran</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+    <tr>
+        <td class="center">4</td>
+        <td>Notifikasi Reminder Bayar</td>
+        <td>-</td>
+        <td>Klik "Reminder Bayar"</td>
+        <td>Buka WA dengan pesan reminder pembayaran</td>
+        <td>[Isi hasil]</td>
+        <td class="center">[Pass/Fail]</td>
+    </tr>
+</table>
+
+<p><strong>Screenshot WhatsApp Integration:</strong></p>
+<div class="screenshot-placeholder">[Tambahkan Screenshot Tombol WhatsApp di sini]</div>
+
+<div class="page-break"></div>
+
+<!-- ============================================ -->
+<h2>9. KESIMPULAN PENGUJIAN</h2>
+<!-- ============================================ -->
+
+<h3>9.1 Ringkasan Hasil Pengujian</h3>
+<table>
+    <tr>
+        <th>Modul</th>
+        <th>Jumlah Test Case</th>
+        <th>Pass</th>
+        <th>Fail</th>
+        <th>Persentase Keberhasilan</th>
+    </tr>
+    <tr>
+        <td>Autentikasi</td>
+        <td class="center">[jumlah]</td>
+        <td class="center">[pass]</td>
+        <td class="center">[fail]</td>
+        <td class="center">[%]</td>
+    </tr>
+    <tr>
+        <td>Dashboard</td>
+        <td class="center">[jumlah]</td>
+        <td class="center">[pass]</td>
+        <td class="center">[fail]</td>
+        <td class="center">[%]</td>
+    </tr>
+    <tr>
+        <td>Pelanggan (CRUD)</td>
+        <td class="center">[jumlah]</td>
+        <td class="center">[pass]</td>
+        <td class="center">[fail]</td>
+        <td class="center">[%]</td>
+    </tr>
+    <tr>
+        <td>Transaksi</td>
+        <td class="center">[jumlah]</td>
+        <td class="center">[pass]</td>
+        <td class="center">[fail]</td>
+        <td class="center">[%]</td>
+    </tr>
+    <tr>
+        <td>Pembayaran</td>
+        <td class="center">[jumlah]</td>
+        <td class="center">[pass]</td>
+        <td class="center">[fail]</td>
+        <td class="center">[%]</td>
+    </tr>
+    <tr>
+        <td>Payment Reminders</td>
+        <td class="center">[jumlah]</td>
+        <td class="center">[pass]</td>
+        <td class="center">[fail]</td>
+        <td class="center">[%]</td>
+    </tr>
+    <tr>
+        <td>Laporan</td>
+        <td class="center">[jumlah]</td>
+        <td class="center">[pass]</td>
+        <td class="center">[fail]</td>
+        <td class="center">[%]</td>
+    </tr>
+    <tr>
+        <td>WhatsApp Integration</td>
+        <td class="center">[jumlah]</td>
+        <td class="center">[pass]</td>
+        <td class="center">[fail]</td>
+        <td class="center">[%]</td>
+    </tr>
+    <tr style="font-weight: bold; background-color: #f0f0f0;">
+        <td>TOTAL</td>
+        <td class="center">[total]</td>
+        <td class="center">[pass]</td>
+        <td class="center">[fail]</td>
+        <td class="center">[%]</td>
+    </tr>
+</table>
+
+<h3>9.2 Catatan Pengujian</h3>
+<p>[Tambahkan catatan atau temuan penting selama pengujian di sini]</p>
+
+<h3>9.3 Rekomendasi</h3>
+<p>[Tambahkan rekomendasi perbaikan atau pengembangan di sini]</p>
+
+<br><br>
+<p style="text-align: center;">--- Akhir Dokumen ---</p>
+
+</body>
+</html>
