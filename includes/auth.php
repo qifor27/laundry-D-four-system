@@ -247,19 +247,21 @@ function isSuperAdmin()
  * 
  * @return string Base URL
  */
-function getBaseUrl()
-{
-    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'];
+if (!function_exists('getBaseUrl')) {
+    function getBaseUrl()
+    {
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'];
 
-    // Get script path and find project root
-    $scriptPath = dirname($_SERVER['SCRIPT_NAME']);
+        // Get script path and find project root
+        $scriptPath = dirname($_SERVER['SCRIPT_NAME']);
 
-    // Remove /pages/*, /api/*, /includes/* from path to get project root
-    $baseDir = preg_replace('#/(pages|api|includes)(/.*)?$#', '', $scriptPath);
-    $baseDir = rtrim($baseDir, '/');
+        // Remove /pages/*, /api/*, /includes/* from path to get project root
+        $baseDir = preg_replace('#/(pages|api|includes)(/.*)?$#', '', $scriptPath);
+        $baseDir = rtrim($baseDir, '/');
 
-    return $protocol . '://' . $host . $baseDir;
+        return $protocol . '://' . $host . $baseDir;
+    }
 }
 
 /**

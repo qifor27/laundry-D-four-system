@@ -233,23 +233,6 @@ function renderInvoice($transaction, $customer, $paymentInfo = null)
 }
 
 /**
- * Get status label
- */
-function getStatusLabel($status)
-{
-    $labels = [
-        'pending' => 'Diterima',
-        'washing' => 'Dicuci',
-        'drying' => 'Dikeringkan',
-        'ironing' => 'Disetrika',
-        'done' => 'Selesai',
-        'picked_up' => 'Diambil',
-        'cancelled' => 'Dibatalkan'
-    ];
-    return $labels[$status] ?? ucfirst($status);
-}
-
-/**
  * Get base URL helper (if not already defined)
  */
 if (!function_exists('getBaseUrl')) {

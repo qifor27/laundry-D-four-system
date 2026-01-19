@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Transaction Detail Page
  * Menampilkan detail transaksi dengan tombol WhatsApp dan pembayaran
@@ -82,6 +83,17 @@ include __DIR__ . '/../includes/header-admin.php';
                 </span>
             </div>
         </div>
+
+        <!-- Print Invoice Button -->
+        <div class="mt-4 pt-4 border-t border-gray-200">
+            <a href="invoice.php?id=<?= $transaction['id'] ?>" target="_blank"
+                class="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                </svg>
+                Cetak Nota
+            </a>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -128,35 +140,35 @@ include __DIR__ . '/../includes/header-admin.php';
 
     <!-- Payment Confirmation (jika belum bayar) -->
     <?php if (($transaction['payment_status'] ?? 'unpaid') !== 'paid'): ?>
-    <div class="card mt-6 bg-yellow-50 border-yellow-200">
-        <h2 class="text-lg font-semibold text-yellow-800 mb-4">💳 Konfirmasi Pembayaran</h2>
-        <form id="payment-form" class="space-y-4">
-            <input type="hidden" name="transaction_id" value="<?= $transaction['id'] ?>">
-            
-            <div>
-                <label class="form-label">Metode Pembayaran</label>
-                <select name="payment_method_id" class="form-input" required>
-                    <?php foreach ($paymentMethods as $method): ?>
-                    <option value="<?= $method['id'] ?>">
-                        <?= htmlspecialchars($method['name']) ?>
-                        <?php if ($method['bank_name']): ?>
-                            (<?= $method['bank_name'] ?> - <?= $method['account_number'] ?>)
-                        <?php endif; ?>
-                    </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            
-            <div>
-                <label class="form-label">Catatan (opsional)</label>
-                <input type="text" name="notes" class="form-input" placeholder="Contoh: Transfer bukti #123">
-            </div>
-            
-            <button type="submit" class="btn-primary w-full">
-                ✓ Konfirmasi Pembayaran
-            </button>
-        </form>
-    </div>
+        <div class="card mt-6 bg-yellow-50 border-yellow-200">
+            <h2 class="text-lg font-semibold text-yellow-800 mb-4">💳 Konfirmasi Pembayaran</h2>
+            <form id="payment-form" class="space-y-4">
+                <input type="hidden" name="transaction_id" value="<?= $transaction['id'] ?>">
+
+                <div>
+                    <label class="form-label">Metode Pembayaran</label>
+                    <select name="payment_method_id" class="form-input" required>
+                        <?php foreach ($paymentMethods as $method): ?>
+                            <option value="<?= $method['id'] ?>">
+                                <?= htmlspecialchars($method['name']) ?>
+                                <?php if ($method['bank_name']): ?>
+                                    (<?= $method['bank_name'] ?> - <?= $method['account_number'] ?>)
+                                <?php endif; ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="form-label">Catatan (opsional)</label>
+                    <input type="text" name="notes" class="form-input" placeholder="Contoh: Transfer bukti #123">
+                </div>
+
+                <button type="submit" class="btn-primary w-full">
+                    ✓ Konfirmasi Pembayaran
+                </button>
+            </form>
+        </div>
     <?php endif; ?>
 
     <!-- WhatsApp Actions -->
@@ -165,7 +177,7 @@ include __DIR__ . '/../includes/header-admin.php';
         <p class="text-gray-600 text-sm mb-4">
             Klik tombol di bawah untuk membuka WhatsApp Web dengan pesan terisi.
         </p>
-        
+
         <?php if (empty($transaction['phone'])): ?>
             <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-yellow-800">
                 ⚠️ Pelanggan ini tidak memiliki nomor HP.
@@ -173,35 +185,35 @@ include __DIR__ . '/../includes/header-admin.php';
         <?php else: ?>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <?php if ($waUrls['order_created']): ?>
-                <a href="<?= $waUrls['order_created'] ?>" target="_blank"
-                   class="flex flex-col items-center justify-center p-4 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors">
-                    <span class="text-2xl mb-2">📦</span>
-                    <span class="text-sm font-medium text-green-800 text-center">Pesanan Diterima</span>
-                </a>
+                    <a href="<?= $waUrls['order_created'] ?>" target="_blank"
+                        class="flex flex-col items-center justify-center p-4 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors">
+                        <span class="text-2xl mb-2">📦</span>
+                        <span class="text-sm font-medium text-green-800 text-center">Pesanan Diterima</span>
+                    </a>
                 <?php endif; ?>
 
                 <?php if ($waUrls['status_update']): ?>
-                <a href="<?= $waUrls['status_update'] ?>" target="_blank"
-                   class="flex flex-col items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors">
-                    <span class="text-2xl mb-2">🔄</span>
-                    <span class="text-sm font-medium text-blue-800 text-center">Update Status</span>
-                </a>
+                    <a href="<?= $waUrls['status_update'] ?>" target="_blank"
+                        class="flex flex-col items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors">
+                        <span class="text-2xl mb-2">🔄</span>
+                        <span class="text-sm font-medium text-blue-800 text-center">Update Status</span>
+                    </a>
                 <?php endif; ?>
 
                 <?php if ($waUrls['ready_pickup']): ?>
-                <a href="<?= $waUrls['ready_pickup'] ?>" target="_blank"
-                   class="flex flex-col items-center justify-center p-4 bg-amber-50 hover:bg-amber-100 rounded-lg border border-amber-200 transition-colors">
-                    <span class="text-2xl mb-2">✅</span>
-                    <span class="text-sm font-medium text-amber-800 text-center">Siap Diambil</span>
-                </a>
+                    <a href="<?= $waUrls['ready_pickup'] ?>" target="_blank"
+                        class="flex flex-col items-center justify-center p-4 bg-amber-50 hover:bg-amber-100 rounded-lg border border-amber-200 transition-colors">
+                        <span class="text-2xl mb-2">✅</span>
+                        <span class="text-sm font-medium text-amber-800 text-center">Siap Diambil</span>
+                    </a>
                 <?php endif; ?>
 
                 <?php if ($waUrls['payment_reminder']): ?>
-                <a href="<?= $waUrls['payment_reminder'] ?>" target="_blank"
-                   class="flex flex-col items-center justify-center p-4 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors">
-                    <span class="text-2xl mb-2">💳</span>
-                    <span class="text-sm font-medium text-red-800 text-center">Reminder Bayar</span>
-                </a>
+                    <a href="<?= $waUrls['payment_reminder'] ?>" target="_blank"
+                        class="flex flex-col items-center justify-center p-4 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors">
+                        <span class="text-2xl mb-2">💳</span>
+                        <span class="text-sm font-medium text-red-800 text-center">Reminder Bayar</span>
+                    </a>
                 <?php endif; ?>
             </div>
         <?php endif; ?>
@@ -223,11 +235,11 @@ include __DIR__ . '/../includes/header-admin.php';
             foreach ($statuses as $status => $info):
                 $isActive = $transaction['status'] === $status;
             ?>
-            <button onclick="updateStatus('<?= $status ?>')"
+                <button onclick="updateStatus('<?= $status ?>')"
                     class="px-4 py-2 rounded-lg font-medium transition-colors <?= $info['class'] ?> <?= $isActive ? 'ring-2 ring-offset-2 ring-primary-500' : '' ?>">
-                <?= $info['label'] ?>
-                <?php if ($isActive): ?>✓<?php endif; ?>
-            </button>
+                    <?= $info['label'] ?>
+                    <?php if ($isActive): ?>✓<?php endif; ?>
+                </button>
             <?php endforeach; ?>
         </div>
     </div>
@@ -242,87 +254,87 @@ include __DIR__ . '/../includes/header-admin.php';
 </div>
 
 <script>
-// Confirm payment
-document.getElementById('payment-form')?.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    formData.append('action', 'confirm');
-    
-    try {
-        const response = await fetch('../api/payments-api.php', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            showNotification('Pembayaran berhasil dikonfirmasi!', 'success');
-            setTimeout(() => location.reload(), 1000);
-        } else {
-            showNotification(result.message || 'Gagal konfirmasi pembayaran', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        showNotification('Terjadi kesalahan', 'error');
-    }
-});
+    // Confirm payment
+    document.getElementById('payment-form')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-// Update status
-async function updateStatus(status) {
-    try {
-        const formData = new FormData();
-        formData.append('action', 'update_status');
-        formData.append('id', <?= $transaction['id'] ?>);
-        formData.append('status', status);
-        
-        const response = await fetch('../api/transactions-api.php', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            showNotification('Status berhasil diupdate!', 'success');
-            setTimeout(() => location.reload(), 1000);
-        } else {
-            showNotification('Gagal update status', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        showNotification('Terjadi kesalahan', 'error');
-    }
-}
+        const formData = new FormData(this);
+        formData.append('action', 'confirm');
 
-// Delete transaction
-async function deleteTransaction() {
-    if (!confirm('Yakin ingin menghapus transaksi ini?')) return;
-    
-    try {
-        const formData = new FormData();
-        formData.append('action', 'delete');
-        formData.append('id', <?= $transaction['id'] ?>);
-        
-        const response = await fetch('../api/transactions-api.php', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            showNotification('Transaksi berhasil dihapus!', 'success');
-            setTimeout(() => window.location.href = 'transactions.php', 1000);
-        } else {
-            showNotification('Gagal menghapus transaksi', 'error');
+        try {
+            const response = await fetch('../api/payments-api.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showNotification('Pembayaran berhasil dikonfirmasi!', 'success');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                showNotification(result.message || 'Gagal konfirmasi pembayaran', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Terjadi kesalahan', 'error');
         }
-    } catch (error) {
-        console.error('Error:', error);
-        showNotification('Terjadi kesalahan', 'error');
+    });
+
+    // Update status
+    async function updateStatus(status) {
+        try {
+            const formData = new FormData();
+            formData.append('action', 'update_status');
+            formData.append('id', <?= $transaction['id'] ?>);
+            formData.append('status', status);
+
+            const response = await fetch('../api/transactions-api.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showNotification('Status berhasil diupdate!', 'success');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                showNotification('Gagal update status', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Terjadi kesalahan', 'error');
+        }
     }
-}
+
+    // Delete transaction
+    async function deleteTransaction() {
+        if (!confirm('Yakin ingin menghapus transaksi ini?')) return;
+
+        try {
+            const formData = new FormData();
+            formData.append('action', 'delete');
+            formData.append('id', <?= $transaction['id'] ?>);
+
+            const response = await fetch('../api/transactions-api.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showNotification('Transaksi berhasil dihapus!', 'success');
+                setTimeout(() => window.location.href = 'transactions.php', 1000);
+            } else {
+                showNotification('Gagal menghapus transaksi', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('Terjadi kesalahan', 'error');
+        }
+    }
 </script>
 
 <?php include __DIR__ . '/../includes/footer-admin.php'; ?>

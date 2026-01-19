@@ -25,19 +25,18 @@ function generateToken($length = 32) {
  * @return bool Success status
  */
 function sendEmail($to, $subject, $htmlBody, $textBody = '') {
-    // If email not configured, log and return success (for development)
+    // If email not configured, log and return false (so auto-verify fallback will trigger)
     if (!isEmailConfigured()) {
-        error_log("Email would be sent to: $to | Subject: $subject");
-        error_log("Body: $htmlBody");
-        return true; // Return true for development
+        error_log("[EMAIL NOT CONFIGURED] Would send to: $to | Subject: $subject");
+        return false; // Return false to trigger auto-verify fallback
     }
     
     // Use PHP mail() for simple setup
     $headers = [
         'MIME-Version' => '1.0',
         'Content-type' => 'text/html; charset=utf-8',
-        'From' => EMAIL_FROM_NAME . ' <' . EMAIL_FROM_ADDRESS . '>',
-        'Reply-To' => EMAIL_FROM_ADDRESS,
+        'From' => EMAIL_FROM_NAME . ' <' . EMAIL_FROM . '>',
+        'Reply-To' => EMAIL_FROM,
         'X-Mailer' => 'PHP/' . phpversion()
     ];
     

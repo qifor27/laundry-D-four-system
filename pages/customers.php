@@ -270,16 +270,20 @@ include __DIR__ . '/../includes/header-admin.php';
     }
 
     function inviteCustomer(phone) {
-        const registerUrl = `${window.location.origin}/laundry-D-four/pages/auth/register.php?phone=${phone}`;
-
-        // Copy ke clipboard
-        navigator.clipboard.writeText(registerUrl).then(() => {
-            alert('Link registrasi sudah dicopy!\n\nKirim ke customer via WhatsApp.');
-        }).catch(() => {
-            // Fallback: buka WhatsApp langsung
-            const waUrl = `https://wa.me/62${phone.substring(1)}?text=Silakan daftar di D'four Laundry: ${encodeURIComponent(registerUrl)}`;
-            window.open(waUrl, '_blank');
-        });
+        // Deteksi apakah di localhost atau production
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const basePath = isLocal ? '/laundry-D-four' : '';
+        const registerUrl = `${window.location.origin}${basePath}/pages/auth/register.php?phone=${phone}`;
+        
+        // Format nomor untuk WhatsApp (hapus 0 di depan, tambah 62)
+        const waNumber = '62' + phone.substring(1);
+        
+        // Pesan undangan
+        const message = `Halo! 👋\n\nAnda diundang untuk mendaftar di *D'four Laundry*.\n\nKlik link berikut untuk registrasi:\n${registerUrl}\n\nTerima kasih! 🧺✨`;
+        
+        // Buka WhatsApp langsung
+        const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+        window.open(waUrl, '_blank');
     }
 </script>
 

@@ -23,6 +23,130 @@ $pageTitle = "D'four Smart Laundry System";
 
     <!-- Tailwind CSS -->
     <link href="<?= baseUrl('assets/css/style.css') ?>" rel="stylesheet">
+
+
+    <style>
+        /* Fade In Up Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scale In Animation */
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Slide In From Bottom */
+        @keyframes slideInBottom {
+            from {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animation Classes */
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .animate-scale-in {
+            animation: scaleIn 0.6s ease-out forwards;
+        }
+
+        .animate-slide-in-bottom {
+            animation: slideInBottom 0.5s ease-out forwards;
+        }
+
+        /* Delay Classes */
+        .animation-delay-100 {
+            animation-delay: 0.1s;
+            opacity: 0;
+        }
+
+        .animation-delay-200 {
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+
+        .animation-delay-300 {
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+
+        .animation-delay-400 {
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+
+        .animation-delay-500 {
+            animation-delay: 0.5s;
+            opacity: 0;
+        }
+
+        .animation-delay-600 {
+            animation-delay: 0.6s;
+            opacity: 0;
+        }
+
+        .animation-delay-700 {
+            animation-delay: 0.7s;
+            opacity: 0;
+        }
+
+        .animation-delay-800 {
+            animation-delay: 0.8s;
+            opacity: 0;
+        }
+
+        /* Enhanced Card Shadow */
+        .service-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 10px 40px -10px rgba(139, 92, 246, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 60px -15px rgba(139, 92, 246, 0.25);
+        }
+
+        /* Bottom Nav Active State */
+        .bottom-nav-item.active {
+            color: #8b5cf6;
+        }
+
+        .bottom-nav-item {
+            transition: all 0.2s ease;
+        }
+
+        .bottom-nav-item:hover {
+            transform: scale(1.1);
+        }
+    </style>
 </head>
 
 <body class="bg-gradient-to-br from-purple-50 via-white to-fuchsia-50 font-outfit min-h-screen relative overflow-x-hidden">
@@ -58,17 +182,17 @@ $pageTitle = "D'four Smart Laundry System";
         <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-10 h-10 opacity-75 animate-float" style="top: 75%; right: 35%; animation-delay: -9s;">
     </div>
 
-    <!-- Navigation - Floating Pill Style -->
-    <nav class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white/95 backdrop-blur-lg shadow-xl rounded-full">
+    <!-- Desktop Navigation - Hidden on Mobile -->
+    <nav class="hidden md:block fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-white/95 backdrop-blur-lg shadow-xl rounded-full">
         <div class="flex items-center h-14 px-4">
             <!-- Logo -->
             <div class="flex items-center space-x-2 mr-8">
                 <img src="<?= baseUrl('assets/images/logo.png') ?>" alt="D'four Laundry" class="w-9 h-9">
-                <span class="text-lg font-bold text-gray-900 hidden sm:block">D'four<span class="text-primary-600">Laundry</span></span>
+                <span class="text-lg font-bold text-gray-900">D'four<span class="text-primary-600">Laundry</span></span>
             </div>
 
             <!-- Nav Links -->
-            <div class="hidden md:flex items-center space-x-6 mr-8">
+            <div class="flex items-center space-x-6 mr-8">
                 <a href="#home" class="text-gray-600 hover:text-primary-600 transition-colors text-sm font-medium">Home</a>
                 <a href="#services" class="text-gray-600 hover:text-primary-600 transition-colors text-sm font-medium">Layanan</a>
                 <a href="#location" class="text-gray-600 hover:text-primary-600 transition-colors text-sm font-medium">Lokasi</a>
@@ -86,22 +210,81 @@ $pageTitle = "D'four Smart Laundry System";
         </div>
     </nav>
 
+    <!-- Mobile Bottom Navigation - Floating Pill Style -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 pb-safe">
+        <div class="mx-4 mb-4 bg-white rounded-2xl px-4 py-2" style="box-shadow: 0 -5px 30px rgba(0,0,0,0.12);">
+            <div class="flex items-center justify-between relative">
+                <!-- Home -->
+                <a href="#home" class="bottom-nav-item active flex flex-col items-center py-2 px-2 text-primary-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span class="text-[10px] mt-1 font-medium">Home</span>
+                </a>
+
+                <!-- Layanan -->
+                <a href="#services" class="bottom-nav-item flex flex-col items-center py-2 px-2 text-gray-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                    </svg>
+                    <span class="text-[10px] mt-1 font-medium">Layanan</span>
+                </a>
+
+                <!-- Center FAB Button - Daftar -->
+                <a href="<?= baseUrl('pages/auth/register.php') ?>" class="absolute left-1/2 -translate-x-1/2 -top-6 flex items-center justify-center w-14 h-14 bg-gradient-to-br from-purple-500 to-primary-600 rounded-full shadow-xl hover:scale-105 transition-transform" style="box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                </a>
+
+                <!-- Spacer for FAB -->
+                <div class="w-14"></div>
+
+                <!-- Lokasi -->
+                <a href="#location" class="bottom-nav-item flex flex-col items-center py-2 px-2 text-gray-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span class="text-[10px] mt-1 font-medium">Lokasi</span>
+                </a>
+
+                <!-- Login -->
+                <a href="<?= baseUrl('pages/auth/login.php') ?>" class="bottom-nav-item flex flex-col items-center py-2 px-2 text-gray-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    <span class="text-[10px] mt-1 font-medium">Login</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
     <!-- Hero Section -->
     <section id="home" class="relative z-10 py-20 lg:py-32">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-primary-600 font-medium mb-4 uppercase tracking-wider">Layanan Laundry Profesional</p>
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+            <!-- Tagline with animation -->
+            <p class="text-primary-600 font-medium mb-4 uppercase tracking-wider animate-fade-in-up">
+                Layanan Laundry Profesional
+            </p>
+
+            <!-- Heading with animation delay -->
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 animate-fade-in-up animation-delay-200">
                 Cucian Bersih, <br>
                 <span class="text-primary-600">Hidup Lebih Mudah!</span>
             </h1>
-            <p class="text-gray-600 text-lg max-w-2xl mx-auto mb-10">
+
+            <!-- Description with animation delay -->
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto mb-10 animate-fade-in-up animation-delay-300">
                 Hemat waktu Anda dengan layanan laundry terpercaya. Kami cuci, setrika, dan antar cucian Anda dengan cepat dan berkualitas.
             </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#services" class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-2xl font-semibold transition-all shadow-xl hover:shadow-2xl">
+
+            <!-- Buttons with animation -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-400">
+                <a href="#services" class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-2xl font-semibold transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
                     Lihat Layanan
                 </a>
-                <a href="<?= baseUrl('pages/auth/login.php') ?>" class="bg-white hover:bg-gray-50 text-gray-700 px-8 py-4 rounded-2xl font-semibold transition-all shadow-lg border border-gray-200">
+                <a href="<?= baseUrl('pages/auth/login.php') ?>" class="bg-white hover:bg-gray-50 text-gray-700 px-8 py-4 rounded-2xl font-semibold transition-all shadow-lg border border-gray-200 hover:-translate-y-1">
                     Login Pelanggan
                 </a>
             </div>
@@ -117,8 +300,8 @@ $pageTitle = "D'four Smart Laundry System";
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
-                <!-- Service 1 -->
-                <div class="machine-card text-center">
+                <!-- Service 1 - Enhanced Shadow -->
+                <div class="service-card text-center animate-scale-in animation-delay-100">
                     <div class="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
@@ -129,8 +312,8 @@ $pageTitle = "D'four Smart Laundry System";
                     <p class="text-2xl font-bold text-primary-600">Rp 7.000<span class="text-sm text-gray-500">/kg</span></p>
                 </div>
 
-                <!-- Service 2 -->
-                <div class="machine-card text-center border-2 border-primary-200 bg-primary-50/50">
+                <!-- Service 2 - Popular with Enhanced Shadow -->
+                <div class="service-card text-center border-2 border-primary-200 bg-primary-50/50 animate-scale-in animation-delay-200">
                     <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
                         <span class="bg-primary-600 text-white text-xs font-bold px-3 py-1 rounded-full">POPULER</span>
                     </div>
@@ -144,8 +327,8 @@ $pageTitle = "D'four Smart Laundry System";
                     <p class="text-2xl font-bold text-primary-600">Rp 10.000<span class="text-sm text-gray-500">/kg</span></p>
                 </div>
 
-                <!-- Service 3 -->
-                <div class="machine-card text-center">
+                <!-- Service 3 - Enhanced Shadow -->
+                <div class="service-card text-center animate-scale-in animation-delay-300">
                     <div class="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
@@ -169,9 +352,9 @@ $pageTitle = "D'four Smart Laundry System";
 
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <!-- Map -->
-                <div class="machine-card p-0 overflow-hidden h-80 lg:h-96">
+                <div class="service-card p-0 overflow-hidden h-80 lg:h-96">
                     <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.521260322283!2d106.8195613!3d-6.194741299999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5390917b759%3A0x6b45e67356080477!2sMonumen%20Nasional!5e0!3m2!1sid!2sid!4v1640000000000!5m2!1sid!2sid"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.3089!2d100.4427415!3d-0.9234548!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4b783fff518c5%3A0xd07eb85391c22562!2sD'Four%20Laundry!5e0!3m2!1sid!2sid!4v1705606318000!5m2!1sid!2sid"
                         width="100%"
                         height="100%"
                         style="border:0;"
@@ -192,7 +375,7 @@ $pageTitle = "D'four Smart Laundry System";
                         </div>
                         <div>
                             <h4 class="font-semibold text-gray-900">Alamat</h4>
-                            <p class="text-gray-600">Jl. Contoh No. 123, Kota Anda, Indonesia</p>
+                            <p class="text-gray-600">Jl. Dr Moh hatta No.5a padang,Indonesia</p>
                         </div>
                     </div>
 
@@ -225,8 +408,8 @@ $pageTitle = "D'four Smart Laundry System";
         </div>
     </section>
 
-    <!-- Footer - Purple Gradient with Bubble Images -->
-    <footer class="relative z-10 overflow-hidden bg-gradient-to-b from-indigo-900 via-purple-900 to-indigo-900 text-white py-12">
+
+    <footer class="relative z-10 overflow-hidden bg-gradient-to-b from-indigo-900 via-purple-900 to-indigo-900 text-white py-12 mb-20 md:mb-0">
         <!-- Bubble Images in Footer -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <img src="<?= baseUrl('assets/images/bubble.png') ?>" alt="" class="absolute w-24 h-24 opacity-30 -bottom-6 left-10">
@@ -244,6 +427,36 @@ $pageTitle = "D'four Smart Laundry System";
             <p class="text-purple-300/50 text-xs">&copy; <?= date('Y') ?> D'four Laundry. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Script for Bottom Nav Active State -->
+    <script>
+        // Update active state on bottom nav based on scroll
+        const sections = document.querySelectorAll('section[id]');
+        const navItems = document.querySelectorAll('.bottom-nav-item');
+
+        function updateActiveNav() {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active', 'text-primary-600');
+                item.classList.add('text-gray-500');
+                if (item.getAttribute('href') === '#' + current) {
+                    item.classList.add('active', 'text-primary-600');
+                    item.classList.remove('text-gray-500');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNav);
+        updateActiveNav();
+    </script>
 
 </body>
 
