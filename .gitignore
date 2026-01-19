@@ -29,5 +29,8 @@ assets/css/style.css
 belajarOOP/
 start-server.bat
 
+# Deployment artifacts
+hostinger-upload/
+
 # Design inspiration:
 # https://dribbble.com/shots/25585058-LaundryWeb-Website-Concept-Design
